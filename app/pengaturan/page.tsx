@@ -34,6 +34,11 @@ export default function Pengaturan() {
   const { settings, updateSettings, stats, resetStats, preGeneratedCache, preGenerateQuestions, clearPreGenerated } = useQuiz();
   const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
   const [installStatus, setInstallStatus] = React.useState<'idle' | 'accepted' | 'dismissed'>('idle');
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
   
   // Pre-generate cache state
   const [pregenLoading, setPregenLoading] = React.useState<string | null>(null); // key currently generating
@@ -217,6 +222,18 @@ export default function Pengaturan() {
     }
     return [];
   };
+
+  if (!mounted) {
+    return (
+      <>
+        <Header title="Pengaturan" />
+        <div className="flex-1 flex items-center justify-center min-h-[50vh] md:pl-60">
+          <span className="text-4xl animate-spin">⏳</span>
+        </div>
+        <BottomNav />
+      </>
+    );
+  }
 
   return (
     <>

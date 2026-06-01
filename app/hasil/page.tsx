@@ -37,9 +37,15 @@ export default function Hasil() {
   const router = useRouter();
   const { session, stats, history, endQuiz, quitQuiz, loadSavedSession, deleteSavedSession } = useQuiz();
   const [result, setResult] = useState<SessionResult | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Compute final results on mount
   useEffect(() => {
+    if (!mounted) return;
     if (session) {
       if (!session.isComplete) {
         const res = endQuiz();
@@ -106,6 +112,18 @@ export default function Hasil() {
 
     return labels[key] || key.split('-').slice(1).join(' ');
   };
+
+  if (!mounted) {
+    return (
+      <>
+        <Header title="Statistik & Riwayat" />
+        <div className="flex-1 flex items-center justify-center min-h-[50vh] md:pl-60">
+          <span className="text-4xl animate-spin">⏳</span>
+        </div>
+        <BottomNav />
+      </>
+    );
+  }
 
   // Render main History list and Stats Dashboard if no active session is loaded
   if (!session) {
