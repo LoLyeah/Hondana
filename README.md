@@ -33,7 +33,7 @@ Hondana features an enterprise-grade AI question-generation pipeline supporting 
 
 ### 3. 💾 Session History Logs & Deep Review Mode
 * **Complete Session Archiving**: Completed sessions are fully logged as `SavedSession` entities and stored securely inside local storage (`hondana_session_history`).
-* **Detailed Accuracy Audits**: Tracks duration, category, accuracy percentage, time-spent per question, flagged items, and exact answers.
+* **Detailed Accuracy Audits**: Tracks duration (stored on the completed `QuizSession` object and in the `SavedSession` archive), category, accuracy percentage, time-spent per question, flagged items, and exact answers.
 * **Interactive Restorations**: Users can load, view, and deep-dive into past sessions to review questions and answers step-by-step, or delete saved logs.
 * **Learning Accuracy Stats**: Tracks real-time overall progress metrics including **Completed Sessions**, **Total Questions Answered**, and overall **Learning Accuracy** ratio on the main dashboard.
 
@@ -89,7 +89,7 @@ hondana/
 │   ├── TimerRing.tsx           # SVG countdown timer with warning colors
 │   └── ...                     # Global layout, cards, and navigation elements
 ├── context/                    # Context Provider
-│   └── QuizContext.tsx         # Central application state (Session, History Logs, Settings)
+│   └── QuizContext.tsx         # Central application state (Session, History Logs, Settings, sessionRef stale-closure guard)
 ├── data/                       # Curated offline question banks
 │   ├── figural-patterns.ts     # Offline bank for figural pattern-matching
 │   ├── tbi-questions.ts        # Offline bank for English (Structure, Reading)
