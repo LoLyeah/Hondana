@@ -60,7 +60,8 @@ The interactive quiz player (`/quiz`) provides:
 - **Prev / Next navigation** — jump freely between questions at any time.
 - **Flag (Ragu-Ragu)** — mark any question as uncertain with a 🚩 indicator.
 - **Question Grid Drawer** — a slide-up bottom sheet showing all question numbers colour-coded by status: Active (purple), Answered (purple-tint), Flagged (amber), Unanswered (grey).
-- **Finish Session** button available from both the footer and the grid drawer.
+- **Active Session Persistence** — active quiz progress is automatically persisted to local storage (`hondana_active_session`), ensuring that page refreshes, browser crashes, or accidental closes do not lose your test state.
+- **Keyboard Shortcut Legend Button** — a button in the header bar opens a quick keyboard help screen (accessible by pressing `?` key).
 - Renders **passage cards** (`PassageCard`) for reading questions and **SVG figural diagrams** (`FiguralDisplay`) for diagram/logic questions.
 
 ---
@@ -117,9 +118,45 @@ If AI generation fails or no API key is configured, the app silently falls back 
 - AI provider, model, and API key configuration (described above).
 - Timer on/off toggle.
 - Sound effects on/off toggle.
+- **AI Question Pre-generation Cache** (described below).
 - **Stats overview** — sessions completed, questions answered, overall accuracy.
 - **Reset progress** — clears all local stats and session history permanently.
 - Dark/Light **theme switching** — syncs to the document root (`data-theme` attribute and CSS class) via a `useEffect` in `QuizContext`.
+
+---
+
+### 8. ⌨️ Keyboard Shortcuts
+
+Speed up navigation and answers during tests with built-in hotkey support on the `/quiz` and `/pembahasan` pages:
+- **Select Answer**: `A`, `B`, `C`, `D`, `E` or `1`, `2`, `3`, `4`, `5`.
+- **Flag Ragu-Ragu (Uncertain)**: `Spacebar` (toggles the flag).
+- **Navigation**:
+  - `Right Arrow` or `]` to advance to the next question.
+  - `Left Arrow` or `[` to return to the previous question.
+- **Toggle Question Grid**: `G` or `g`.
+- **Toggle Shortcuts Legend Overlay**: `?`.
+- **Close Popups/Drawers**: `Escape` (`Esc`).
+
+---
+
+### 9. 📱 Progressive Web App (PWA)
+
+Hondana can be installed as a standalone PWA application on mobile, tablet, and desktop:
+- **Home Screen Installation** — installs with native desktop/mobile application behavior, including a custom app icon and standalone window styling.
+- **Service Worker (`sw.js`)** — registers a service worker to handle offline capability, asset caching, and loading optimizations.
+- **Install Promo Prompt** — displays a premium, custom install dialog banner (`usePWAInstall`) when loading the app to encourage home screen installation.
+
+---
+
+### 10. ⚡ Smart Cache & Question Exhaustion Protection
+
+To support study sessions in low-connectivity or high-latency environments:
+- **Cache Soal AI**: Pre-generate AI questions in bulk for selected categories under *Settings → Cache Soal AI* when online. These are saved to browser local storage (`hondana_pregen_cache`) and consumed automatically as a fallback.
+- **Collapsible Cache Inventory**: A beautiful collapsible panel built with Framer Motion height transitions dynamically displays currently cached question totals by category.
+- **Exhaustion Guard (`QuestionExhaustionModal`)**: If you request more questions for a category than remain in the local offline bank, the app displays a modal prompting you to:
+  1. *Gunakan Soal AI Sekarang* (Enables AI mode or pulls from pre-generated cache).
+  2. *Lanjutkan Saja* (Proceed with only the remaining offline questions).
+  3. *Batal* (Return to settings/category selection).
 
 ---
 
@@ -132,7 +169,8 @@ If AI generation fails or no API key is configured, the app silently falls back 
 | Styling | Tailwind CSS 4.0 + vanilla CSS custom properties |
 | Animations | Framer Motion |
 | AI | Groq SDK (`groq-sdk`), OpenAI-compatible fetch, Gemini REST |
-| State | React Context + `useLocalStorage` hook |
+| State & Cache | React Context + `useLocalStorage` persistence |
+| PWA | Web App Manifest (`manifest.json`), Service Worker (`sw.js`) |
 | Language | TypeScript (strict) |
 
 ---
@@ -149,35 +187,45 @@ hondana/
 │   ├── hasil/                  # Results page + session history dashboard
 │   ├── kategori/               # Module & category selection
 │   ├── pembahasan/             # Answer review with explanations
-│   ├── pengaturan/             # Settings (AI config, theme, stats reset)
-│   ├── quiz/                   # Interactive quiz player
-│   ├── globals.css             # Design system tokens and Tailwind config
-│   ├── layout.tsx              # Root layout + dark/light theme controller
-│   └── page.tsx                # Home dashboard
+│   ├── pengaturan/             # Settings (AI config, theme, stats, pregen cache)
+│   ├── quiz/                   # Interactive quiz player with active session persistence
+│   ├── globals.css             # Design system tokens, premium animations, tailwind directives
+│   ├── layout.tsx              # Root layout, theme config, suppressHydrationWarning
+│   └── page.tsx                # Home dashboard with PWA promotion
 ├── components/
 │   ├── CategoryCard.tsx        # Per-subcategory card with historical accuracy
 │   ├── FiguralDisplay.tsx      # SVG renderer for diagram/figural TPA questions
+│   ├── Header.tsx              # Application header with shortcuts keyboard launcher
+│   ├── LoadingSkeleton.tsx     # Premium shimmering glass loading skeletons [NEW]
+│   ├── LoadingSpinner.tsx      # Premium gradient rotating SVG spinners [NEW]
 │   ├── PassageCard.tsx         # Reading passage container
 │   ├── ProgressBar.tsx         # Session progress indicator
-│   ├── QuizOption.tsx          # Answer option button (with correct/wrong states)
+│   ├── QuestionExhaustionModal.tsx # Warns when offline questions run low [NEW]
+│   ├── QuizOption.tsx          # Answer option button (with correct/wrong/shortcut key states)
 │   ├── ResultBar.tsx           # Per-category accuracy bar in results
 │   ├── StatsCard.tsx           # Summary stat card
 │   ├── TimerRing.tsx           # SVG countdown ring
-│   ├── TranscriptCard.tsx      # Listening transcript display (unused in current bank)
-│   └── ...                     # Header, BottomNav, etc.
+│   └── ...                     # BottomNav, Dialog, etc.
 ├── context/
-│   └── QuizContext.tsx         # Global state: session, history, settings, stats
+│   └── QuizContext.tsx         # Global state: active session, history, pregen cache, settings
 ├── data/
-│   ├── tpa-questions.ts        # Offline TPA question bank (all 12 subcategories)
+│   ├── tpa-questions.ts        # Offline TPA question bank (12 subcategories, 50 new Unair questions)
 │   ├── tbi-questions.ts        # Offline TBI question bank (structure + reading)
 │   └── figural-patterns.ts    # SVG pattern data for figural questions
 ├── hooks/
+│   ├── useKeyboardShortcuts.ts # Reusable keyboard shortcut hook [NEW]
 │   ├── useLocalStorage.ts      # Reactive localStorage sync hook
+│   ├── usePWAInstall.ts        # Native PWA installation interception hook [NEW]
 │   └── useTimer.ts             # Countdown timer hook
 ├── lib/
 │   ├── groq.ts                 # AI provider client and prompt templates
 │   └── types.ts                # Shared TypeScript types
-└── public/
+├── public/
+│   ├── manifest.json           # Web App Manifest for PWA properties [NEW]
+│   ├── sw.js                   # Service Worker script for resource caching [NEW]
+│   ├── icon-192.png            # 192px app launcher icon [NEW]
+│   └── icon-512.png            # 512px app launcher icon [NEW]
+└── ...
 ```
 
 ---
