@@ -1,154 +1,217 @@
 # 🎯 Hondana
 
-**Hondana** is a state-of-the-art, gamified, and AI-powered interactive preparation platform designed to help candidates prepare for highly competitive job recruitments, civil service exams (**CPNS**), state-owned enterprise entry tests (**BUMN**), and academic selection procedures in Indonesia. 
+**Hondana** is an AI-powered, interactive exam preparation platform for competitive job recruitments, civil service exams (**CPNS**), and state-owned enterprise selections (**BUMN**) in Indonesia.
 
-By blending cognitive tests (**TPA - Tes Potensi Akademik**) and language proficiency tests (**TBI - Tes Bahasa Inggris / TOEFL**) with modern animated UI layouts, persistent learning logs, and multi-provider AI question generation, Hondana makes exam preparation engaging, professional, and highly effective.
+It covers two official exam modules — **TPA (Tes Potensi Akademik)** and **TBI (Tes Bahasa Inggris)** — with both a curated offline question bank and an optional live AI question-generation engine powered by multiple LLM providers.
 
 ---
 
 ## ✨ Features
 
-### 1. Comprehensive Cognitive & Language Syllabus
-Hondana offers structured practice and simulations across the complete official BAPPENAS TPA curriculum and TOEFL-aligned TBI exam blueprint:
+### 1. 📚 Exam Modules & Question Coverage
 
-| Test Module | Section | Key Category Coverage | Special Interaction |
-| :--- | :--- | :--- | :--- |
-| **TPA** *(Tes Potensi Akademik)* | **Verbal** | Synonyms (Sinonim), Antonyms (Antonim), Analogies, and Reading Passages | Multi-choice contextual analysis |
-| | **Numerik** | Number Series (Deret), Basic Arithmetic, Comparisons, and Word Problems | Scratchpad-ready numerical workflows |
-| | **Logika** | Syllogisms, Analytical Reasoning, Logical deductions, and Venn Diagrams | Relational logic structures |
-| | **Figural** | Pattern recognition, spatial rotation, and visual relationship series | Integrated SVG visual renderer (`FiguralDisplay.tsx`) |
-| **TBI** *(Tes Bahasa Inggris)* | **Structure** | Sentence Completion and Error Identification | Syntactic correction analysis |
-| | **Reading** | Reading Comprehension and Vocabulary-in-Context | Dedicated dual-pane passage interface (`PassageCard.tsx`) |
+#### TPA — Tes Potensi Akademik (60 questions / 60 minutes in Simulasi)
+| Section | Subcategory | Description |
+| :--- | :--- | :--- |
+| **Verbal** | Sinonim | Synonym identification |
+| | Antonim | Antonym identification |
+| | Analogi | Word relationship analogies |
+| | Pemahaman Bacaan | Reading passage comprehension |
+| **Numerik** | Deret Angka | Logical number series |
+| | Aritmatika Dasar | Basic arithmetic |
+| | Perbandingan Kuantitatif | Quantitative comparison |
+| | Soal Cerita | Word problems and reasoning |
+| **Logika** | Penalaran Logis | Logical reasoning |
+| | Silogisme | Syllogistic deduction |
+| | Penalaran Analitis | Analytical reasoning |
+| | Diagram Logika | Figural / diagram logic (SVG-rendered) |
 
-### 2. 🤖 Advanced Multi-Provider AI Generation (Groq, OpenAI, Gemini & Custom)
-Hondana features an enterprise-grade AI question-generation pipeline supporting multiple model providers:
-* **Multiple AI Providers**: Integrated support for:
-  * **Groq AI (Built-in)**: Zero-config, out-of-the-box free question generator.
-  * **Groq AI (Custom Key)**: Insert your own Groq API key for high-volume custom queries.
-  * **OpenAI (Custom Key)**: Full compatibility with OpenAI endpoints.
-  * **Gemini (Custom Key)**: Built-in compatibility with Google Gemini API endpoints.
-* **Custom Base URLs (Ollama / DeepSeek Compatible)**: Supports custom Endpoint Base URLs, allowing seamless integration with local models (via Ollama) or alternative third-party providers (like DeepSeek, OpenRouter).
-* **Live Connection Status Widget**: Displays a real-time status indicator (`Siap`, `Memeriksa...`, `Error`, `Belum Siap`) with descriptive connection feedback.
-* **Groq Model Catalog Modal**: Fetches active models dynamically from the Groq API, letting users view the context windows, creators, and release dates of active models (such as `llama-3.3-70b-versatile`, `llama-3.1-8b-instant`, etc.) in an elegant scrollable UI.
-
-### 3. 💾 Session History Logs & Deep Review Mode
-* **Complete Session Archiving**: Completed sessions are fully logged as `SavedSession` entities and stored securely inside local storage (`hondana_session_history`).
-* **Detailed Accuracy Audits**: Tracks duration (stored on the completed `QuizSession` object and in the `SavedSession` archive), category, accuracy percentage, time-spent per question, flagged items, and exact answers.
-* **Interactive Restorations**: Users can load, view, and deep-dive into past sessions to review questions and answers step-by-step, or delete saved logs.
-* **Learning Accuracy Stats**: Tracks real-time overall progress metrics including **Completed Sessions**, **Total Questions Answered**, and overall **Learning Accuracy** ratio on the main dashboard.
-
-### 4. ⏱️ Rich Exam Taking Utilities
-* **Flag / Bookmark Questions**: Bookmark uncertain questions during the exam so you can easily review them later using the HUD index grid.
-* **Direct Jump Navigation**: Instantly navigate between different questions using the grid layout.
-* **Balanced Cognitive Matrix Builder**: Fetches questions using official cognitive proportions (TPA: 2 Mudah, 1 Sedang, 2 Sulit; TBI: 40% Mudah, 20% Sedang, 40% Sulit) for balanced and authentic exam simulations.
-* **Latihan (Practice Mode)**: Custom training sessions focusing on a single subcategory with custom item counts.
-* **Simulasi (Simulated Exam)**: Full-length mock exam (60 questions for TPA, 50 questions for TBI) adhering strictly to standard time constraints.
-
-### 5. 🎨 Aesthetic Fluid Transitions & Dark/Light Themes
-* **System-wide Theme Switching**: Native dark/light mode toggles which synchronously adjust document roots (`data-theme` and class lists) for responsive theme adjustments.
-* **Staggered Page Animations**: Smooth, high-fidelity element staggering powered by `framer-motion` for a modern, fluid user experience.
-* **Premium Glassmorphic Aesthetics**: Modern gradients, custom SVG rendering grids, and responsive sidebar layouts suited for mobile HUDs up to wide desktop screens.
+#### TBI — Tes Bahasa Inggris (50 questions / 40 minutes in Simulasi)
+| Section | Subcategory | Description |
+| :--- | :--- | :--- |
+| **Structure** | Sentence Completion | TOEFL-style grammar completion |
+| **Reading** | Passage Comprehension | Multi-paragraph reading comprehension |
 
 ---
 
-## 🛠️ Tech Stack & Architecture
+### 2. ⏱️ Practice Modes
 
-Hondana is built on a clean, modern frontend engineering stack:
+#### Simulasi Ujian (Full Mock Exam)
+A standardised, full-length mock exam session:
+- **TPA**: 60 questions drawn from all 12 subcategories with a balanced difficulty split (2 Mudah + 1 Sedang + 2 Sulit per category).
+- **TBI**: 50 questions (40 Structure Completion + 10 Reading Comprehension) with a 40/20/40 difficulty split.
+- No penalty scoring (correct = 1, blank/wrong = 0), per BAPPENAS convention.
 
-* **Core Framework**: [Next.js 16.2](https://nextjs.org/) (App Router layout, utilising React Server and Client Components)
-* **Rendering Engine**: [React 19](https://react.dev/) (Hooks, Context-based State Management, and LocalStorage synchronization)
-* **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/) with Vanilla CSS variables and configurations.
-* **Animations**: [Framer Motion](https://www.framer.com/motion/) for premium staggering and micro-animations.
-* **API Middleware**: Groq Node/Edge SDK wrapper (`groq-sdk`) & custom AI providers route wrappers
-* **Type System**: Fully typed with strict TypeScript configurations
+#### Latihan Per Kategori (Targeted Practice)
+Train a single subcategory with a configurable question count (10 / 20 / 30 questions). Each category card on the selection screen shows your historical accuracy for that subcategory.
+
+Both modes support a per-session configuration panel:
+- **AI Mode toggle** — switch between the offline question bank and live AI generation.
+- **Timer toggle** — enable/disable the per-question countdown timer.
+- **Sound toggle** — enable/disable answer submission sound effects.
+
+---
+
+### 3. 🎮 Quiz Player
+
+The interactive quiz player (`/quiz`) provides:
+- **Per-question countdown timer** with an SVG ring display (`TimerRing`). Auto-submits as skipped when time runs out.
+- **Auto-advance** — moves to the next question 800 ms after an answer is selected.
+- **Prev / Next navigation** — jump freely between questions at any time.
+- **Flag (Ragu-Ragu)** — mark any question as uncertain with a 🚩 indicator.
+- **Question Grid Drawer** — a slide-up bottom sheet showing all question numbers colour-coded by status: Active (purple), Answered (purple-tint), Flagged (amber), Unanswered (grey).
+- **Finish Session** button available from both the footer and the grid drawer.
+- Renders **passage cards** (`PassageCard`) for reading questions and **SVG figural diagrams** (`FiguralDisplay`) for diagram/logic questions.
+
+---
+
+### 4. 📊 Results & Session History (`/hasil`)
+
+After completing a session, the results page shows:
+- **Score card** — correct count, accuracy %, total time, and average time per question.
+- **Sub-category breakdown** — a `ResultBar` for every category present in the session, showing individual accuracy.
+- From there you can proceed to **Pembahasan** (answer review) or return to the **History Dashboard**.
+
+The History Dashboard (shown when no active session is loaded) displays:
+- Global stats: total sessions completed, total questions answered, overall accuracy.
+- A scrollable **session history log** (newest first), each card showing: test type, mode, category, date/time, score, accuracy %, and duration.
+- **Review** button — loads the saved session into Pembahasan for a full answer walkthrough.
+- **Delete** button — permanently removes a saved session log.
+
+All session data is persisted in `localStorage` under `hondana_session_history`.
+
+---
+
+### 5. 💡 Answer Review (`/pembahasan`)
+
+A dedicated review mode that replays any completed session question-by-question:
+- Answer options are **colour-coded**: correct answer highlighted green, user's wrong selection highlighted red.
+- A status banner confirms whether the answer was correct, wrong, or skipped.
+- A **Pembahasan (explanation) block** provides a detailed written explanation in Bahasa Indonesia for every question.
+- The same **Question Grid Drawer** used during the quiz is available here, with correct/wrong/skipped colour coding instead of answered/unanswered.
+
+---
+
+### 6. 🤖 Multi-Provider AI Generation
+
+The AI pipeline (`/api/generate`) supports four provider modes, all configurable from the Settings screen:
+
+| Provider | Description |
+| :--- | :--- |
+| **Groq AI (Built-in)** | Uses the server-side `GROQ_API_KEY` env variable. Zero user configuration needed. |
+| **Groq AI (Custom Key)** | User supplies their own Groq API key via the settings screen. |
+| **OpenAI (Custom Key)** | Full OpenAI API compatibility, with optional custom Base URL for OpenRouter, DeepSeek, Ollama, etc. |
+| **Gemini (Custom Key)** | Google Gemini API compatibility. |
+
+Additional AI tooling in Settings:
+- **Live connection status** — a real-time indicator (Siap / Memeriksa... / Error / Belum Siap) with debounced health-check calls to `/api/test-ai`.
+- **Groq Model Catalog Modal** — fetches active models from the Groq API via `/api/groq-models`, displaying each model's ID, owner, context window size, and release date. Selecting a model immediately applies it.
+- **Model selector** — a dropdown for Groq, text input + presets for OpenAI-compatible and Gemini providers.
+
+If AI generation fails or no API key is configured, the app silently falls back to the offline question bank.
+
+---
+
+### 7. ⚙️ Settings (`/pengaturan`)
+
+- AI provider, model, and API key configuration (described above).
+- Timer on/off toggle.
+- Sound effects on/off toggle.
+- **Stats overview** — sessions completed, questions answered, overall accuracy.
+- **Reset progress** — clears all local stats and session history permanently.
+- Dark/Light **theme switching** — syncs to the document root (`data-theme` attribute and CSS class) via a `useEffect` in `QuizContext`.
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+| :--- | :--- |
+| Framework | Next.js 16.2 (App Router) |
+| UI | React 19 |
+| Styling | Tailwind CSS 4.0 + vanilla CSS custom properties |
+| Animations | Framer Motion |
+| AI | Groq SDK (`groq-sdk`), OpenAI-compatible fetch, Gemini REST |
+| State | React Context + `useLocalStorage` hook |
+| Language | TypeScript (strict) |
 
 ---
 
 ## 📂 Project Structure
 
-The project code follows a modular, feature-oriented structure:
-
 ```text
 hondana/
-├── app/                        # Next.js App Router root
-│   ├── api/                    # Server-side API endpoints
-│   │   ├── generate/           # Multi-provider AI question generation route
-│   │   ├── groq-models/        # Live Groq active models fetch route
-│   │   └── test-ai/            # Connectivity health checking endpoint
-│   ├── hasil/                  # Quiz summary & session results page
-│   ├── kategori/               # Syllabus and category selection page
-│   ├── pembahasan/             # Explanation review and transcript page
-│   ├── pengaturan/             # Settings, sound, themes, and AI provider configurations
-│   ├── quiz/                   # Interactive exam player and HUD
-│   ├── globals.css             # Tailwind v4 utility styles & design system tokens
-│   ├── layout.tsx              # Root HTML, light/dark controller & metadata wrapper
-│   └── page.tsx                # Home / dashboard welcome page
-├── components/                 # Reusable UI component layer
-│   ├── FiguralDisplay.tsx      # SVG canvas for visual figural TPA patterns
-│   ├── PassageCard.tsx         # Dedicated reading context component
-│   ├── TimerRing.tsx           # SVG countdown timer with warning colors
-│   └── ...                     # Global layout, cards, and navigation elements
-├── context/                    # Context Provider
-│   └── QuizContext.tsx         # Central application state (Session, History Logs, Settings, sessionRef stale-closure guard)
-├── data/                       # Curated offline question banks
-│   ├── figural-patterns.ts     # Offline bank for figural pattern-matching
-│   ├── tbi-questions.ts        # Offline bank for English (Structure, Reading)
-│   └── tpa-questions.ts        # Offline bank for TPA (Verbal, Numeric, Logic)
-├── hooks/                      # Custom utility React hooks
-│   └── useLocalStorage.ts      # Automatic reactive storage sync
-├── lib/                        # Core business logic and shared TS types
-│   ├── groq.ts                 # AI providers config & prompts
-│   └── types.ts                # TypeScript interfaces and type definitions
-├── public/                     # Static public assets and media
-├── tsconfig.json               # TypeScript configuration
-└── package.json                # Project dependencies and script declarations
+├── app/
+│   ├── api/
+│   │   ├── generate/           # AI question generation (multi-provider)
+│   │   ├── groq-models/        # Live Groq model catalog fetch
+│   │   └── test-ai/            # AI connectivity health check
+│   ├── hasil/                  # Results page + session history dashboard
+│   ├── kategori/               # Module & category selection
+│   ├── pembahasan/             # Answer review with explanations
+│   ├── pengaturan/             # Settings (AI config, theme, stats reset)
+│   ├── quiz/                   # Interactive quiz player
+│   ├── globals.css             # Design system tokens and Tailwind config
+│   ├── layout.tsx              # Root layout + dark/light theme controller
+│   └── page.tsx                # Home dashboard
+├── components/
+│   ├── CategoryCard.tsx        # Per-subcategory card with historical accuracy
+│   ├── FiguralDisplay.tsx      # SVG renderer for diagram/figural TPA questions
+│   ├── PassageCard.tsx         # Reading passage container
+│   ├── ProgressBar.tsx         # Session progress indicator
+│   ├── QuizOption.tsx          # Answer option button (with correct/wrong states)
+│   ├── ResultBar.tsx           # Per-category accuracy bar in results
+│   ├── StatsCard.tsx           # Summary stat card
+│   ├── TimerRing.tsx           # SVG countdown ring
+│   ├── TranscriptCard.tsx      # Listening transcript display (unused in current bank)
+│   └── ...                     # Header, BottomNav, etc.
+├── context/
+│   └── QuizContext.tsx         # Global state: session, history, settings, stats
+├── data/
+│   ├── tpa-questions.ts        # Offline TPA question bank (all 12 subcategories)
+│   ├── tbi-questions.ts        # Offline TBI question bank (structure + reading)
+│   └── figural-patterns.ts    # SVG pattern data for figural questions
+├── hooks/
+│   ├── useLocalStorage.ts      # Reactive localStorage sync hook
+│   └── useTimer.ts             # Countdown timer hook
+├── lib/
+│   ├── groq.ts                 # AI provider client and prompt templates
+│   └── types.ts                # Shared TypeScript types
+└── public/
 ```
 
 ---
 
 ## 🚀 Getting Started
 
-To run Hondana locally, follow these simple setup steps:
+### Prerequisites
+Node.js v18 or newer.
 
-### 1. Prerequisites
-Ensure you have **Node.js (v18.x or newer)** installed on your machine.
-
-### 2. Clone and Install Dependencies
-Navigate to the root directory and install packages:
+### Install
 ```bash
 npm install
 ```
 
-### 3. Environment Configuration
-Create a `.env` file in the root directory (you can copy `.env.example` as a template):
+### Environment
 ```bash
 cp .env.example .env
 ```
-Open the `.env` file and insert your Groq API key:
 ```env
+# Required only for the built-in Groq AI provider.
+# Leave blank to use Offline Mode, or configure a provider in the app settings.
 GROQ_API_KEY=gsk_your_groq_api_key_here
 ```
-> **Note:** If the key is not set, Hondana will run seamlessly in **Offline Mode**, loading questions from its built-in offline database. Custom keys can also be inserted directly via the in-app settings screen.
 
-### 4. Running the Development Server
-Launch the development server:
+### Run
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) with your browser to experience Hondana!
+Open [http://localhost:3000](http://localhost:3000).
 
-### 5. Build and Production Run
-To compile the application for production:
+### Build
 ```bash
-npm run build
-npm start
+npm run build && npm start
 ```
-
----
-
-## 🔒 Quality & Verification
-* **TypeScript Integrity**: The project is strictly typed. Run `npx tsc --noEmit` to verify type safety.
-* **Linter Compliance**: Hondana is configured with modern ESLint parameters. Run `npm run lint` to enforce standard coding guidelines.
 
 ---
 
