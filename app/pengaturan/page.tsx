@@ -39,6 +39,7 @@ export default function Pengaturan() {
   const [pregenTestType, setPregenTestType] = React.useState<'TPA' | 'TBI'>('TPA');
   const [pregenCategory, setPregenCategory] = React.useState<string>('verbal-sinonim');
   const [selectedTPACategories, setSelectedTPACategories] = React.useState<string[]>(['verbal-sinonim']);
+  const [showCacheInventory, setShowCacheInventory] = React.useState(true);
 
   // Custom States
   const [showKey, setShowKey] = React.useState(false);
@@ -740,42 +741,65 @@ export default function Pengaturan() {
             {totalCached > 0 && (
               <div className="flex flex-col gap-2.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-text-secondary">
-                    ISI CACHE SAAT INI
-                  </span>
                   <button
-                    onClick={() => clearPreGenerated()}
-                    className="text-[9px] font-bold text-error hover:text-error/80 cursor-pointer outline-none select-none min-h-0 min-w-0"
+                    onClick={() => setShowCacheInventory(!showCacheInventory)}
+                    className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-text-secondary hover:text-text-primary cursor-pointer select-none outline-none min-h-0 min-w-0"
                     style={{ minBlockSize: 0, minInlineSize: 0 }}
                   >
-                    Hapus Semua
+                    <span>ISI CACHE SAAT INI</span>
+                    <span 
+                      className="text-[9px] transition-transform duration-200" 
+                      style={{ transform: showCacheInventory ? 'rotate(0deg)' : 'rotate(-90deg)' }}
+                    >
+                      ▼
+                    </span>
                   </button>
+                  {showCacheInventory && (
+                    <button
+                      onClick={() => clearPreGenerated()}
+                      className="text-[9px] font-bold text-error hover:text-error/80 cursor-pointer outline-none select-none min-h-0 min-w-0"
+                      style={{ minBlockSize: 0, minInlineSize: 0 }}
+                    >
+                      Hapus Semua
+                    </button>
+                  )}
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  {Object.entries(preGeneratedCache || {})
-                    .filter(([, arr]) => arr.length > 0)
-                    .map(([key, arr]) => {
-                      const [tt, ...catParts] = key.split(':');
-                      const catKey = catParts.join(':');
-                      const allCats = tt === 'TPA' ? pregenTPACategories : pregenTBICategories;
-                      const catLabel = allCats.find((c) => c.key === catKey)?.label || catKey;
-                      return (
-                        <div key={key} className="flex items-center justify-between px-3 py-2 bg-white/3 border border-white/6 rounded-xl">
-                          <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-text-primary">{catLabel}</span>
-                            <span className="text-[9px] font-semibold text-text-secondary">{tt} · {arr.length} soal tersimpan</span>
-                          </div>
-                          <button
-                            onClick={() => clearPreGenerated(key)}
-                            className="text-[9px] font-bold text-error/70 hover:text-error cursor-pointer outline-none select-none min-h-0 min-w-0 px-2 py-1"
-                            style={{ minBlockSize: 0, minInlineSize: 0 }}
-                          >
-                            Hapus
-                          </button>
-                        </div>
-                      );
-                    })}
-                </div>
+
+                <AnimatePresence initial={false}>
+                  {showCacheInventory && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.22, ease: 'easeInOut' }}
+                      className="overflow-hidden flex flex-col gap-1.5"
+                    >
+                      {Object.entries(preGeneratedCache || {})
+                        .filter(([, arr]) => arr.length > 0)
+                        .map(([key, arr]) => {
+                          const [tt, ...catParts] = key.split(':');
+                          const catKey = catParts.join(':');
+                          const allCats = tt === 'TPA' ? pregenTPACategories : pregenTBICategories;
+                          const catLabel = allCats.find((c) => c.key === catKey)?.label || catKey;
+                          return (
+                            <div key={key} className="flex items-center justify-between px-3 py-2 bg-white/3 border border-white/6 rounded-xl">
+                              <div className="flex flex-col">
+                                <span className="text-[10px] font-black text-text-primary">{catLabel}</span>
+                                <span className="text-[9px] font-semibold text-text-secondary">{tt} · {arr.length} soal tersimpan</span>
+                              </div>
+                              <button
+                                onClick={() => clearPreGenerated(key)}
+                                className="text-[9px] font-bold text-error/70 hover:text-error cursor-pointer outline-none select-none min-h-0 min-w-0 px-2 py-1"
+                                style={{ minBlockSize: 0, minInlineSize: 0 }}
+                              >
+                                Hapus
+                              </button>
+                            </div>
+                          );
+                        })}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
 
