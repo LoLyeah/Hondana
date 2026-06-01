@@ -26,12 +26,10 @@ export default function Pembahasan() {
     }
   }, [session, router]);
 
-  if (!session) return null;
-
-  const currentQuestion = session.questions[reviewIndex];
-  if (!currentQuestion) return null;
+  const currentQuestion = session?.questions[reviewIndex];
 
   const handleNext = () => {
+    if (!session) return;
     if (reviewIndex + 1 < session.questions.length) {
       setReviewIndex((prev) => prev + 1);
     } else {
@@ -48,14 +46,14 @@ export default function Pembahasan() {
   // Active when drawer is CLOSED
   useKeyboardShortcuts({
     'ArrowRight': () => {
-      if (reviewIndex + 1 < session.questions.length) {
+      if (session && reviewIndex + 1 < session.questions.length) {
         setReviewIndex((prev) => prev + 1);
       } else {
         router.push('/hasil');
       }
     },
     'l': () => {
-      if (reviewIndex + 1 < session.questions.length) {
+      if (session && reviewIndex + 1 < session.questions.length) {
         setReviewIndex((prev) => prev + 1);
       } else {
         router.push('/hasil');
@@ -74,7 +72,7 @@ export default function Pembahasan() {
     'g': () => {
       setShowGrid(true);
     },
-  }, !showGrid && !showShortcuts);
+  }, !showGrid && !showShortcuts && !!session && !!currentQuestion);
 
   // Active when drawer or shortcuts is OPEN
   useKeyboardShortcuts({
@@ -88,18 +86,20 @@ export default function Pembahasan() {
     '?': () => {
       if (showShortcuts) setShowShortcuts(false);
     }
-  }, showGrid || showShortcuts);
+  }, (showGrid || showShortcuts) && !!session && !!currentQuestion);
 
   // Active when both are CLOSED (to open shortcuts with '?')
   useKeyboardShortcuts({
     '?': () => {
       setShowShortcuts(true);
     }
-  }, !showGrid && !showShortcuts);
+  }, !showGrid && !showShortcuts && !!session && !!currentQuestion);
+
+  if (!session || !currentQuestion) return null;
 
   const isFirst = reviewIndex === 0;
-  const isLast = reviewIndex + 1 === session.questions.length;
-  const userChosen = session.answers[reviewIndex];
+  const isLast = session ? reviewIndex + 1 === session.questions.length : false;
+  const userChosen = session ? session.answers[reviewIndex] : null;
 
   return (
     <div className="w-full max-w-[720px] mx-auto flex flex-col flex-1 relative">

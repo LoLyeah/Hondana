@@ -91,9 +91,8 @@ export default function Quiz() {
     }
   }, [session?.currentIndex, currentQuestion]);
 
-  if (!session || !currentQuestion) return null;
-
   const handleAnswerSubmit = (optionIndex: number | null) => {
+    if (!session || !currentQuestion) return;
     setSelectedOption(optionIndex);
     setIsAnswered(true);
 
@@ -122,6 +121,7 @@ export default function Quiz() {
   };
 
   const handleNext = () => {
+    if (!session) return;
     const isLast = session.currentIndex + 1 >= session.questions.length;
     if (isLast) {
       endQuiz();
@@ -151,38 +151,40 @@ export default function Quiz() {
 
   // Active when drawer is CLOSED
   useKeyboardShortcuts({
-    '1': () => { if (!isAnswered && currentQuestion.options.length >= 1) handleAnswerSubmit(0); },
-    '2': () => { if (!isAnswered && currentQuestion.options.length >= 2) handleAnswerSubmit(1); },
-    '3': () => { if (!isAnswered && currentQuestion.options.length >= 3) handleAnswerSubmit(2); },
-    '4': () => { if (!isAnswered && currentQuestion.options.length >= 4) handleAnswerSubmit(3); },
-    '5': () => { if (!isAnswered && currentQuestion.options.length >= 5) handleAnswerSubmit(4); },
+    '1': () => { if (currentQuestion && !isAnswered && currentQuestion.options.length >= 1) handleAnswerSubmit(0); },
+    '2': () => { if (currentQuestion && !isAnswered && currentQuestion.options.length >= 2) handleAnswerSubmit(1); },
+    '3': () => { if (currentQuestion && !isAnswered && currentQuestion.options.length >= 3) handleAnswerSubmit(2); },
+    '4': () => { if (currentQuestion && !isAnswered && currentQuestion.options.length >= 4) handleAnswerSubmit(3); },
+    '5': () => { if (currentQuestion && !isAnswered && currentQuestion.options.length >= 5) handleAnswerSubmit(4); },
     'ArrowRight': () => {
-      if (session.currentIndex + 1 < session.questions.length) {
+      if (session && session.currentIndex + 1 < session.questions.length) {
         jumpToQuestion(session.currentIndex + 1);
       }
     },
     'l': () => {
-      if (session.currentIndex + 1 < session.questions.length) {
+      if (session && session.currentIndex + 1 < session.questions.length) {
         jumpToQuestion(session.currentIndex + 1);
       }
     },
     'ArrowLeft': () => {
-      if (session.currentIndex > 0) {
+      if (session && session.currentIndex > 0) {
         jumpToQuestion(session.currentIndex - 1);
       }
     },
     'j': () => {
-      if (session.currentIndex > 0) {
+      if (session && session.currentIndex > 0) {
         jumpToQuestion(session.currentIndex - 1);
       }
     },
     'f': () => {
-      toggleFlagQuestion(session.currentIndex);
+      if (session) {
+        toggleFlagQuestion(session.currentIndex);
+      }
     },
     'g': () => {
       setShowGrid(true);
     },
-  }, !showGrid && !showShortcuts);
+  }, !showGrid && !showShortcuts && !!session && !!currentQuestion);
 
   // Active when drawer or shortcuts is OPEN
   useKeyboardShortcuts({
@@ -196,14 +198,16 @@ export default function Quiz() {
     '?': () => {
       if (showShortcuts) setShowShortcuts(false);
     }
-  }, showGrid || showShortcuts);
+  }, (showGrid || showShortcuts) && !!session && !!currentQuestion);
 
   // Active when both are CLOSED (to open shortcuts with '?')
   useKeyboardShortcuts({
     '?': () => {
       setShowShortcuts(true);
     }
-  }, !showGrid && !showShortcuts);
+  }, !showGrid && !showShortcuts && !!session && !!currentQuestion);
+
+  if (!session || !currentQuestion) return null;
 
   return (
     <div className="w-full max-w-[720px] mx-auto flex flex-col flex-1 relative">
