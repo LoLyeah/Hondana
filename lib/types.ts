@@ -25,7 +25,7 @@ export type TBICategory =
   | 'reading-comprehension'
   | 'reading-vocabulary';
 
-export type Difficulty = 'mudah' | 'sedang' | 'sulit';
+export type Difficulty = 'mudah' | 'sedang' | 'sulit' | 'seimbang';
 
 // For TPA figural/diagram questions
 export interface FiguralData {
@@ -47,7 +47,7 @@ export interface Question {
   category: TPACategory | TBICategory;
   difficulty: Difficulty;
   question: string;
-  options: string[];           // 4 options for TBI (A–D), 5 for TPA (A–E)
+  options: string[];           // 5 options for both TBI (A–E) and TPA (A–E)
   correctAnswer: number;       // index of correct option
   explanation: string;
   timeLimit: number;           // seconds
@@ -67,8 +67,26 @@ export interface QuizSession {
   currentIndex: number;
   answers: (number | null)[];
   timePerQuestion: number[];
+  flagged: boolean[];
   startTime: number;
   isComplete: boolean;
+}
+
+export interface SavedSession {
+  id: string;
+  timestamp: number;
+  testType: TestType;
+  mode: SessionMode;
+  category: string;
+  difficulty?: Difficulty;
+  questions: Question[];
+  answers: (number | null)[];
+  timePerQuestion: number[];
+  flagged: boolean[];
+  correctCount: number;
+  totalQuestions: number;
+  duration: number;
+  accuracy: number;
 }
 
 // Scoring per BAPPENAS: benar = 1, salah/kosong = 0
@@ -81,14 +99,9 @@ export interface SessionResult {
   accuracy: number;            // correct / total * 100
   totalTime: number;
   avgTimePerQuestion: number;
-  xpEarned: number;
 }
 
 export interface UserStats {
-  totalXP: number;
-  level: number;
-  bestStreak: number;
-  currentStreak: number;
   totalCorrect: number;
   totalAnswered: number;
   sessionsCompleted: number;
@@ -101,4 +114,9 @@ export interface AppSettings {
   timerEnabled: boolean;
   useAI: boolean;
   soundEnabled: boolean;
+  theme: 'light' | 'dark';
+  aiProvider: 'built-in' | 'groq-custom' | 'openai-custom' | 'gemini-custom';
+  customApiKey: string;
+  aiModel: string;
+  aiBaseUrl?: string;
 }

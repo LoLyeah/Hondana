@@ -1,12 +1,12 @@
 'use client';
-
+ 
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
+ 
 export default function BottomNav() {
   const pathname = usePathname();
-
+ 
   const navItems = [
     {
       label: 'Beranda',
@@ -14,24 +14,6 @@ export default function BottomNav() {
       icon: (active: boolean) => (
         <svg xmlns="http://www.w3.org/2000/svg" fill={active ? 'currentColor' : 'none'} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
           <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-        </svg>
-      )
-    },
-    {
-      label: 'TPA',
-      href: '/kategori?type=TPA',
-      icon: (active: boolean) => (
-        <svg xmlns="http://www.w3.org/2000/svg" fill={active ? 'currentColor' : 'none'} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-        </svg>
-      )
-    },
-    {
-      label: 'TBI',
-      href: '/kategori?type=TBI',
-      icon: (active: boolean) => (
-        <svg xmlns="http://www.w3.org/2000/svg" fill={active ? 'currentColor' : 'none'} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-.778.099-1.533.284-2.253" />
         </svg>
       )
     },
@@ -54,34 +36,75 @@ export default function BottomNav() {
       )
     }
   ];
-
+ 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-gray-950/80 border-t border-white/8 backdrop-blur-lg safe-bottom">
-      <div className="max-w-[720px] mx-auto flex items-center justify-around py-2 px-4">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || 
-            (item.href.includes('type=TPA') && pathname === '/kategori' && pathname + '?type=TPA' === pathname + window.location.search) ||
-            (item.href.includes('type=TBI') && pathname === '/kategori' && pathname + '?type=TBI' === pathname + window.location.search);
-          
-          // Let's perform a simple runtime active check
-          const active = pathname === item.href || (pathname === '/kategori' && item.href.includes(`type=${item.label}`));
-
-          return (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`flex flex-col items-center gap-1 py-1 px-3 rounded-2xl active:scale-95 transition-all text-xs font-semibold ${
-                isActive ? 'text-accent' : 'text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              <div className={`p-1.5 rounded-xl transition-all ${isActive ? 'bg-accent/10' : 'bg-transparent'}`}>
-                {item.icon(isActive)}
-              </div>
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
+    <>
+      {/* Mobile Bottom Navigation Bar */}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[var(--bg-nav)] border-t border-[var(--border-nav)] backdrop-blur-lg safe-bottom md:hidden transition-colors duration-300">
+        <div className="max-w-[720px] mx-auto flex items-center justify-around py-2 px-4">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+ 
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`flex flex-col items-center gap-1 py-1 px-3 rounded-2xl active:scale-95 transition-all text-xs font-semibold ${
+                  isActive ? 'text-accent' : 'text-text-secondary hover:text-text-primary'
+                }`}
+              >
+                <div className={`p-1.5 rounded-xl transition-all ${isActive ? 'bg-accent/10' : 'bg-transparent'}`}>
+                  {item.icon(isActive)}
+                </div>
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+ 
+      {/* Desktop Sidebar Navigation */}
+      <aside className="hidden md:flex md:flex-col md:fixed md:left-[max(0px,calc((100vw-960px)/2))] md:top-0 md:bottom-0 md:w-56 bg-[var(--bg-nav)] border-r border-[var(--border-nav)] backdrop-blur-lg py-8 px-4 z-40 justify-between transition-colors duration-300">
+        <div className="flex flex-col gap-8">
+          {/* Logo / Brand Header */}
+          <div className="flex items-center gap-3 px-2">
+            <span className="text-2xl">🎯</span>
+            <span className="text-lg font-black bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text text-transparent">
+              Hondana
+            </span>
+          </div>
+ 
+          {/* Nav Items List */}
+          <div className="flex flex-col gap-2">
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+ 
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={`flex items-center gap-3 py-3 px-4 rounded-2xl active:scale-[0.98] transition-all text-sm font-bold border border-transparent ${
+                    isActive
+                      ? 'bg-accent/10 text-accent border-accent/20'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-white/5'
+                  }`}
+                >
+                  <div className={`transition-all ${isActive ? 'text-accent' : 'text-text-secondary'}`}>
+                    {item.icon(isActive)}
+                  </div>
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+ 
+        {/* Brand Copyright Footer */}
+        <div className="glass border border-white/8 p-4 rounded-2xl flex flex-col items-center justify-center gap-1 select-none text-center">
+          <span className="text-[10px] font-black uppercase tracking-wider text-text-secondary">PROGRAM BELAJAR</span>
+          <span className="text-[9px] font-bold text-accent/80 leading-none">© {new Date().getFullYear()} Hondana</span>
+        </div>
+      </aside>
+    </>
   );
 }

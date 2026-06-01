@@ -3,7 +3,7 @@ import { generateQuestions } from '../../../lib/groq';
 
 export async function POST(request: Request) {
   try {
-    const { testType, category, difficulty, count } = await request.json();
+    const { testType, category, difficulty, count, aiProvider, customApiKey, aiModel, aiBaseUrl } = await request.json();
 
     if (!testType || !category || !difficulty || !count) {
       return NextResponse.json(
@@ -12,7 +12,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const questions = await generateQuestions(testType, category, difficulty, Number(count));
+    const questions = await generateQuestions(
+      testType,
+      category,
+      difficulty,
+      Number(count),
+      aiProvider,
+      customApiKey,
+      aiModel,
+      aiBaseUrl
+    );
     
     return NextResponse.json({ questions });
   } catch (error: any) {

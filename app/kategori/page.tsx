@@ -2,12 +2,35 @@
 
 import React, { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { motion } from 'framer-motion';
 import Header from '../../components/Header';
 import BottomNav from '../../components/BottomNav';
-import DifficultySelector from '../../components/DifficultySelector';
 import CategoryCard from '../../components/CategoryCard';
 import { useQuiz } from '../../context/QuizContext';
-import { Difficulty, TestType } from '../../lib/types';
+import { TestType } from '../../lib/types';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 15 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring" as const,
+      stiffness: 260,
+      damping: 22
+    }
+  }
+};
 
 function KategoriContent() {
   const router = useRouter();
@@ -16,7 +39,6 @@ function KategoriContent() {
   const type = rawType === 'TBI' ? 'TBI' : 'TPA';
 
   const { stats, settings, updateSettings, startSimulasi, startLatihan, loading } = useQuiz();
-  const [difficulty, setDifficulty] = useState<Difficulty>('sedang');
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const useAI = settings.useAI;
@@ -31,12 +53,12 @@ function KategoriContent() {
   };
 
   const handleStartSimulasi = async () => {
-    await startSimulasi(type, difficulty, useAI);
+    await startSimulasi(type, useAI);
     router.push('/quiz');
   };
 
   const handleStartLatihan = async (catKey: string) => {
-    await startLatihan(type, catKey, difficulty, latihanCount, useAI);
+    await startLatihan(type, catKey, latihanCount, useAI);
     router.push('/quiz');
   };
 
@@ -57,13 +79,8 @@ function KategoriContent() {
   ];
 
   const tbiCategories = [
-    { key: 'listening-short', label: 'Short Conversations', group: 'Listening Comprehension' },
-    { key: 'listening-long', label: 'Long Conversations', group: 'Listening Comprehension' },
-    { key: 'listening-talks', label: 'Talks & Lectures', group: 'Listening Comprehension' },
     { key: 'structure-completion', label: 'Sentence Completion', group: 'Structure & Written' },
-    { key: 'structure-error', label: 'Error Recognition', group: 'Structure & Written' },
-    { key: 'reading-comprehension', label: 'Passage Comprehension', group: 'Reading Comprehension' },
-    { key: 'reading-vocabulary', label: 'Vocabulary in Context', group: 'Reading Comprehension' }
+    { key: 'reading-comprehension', label: 'Passage Comprehension', group: 'Reading Comprehension' }
   ];
 
   const activeCategories = type === 'TPA' ? tpaCategories : tbiCategories;
@@ -75,43 +92,109 @@ function KategoriContent() {
     <>
       <Header title={`Modul ${type}`} showBack onBack={() => router.push('/')} />
 
-      <main className="flex-1 flex flex-col gap-6 px-4 py-6">
+      <motion.main
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6"
+      >
         {/* Loading Indicator Overlay */}
         {loading && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex flex-col items-center justify-center gap-3">
             <span className="text-4xl animate-spin">⏳</span>
-            <span className="text-sm font-bold text-accent animate-pulse">Menyiapkan Paket Soal AI Groq...</span>
+            <span className="text-sm font-bold text-accent animate-pulse">Menyiapkan Paket Soal AI...</span>
           </div>
         )}
 
         {/* Configurations Area */}
-        <section className="glass border border-white/8 p-5 flex flex-col gap-4 animate-float">
+        <motion.section variants={itemVariants} className="glass border border-white/8 p-5 flex flex-col gap-4">
           <div className="flex items-center justify-between border-b border-white/5 pb-2">
             <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary">
               Konfigurasi Latihan ({type})
             </h3>
           </div>
 
-          <DifficultySelector selected={difficulty} onChange={setDifficulty} />
-
-          {/* AI Mode Selector */}
-          <div className="flex items-center justify-between p-3 border border-white/6 bg-white/3 rounded-2xl">
-            <div className="flex flex-col">
-              <span className="text-sm font-bold">Gunakan Soal AI Groq (Llama 3.3)</span>
-              <span className="text-[10px] font-bold text-text-secondary">Soal dihasilkan cerdas oleh AI Groq</span>
+          <div className="flex flex-col gap-4">
+            {/* AI Mode Selector */}
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col">
+                <span className="text-sm font-bold">Gunakan Soal AI</span>
+                <span className="text-[10px] font-bold text-text-secondary leading-tight">
+                  Soal dihasilkan secara dinamis dan cerdas menggunakan AI
+                </span>
+              </div>
+              <button
+                onClick={() => setUseAI(!useAI)}
+                className={`relative inline-flex h-[31px] w-[51px] shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out outline-none min-h-0 min-w-0 [min-block-size:0] [min-inline-size:0] ${
+                  useAI ? 'bg-[#34C759]' : 'bg-[#E9E9EA] dark:bg-[#39393D]'
+                }`}
+                style={{ minBlockSize: 0, minInlineSize: 0 }}
+                aria-label="Toggle AI Mode"
+              >
+                <span
+                  className={`absolute top-[2px] left-[2px] block h-[27px] w-[27px] transform rounded-full bg-white shadow-[0_3px_8px_rgba(0,0,0,0.15),0_3px_1px_rgba(0,0,0,0.06)] transition-transform duration-200 ease-in-out ${
+                    useAI ? 'translate-x-[20px]' : 'translate-x-0'
+                  }`}
+                />
+              </button>
             </div>
-            <button
-              onClick={() => setUseAI(!useAI)}
-              className={`w-12 h-6 rounded-full p-1 transition-all cursor-pointer ${useAI ? 'bg-accent' : 'bg-white/10'}`}
-              aria-label="Toggle AI Mode"
-            >
-              <div className={`w-4 h-4 rounded-full bg-white transition-all ${useAI ? 'translate-x-6' : 'translate-x-0'}`} />
-            </button>
+
+            <div className="w-full h-px bg-[var(--border-badge)]" />
+
+            {/* Timer Toggle */}
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col">
+                <span className="text-sm font-bold">Batasan Waktu (Timer)</span>
+                <span className="text-[10px] font-bold text-text-secondary leading-tight">
+                  Aktifkan countdown penghitung waktu mundur per soal
+                </span>
+              </div>
+              <button
+                onClick={() => updateSettings({ timerEnabled: !settings.timerEnabled })}
+                className={`relative inline-flex h-[31px] w-[51px] shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out outline-none min-h-0 min-w-0 [min-block-size:0] [min-inline-size:0] ${
+                  settings.timerEnabled ? 'bg-[#34C759]' : 'bg-[#E9E9EA] dark:bg-[#39393D]'
+                }`}
+                style={{ minBlockSize: 0, minInlineSize: 0 }}
+                aria-label="Toggle Timer"
+              >
+                <span
+                  className={`absolute top-[2px] left-[2px] block h-[27px] w-[27px] transform rounded-full bg-white shadow-[0_3px_8px_rgba(0,0,0,0.15),0_3px_1px_rgba(0,0,0,0.06)] transition-transform duration-200 ease-in-out ${
+                    settings.timerEnabled ? 'translate-x-[20px]' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
+
+            <div className="w-full h-px bg-[var(--border-badge)]" />
+
+            {/* Sound Toggle */}
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col">
+                <span className="text-sm font-bold">Efek Suara Interaktif</span>
+                <span className="text-[10px] font-bold text-text-secondary leading-tight">
+                  Putar audio singkat ketika menjawab benar atau salah
+                </span>
+              </div>
+              <button
+                onClick={() => updateSettings({ soundEnabled: !settings.soundEnabled })}
+                className={`relative inline-flex h-[31px] w-[51px] shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out outline-none min-h-0 min-w-0 [min-block-size:0] [min-inline-size:0] ${
+                  settings.soundEnabled ? 'bg-[#34C759]' : 'bg-[#E9E9EA] dark:bg-[#39393D]'
+                }`}
+                style={{ minBlockSize: 0, minInlineSize: 0 }}
+                aria-label="Toggle Sound Effects"
+              >
+                <span
+                  className={`absolute top-[2px] left-[2px] block h-[27px] w-[27px] transform rounded-full bg-white shadow-[0_3px_8px_rgba(0,0,0,0.15),0_3px_1px_rgba(0,0,0,0.06)] transition-transform duration-200 ease-in-out ${
+                    settings.soundEnabled ? 'translate-x-[20px]' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
           </div>
-        </section>
+        </motion.section>
 
         {/* Simulasi Ujian Section */}
-        <section className="animate-float" style={{ animationDelay: '0.1s' }}>
+        <motion.section variants={itemVariants}>
           <div className="glass border border-accent/20 bg-accent/5 p-6 flex flex-col gap-4 glow-tpa">
             <div className="flex flex-col gap-1.5">
               <div className="flex items-center gap-2">
@@ -122,7 +205,7 @@ function KategoriContent() {
               </div>
               <h2 className="text-xl font-black tracking-tight">🎯 Sesi Simulasi Ujian</h2>
               <p className="text-xs font-semibold text-text-secondary leading-relaxed">
-                Ujian full paket terstandarisasi. {type === 'TPA' ? '60 soal TPA seimbang (Verbal, Numerik, Logika) selama 60 menit' : '50 soal TBI (Listening, Structure, Reading) selama 40 menit'}. Tanpa penalti nilai.
+                Ujian full paket terstandarisasi. {type === 'TPA' ? '60 soal TPA seimbang (Verbal, Numerik, Logika) selama 60 menit' : '50 soal TBI (Structure & Reading) selama 40 menit'}. Tanpa penalti nilai.
               </p>
             </div>
             <button
@@ -132,10 +215,10 @@ function KategoriContent() {
               <span>🚀 Mulai Simulasi Ujian</span>
             </button>
           </div>
-        </section>
+        </motion.section>
 
         {/* Latihan Per Kategori Section */}
-        <section className="flex flex-col gap-4 animate-float" style={{ animationDelay: '0.2s' }}>
+        <motion.section variants={itemVariants} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <h3 className="text-sm font-black uppercase tracking-wider text-text-secondary">
               📚 Latihan Per Kategori
@@ -172,8 +255,8 @@ function KategoriContent() {
                     .filter((c) => c.group === groupName)
                     .map((cat) => {
                       const stat = type === 'TPA' 
-                        ? stats.tpaStats[cat.key as keyof typeof stats.tpaStats]
-                        : stats.tbiStats[cat.key as keyof typeof stats.tbiStats];
+                        ? (stats?.tpaStats as any)?.[cat.key]
+                        : (stats?.tbiStats as any)?.[cat.key];
                         
                       const correct = stat ? stat.correct : 0;
                       const totalVal = stat ? stat.total : 0;
@@ -193,8 +276,8 @@ function KategoriContent() {
               </div>
             ))}
           </div>
-        </section>
-      </main>
+        </motion.section>
+      </motion.main>
 
       <BottomNav />
     </>

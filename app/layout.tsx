@@ -30,9 +30,9 @@ export default function RootLayout({
       lang="id"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-gray-950 text-white flex flex-col antialiased selection:bg-accent/20">
+      <body className="min-h-full bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-300 flex flex-col antialiased selection:bg-accent/20">
         <QuizProvider>
-          <div className="w-full max-w-[720px] mx-auto min-h-dvh flex flex-col relative pb-24">
+          <div className="w-full max-w-[720px] md:max-w-[960px] mx-auto min-h-dvh flex flex-col relative pb-24 md:pb-12">
             {children}
           </div>
         </QuizProvider>

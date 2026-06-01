@@ -11,7 +11,8 @@ import {
   SessionResult,
   UserStats,
   AppSettings,
-  SessionMode
+  SessionMode,
+  SavedSession
 } from '../lib/types';
 import { getTPAQuestions } from '../data/tpa-questions';
 import { getTBIQuestions } from '../data/tbi-questions';
@@ -22,29 +23,26 @@ interface QuizContextValue {
   stats: UserStats;
   settings: AppSettings;
   loading: boolean;
-  xpPopup: number | null;
-  showLevelUp: boolean;
-  oldLevel: number;
+  history: SavedSession[];
   
-  startSimulasi: (testType: TestType, difficulty: Difficulty, useAI: boolean) => Promise<void>;
-  startLatihan: (testType: TestType, category: string, difficulty: Difficulty, count: number, useAI: boolean) => Promise<void>;
-  submitAnswer: (answerIndex: number | null) => void;
+  startSimulasi: (testType: TestType, useAI: boolean) => Promise<void>;
+  startLatihan: (testType: TestType, category: string, count: number, useAI: boolean) => Promise<void>;
+  submitAnswer: (answerIndex: number | null, timeSpent?: number) => void;
   skipQuestion: () => void;
   nextQuestion: () => void;
+  toggleFlagQuestion: (index: number) => void;
+  jumpToQuestion: (index: number) => void;
   endQuiz: () => SessionResult;
   quitQuiz: () => void;
   updateSettings: (settings: Partial<AppSettings>) => void;
   resetStats: () => void;
-  dismissLevelUp: () => void;
+  loadSavedSession: (saved: SavedSession) => void;
+  deleteSavedSession: (id: string) => void;
 }
 
 const QuizContext = createContext<QuizContextValue | undefined>(undefined);
 
 const initialStats: UserStats = {
-  totalXP: 0,
-  level: 1,
-  bestStreak: 0,
-  currentStreak: 0,
   totalCorrect: 0,
   totalAnswered: 0,
   sessionsCompleted: 0,
@@ -77,7 +75,12 @@ const initialSettings: AppSettings = {
   latihanCount: 10,
   timerEnabled: true,
   useAI: false,
-  soundEnabled: true
+  soundEnabled: true,
+  theme: 'dark',
+  aiProvider: 'built-in',
+  customApiKey: '',
+  aiModel: 'llama-3.1-8b-instant',
+  aiBaseUrl: ''
 };
 
 // Shuffle helper
@@ -95,20 +98,31 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
   const [stats, setStats] = useLocalStorage<UserStats>('hondana_user_stats', initialStats);
   const [settings, setSettings] = useLocalStorage<AppSettings>('hondana_settings', initialSettings);
   const [loading, setLoading] = useState(false);
-  const [xpPopup, setXpPopup] = useState<number | null>(null);
-  const [showLevelUp, setShowLevelUp] = useState(false);
-  const [oldLevel, setOldLevel] = useState(1);
+  const [history, setHistory] = useLocalStorage<SavedSession[]>('hondana_session_history', []);
+
+  // Sync Theme preference with Document root
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (settings.theme === 'light') {
+      root.classList.add('light');
+      root.classList.remove('dark');
+      root.setAttribute('data-theme', 'light');
+    } else {
+      root.classList.add('dark');
+      root.classList.remove('light');
+      root.setAttribute('data-theme', 'dark');
+    }
+  }, [settings.theme]);
 
   // Helper to fetch offline questions
   const fetchOfflineQuestions = (
     testType: TestType,
     category: string | 'all',
-    difficulty: Difficulty,
     count: number
   ): Question[] => {
     if (testType === 'TPA') {
       const allTpa = getTPAQuestions();
-      // If Simulasi, pick 5 random per each of 12 categories
+      // If Simulasi, pick 5 random per each of 12 categories (balanced difficulty: 2 mudah, 1 sedang, 2 sulit)
       if (category === 'all') {
         const categories: TPACategory[] = [
           'verbal-sinonim', 'verbal-antonim', 'verbal-analogi', 'verbal-bacaan',
@@ -117,46 +131,102 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         ];
         let chosen: Question[] = [];
         categories.forEach((cat) => {
-          const matching = allTpa.filter((q) => q.category === cat && q.difficulty === difficulty);
-          const shuffled = shuffleArray(matching);
-          chosen = [...chosen, ...shuffled.slice(0, 5)];
+          const matching = allTpa.filter((q) => q.category === cat);
+          const mudah = matching.filter(q => q.difficulty === 'mudah');
+          const sedang = matching.filter(q => q.difficulty === 'sedang');
+          const sulit = matching.filter(q => q.difficulty === 'sulit');
+          
+          let catChosen = [
+            ...shuffleArray(mudah).slice(0, 2),
+            ...shuffleArray(sedang).slice(0, 1),
+            ...shuffleArray(sulit).slice(0, 2)
+          ];
+          
+          if (catChosen.length < 5) {
+            const remaining = matching.filter(q => !catChosen.some(x => x.id === q.id));
+            catChosen = [...catChosen, ...shuffleArray(remaining).slice(0, 5 - catChosen.length)];
+          }
+          chosen = [...chosen, ...catChosen];
         });
         return shuffleArray(chosen); // Final shuffle of balanced exam
       } else {
-        // Latihan mode: pick count from single category
-        const matching = allTpa.filter((q) => q.category === category && q.difficulty === difficulty);
-        return shuffleArray(matching).slice(0, count);
+        // Latihan mode: pick count from single category with balanced mix (40% mudah, 20% sedang, 40% sulit)
+        const matching = allTpa.filter((q) => q.category === category);
+        const mudah = matching.filter(q => q.difficulty === 'mudah');
+        const sedang = matching.filter(q => q.difficulty === 'sedang');
+        const sulit = matching.filter(q => q.difficulty === 'sulit');
+
+        const targetMudah = Math.floor(count * 0.4);
+        const targetSedang = Math.floor(count * 0.2);
+        const targetSulit = count - targetMudah - targetSedang;
+
+        let chosen = [
+          ...shuffleArray(mudah).slice(0, targetMudah),
+          ...shuffleArray(sedang).slice(0, targetSedang),
+          ...shuffleArray(sulit).slice(0, targetSulit)
+        ];
+
+        if (chosen.length < count) {
+          const remaining = matching.filter(q => !chosen.some(x => x.id === q.id));
+          chosen = [...chosen, ...shuffleArray(remaining).slice(0, count - chosen.length)];
+        }
+        return shuffleArray(chosen);
       }
     } else {
       const allTbi = getTBIQuestions();
-      // If Simulasi, pick balanced 50 questions per TOEFL structure:
-      // Short: 7, Long: 5, Talks: 5, Sentence: 8, Error: 8, Passage: 12, Vocab: 5 = 50 total
+      // If Simulasi, pick all 40 structure questions and 10 reading questions to form the 50-question exam
       if (category === 'all') {
-        const spec: { sub: TBICategory; qty: number }[] = [
-          { sub: 'listening-short', qty: 7 },
-          { sub: 'listening-long', qty: 5 },
-          { sub: 'listening-talks', qty: 5 },
-          { sub: 'structure-completion', qty: 8 },
-          { sub: 'structure-error', qty: 8 },
-          { sub: 'reading-comprehension', qty: 12 },
-          { sub: 'reading-vocabulary', qty: 5 }
+        const spec: { sub: TBICategory; qty: number; targetMudah: number; targetSedang: number; targetSulit: number }[] = [
+          { sub: 'structure-completion', qty: 40, targetMudah: 16, targetSedang: 8, targetSulit: 16 },
+          { sub: 'reading-comprehension', qty: 10, targetMudah: 4, targetSedang: 2, targetSulit: 4 }
         ];
         let chosen: Question[] = [];
-        spec.forEach(({ sub, qty }) => {
-          const matching = allTbi.filter((q) => q.category === sub && q.difficulty === difficulty);
-          const shuffled = shuffleArray(matching);
-          chosen = [...chosen, ...shuffled.slice(0, qty)];
+        spec.forEach(({ sub, qty, targetMudah, targetSedang, targetSulit }) => {
+          const matching = allTbi.filter((q) => q.category === sub);
+          const mudah = matching.filter(q => q.difficulty === 'mudah');
+          const sedang = matching.filter(q => q.difficulty === 'sedang');
+          const sulit = matching.filter(q => q.difficulty === 'sulit');
+
+          let subChosen = [
+            ...shuffleArray(mudah).slice(0, targetMudah),
+            ...shuffleArray(sedang).slice(0, targetSedang),
+            ...shuffleArray(sulit).slice(0, targetSulit)
+          ];
+
+          if (subChosen.length < qty) {
+            const remaining = matching.filter(q => !subChosen.some(x => x.id === q.id));
+            subChosen = [...subChosen, ...shuffleArray(remaining).slice(0, qty - subChosen.length)];
+          }
+          chosen = [...chosen, ...subChosen];
         });
         return shuffleArray(chosen);
       } else {
-        // Latihan mode: pick count from specific section
-        const matching = allTbi.filter((q) => q.category === category && q.difficulty === difficulty);
-        return shuffleArray(matching).slice(0, count);
+        // Latihan mode: pick count from specific section with balanced mix (40% mudah, 20% sedang, 40% sulit)
+        const matching = allTbi.filter((q) => q.category === category);
+        const mudah = matching.filter(q => q.difficulty === 'mudah');
+        const sedang = matching.filter(q => q.difficulty === 'sedang');
+        const sulit = matching.filter(q => q.difficulty === 'sulit');
+
+        const targetMudah = Math.floor(count * 0.4);
+        const targetSedang = Math.floor(count * 0.2);
+        const targetSulit = count - targetMudah - targetSedang;
+
+        let chosen = [
+          ...shuffleArray(mudah).slice(0, targetMudah),
+          ...shuffleArray(sedang).slice(0, targetSedang),
+          ...shuffleArray(sulit).slice(0, targetSulit)
+        ];
+
+        if (chosen.length < count) {
+          const remaining = matching.filter(q => !chosen.some(x => x.id === q.id));
+          chosen = [...chosen, ...shuffleArray(remaining).slice(0, count - chosen.length)];
+        }
+        return shuffleArray(chosen);
       }
     }
   };
 
-  const startSimulasi = async (testType: TestType, difficulty: Difficulty, useAI: boolean) => {
+  const startSimulasi = async (testType: TestType, useAI: boolean) => {
     setLoading(true);
     const count = testType === 'TPA' ? 60 : 50;
     
@@ -167,7 +237,15 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         const res = await fetch('/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ testType, category: 'all', difficulty, count })
+          body: JSON.stringify({
+            testType,
+            category: 'all',
+            difficulty: 'seimbang',
+            count,
+            aiProvider: settings.aiProvider,
+            customApiKey: settings.customApiKey,
+            aiModel: settings.aiModel
+          })
         });
         
         if (res.ok) {
@@ -177,34 +255,36 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
           throw new Error('AI Generation failed, falling back to local bank');
         }
       } else {
-        questions = fetchOfflineQuestions(testType, 'all', difficulty, count);
+        questions = fetchOfflineQuestions(testType, 'all', count);
       }
       
       setSession({
         testType,
         mode: 'simulasi',
         category: 'all',
-        difficulty,
+        difficulty: 'seimbang',
         questions,
         currentIndex: 0,
         answers: Array(questions.length).fill(null),
         timePerQuestion: Array(questions.length).fill(0),
+        flagged: Array(questions.length).fill(false),
         startTime: Date.now(),
         isComplete: false
       });
     } catch (e) {
       console.warn(e);
       // Fallback
-      const questions = fetchOfflineQuestions(testType, 'all', difficulty, count);
+      const questions = fetchOfflineQuestions(testType, 'all', count);
       setSession({
         testType,
         mode: 'simulasi',
         category: 'all',
-        difficulty,
+        difficulty: 'seimbang',
         questions,
         currentIndex: 0,
         answers: Array(questions.length).fill(null),
         timePerQuestion: Array(questions.length).fill(0),
+        flagged: Array(questions.length).fill(false),
         startTime: Date.now(),
         isComplete: false
       });
@@ -216,7 +296,6 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
   const startLatihan = async (
     testType: TestType,
     category: string,
-    difficulty: Difficulty,
     count: number,
     useAI: boolean
   ) => {
@@ -227,7 +306,15 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         const res = await fetch('/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ testType, category, difficulty, count })
+          body: JSON.stringify({
+            testType,
+            category,
+            difficulty: 'seimbang',
+            count,
+            aiProvider: settings.aiProvider,
+            customApiKey: settings.customApiKey,
+            aiModel: settings.aiModel
+          })
         });
         if (res.ok) {
           const data = await res.json();
@@ -236,33 +323,35 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
           throw new Error('AI Generation failed, falling back to local bank');
         }
       } else {
-        questions = fetchOfflineQuestions(testType, category, difficulty, count);
+        questions = fetchOfflineQuestions(testType, category, count);
       }
       
       setSession({
         testType,
         mode: 'latihan',
         category,
-        difficulty,
+        difficulty: 'seimbang',
         questions,
         currentIndex: 0,
         answers: Array(questions.length).fill(null),
         timePerQuestion: Array(questions.length).fill(0),
+        flagged: Array(questions.length).fill(false),
         startTime: Date.now(),
         isComplete: false
       });
     } catch (e) {
       console.warn(e);
-      const questions = fetchOfflineQuestions(testType, category, difficulty, count);
+      const questions = fetchOfflineQuestions(testType, category, count);
       setSession({
         testType,
         mode: 'latihan',
         category,
-        difficulty,
+        difficulty: 'seimbang',
         questions,
         currentIndex: 0,
         answers: Array(questions.length).fill(null),
         timePerQuestion: Array(questions.length).fill(0),
+        flagged: Array(questions.length).fill(false),
         startTime: Date.now(),
         isComplete: false
       });
@@ -271,108 +360,83 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const submitAnswer = (answerIndex: number | null) => {
+  const submitAnswer = (answerIndex: number | null, timeSpent?: number) => {
     if (!session || session.isComplete) return;
 
     const currentIndex = session.currentIndex;
     const currentQuestion = session.questions[currentIndex];
-    
-    // Update session answers
+    const isCorrect = answerIndex === currentQuestion.correctAnswer;
+
+    const prevAnswer = session.answers[currentIndex];
+    const hasBeenAnswered = prevAnswer !== null;
+    const wasCorrect = prevAnswer === currentQuestion.correctAnswer;
+
+    // 1. Update the session state immutably
     const nextAnswers = [...session.answers];
     nextAnswers[currentIndex] = answerIndex;
 
-    const isCorrect = answerIndex === currentQuestion.correctAnswer;
-
-    // Calculate XP
-    let xpGained = 0;
-    if (isCorrect) {
-      const difficultyXP = session.difficulty === 'mudah' ? 10 : session.difficulty === 'sedang' ? 20 : 30;
-      xpGained += difficultyXP;
-
-      // Streak logic
-      const newStreak = stats.currentStreak + 1;
-      const streakBonus = Math.floor(newStreak / 3) * 5; // +5 per 3 consecutive correct
-      xpGained += streakBonus;
-
-      setXpPopup(xpGained);
-      setTimeout(() => setXpPopup(null), 1500);
-
-      // Trigger stats update
-      setStats((prev) => {
-        const nextStreak = prev.currentStreak + 1;
-        const nextBest = Math.max(prev.bestStreak, nextStreak);
-        const nextXP = prev.totalXP + xpGained;
-        
-        // Level up formula: every 500 XP = 1 Level
-        const nextLevel = Math.floor(nextXP / 500) + 1;
-        if (nextLevel > prev.level) {
-          setOldLevel(prev.level);
-          setShowLevelUp(true);
-        }
-
-        // Update category-specific stats
-        const tpaStats = { ...prev.tpaStats };
-        const tbiStats = { ...prev.tbiStats };
-
-        if (session.testType === 'TPA') {
-          const cat = currentQuestion.category as TPACategory;
-          tpaStats[cat] = {
-            correct: tpaStats[cat].correct + 1,
-            total: tpaStats[cat].total + 1
-          };
-        } else {
-          const cat = currentQuestion.category as TBICategory;
-          tbiStats[cat] = {
-            correct: tbiStats[cat].correct + 1,
-            total: tbiStats[cat].total + 1
-          };
-        }
-
-        return {
-          ...prev,
-          totalXP: nextXP,
-          level: nextLevel,
-          currentStreak: nextStreak,
-          bestStreak: nextBest,
-          totalCorrect: prev.totalCorrect + 1,
-          totalAnswered: prev.totalAnswered + 1,
-          tpaStats,
-          tbiStats
-        };
-      });
-    } else {
-      // Wrong or skipped
-      setStats((prev) => {
-        const tpaStats = { ...prev.tpaStats };
-        const tbiStats = { ...prev.tbiStats };
-
-        if (session.testType === 'TPA') {
-          const cat = currentQuestion.category as TPACategory;
-          tpaStats[cat] = {
-            ...tpaStats[cat],
-            total: tpaStats[cat].total + 1
-          };
-        } else {
-          const cat = currentQuestion.category as TBICategory;
-          tbiStats[cat] = {
-            ...tbiStats[cat],
-            total: tbiStats[cat].total + 1
-          };
-        }
-
-        return {
-          ...prev,
-          currentStreak: 0,
-          totalAnswered: prev.totalAnswered + 1,
-          tpaStats,
-          tbiStats
-        };
-      });
+    const nextTimePerQuestion = [...session.timePerQuestion];
+    if (typeof timeSpent === 'number') {
+      nextTimePerQuestion[currentIndex] = timeSpent;
     }
 
     setSession({
       ...session,
-      answers: nextAnswers
+      answers: nextAnswers,
+      timePerQuestion: nextTimePerQuestion
+    });
+
+    // 2. Update user stats outside session state updater
+    setStats((prev) => {
+      const currentStats = prev || initialStats;
+
+      // Update category-specific stats safely
+      const tpaStats = { ...initialStats.tpaStats, ...currentStats.tpaStats };
+      const tbiStats = { ...initialStats.tbiStats, ...currentStats.tbiStats };
+
+      let correctDiff = 0;
+      let answeredDiff = 0;
+
+      if (!hasBeenAnswered) {
+        // First time answering this question in the session
+        answeredDiff = 1;
+        if (isCorrect) {
+          correctDiff = 1;
+        }
+      } else {
+        // Recorrecting an already answered question
+        if (wasCorrect && !isCorrect) {
+          correctDiff = -1;
+        } else if (!wasCorrect && isCorrect) {
+          correctDiff = 1;
+        }
+      }
+
+      if (session.testType === 'TPA') {
+        const cat = currentQuestion.category as TPACategory;
+        if (tpaStats[cat]) {
+          tpaStats[cat] = {
+            correct: Math.max(0, (tpaStats[cat].correct || 0) + correctDiff),
+            total: (tpaStats[cat].total || 0) + answeredDiff
+          };
+        }
+      } else {
+        const cat = currentQuestion.category as TBICategory;
+        if (tbiStats[cat]) {
+          tbiStats[cat] = {
+            correct: Math.max(0, (tbiStats[cat].correct || 0) + correctDiff),
+            total: (tbiStats[cat].total || 0) + answeredDiff
+          };
+        }
+      }
+
+      return {
+        ...currentStats,
+        totalCorrect: Math.max(0, (currentStats.totalCorrect || 0) + correctDiff),
+        totalAnswered: (currentStats.totalAnswered || 0) + answeredDiff,
+        tpaStats,
+        tbiStats
+      };
     });
   };
 
@@ -381,21 +445,45 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
   };
 
   const nextQuestion = () => {
-    if (!session) return;
-    const nextIndex = session.currentIndex + 1;
-    if (nextIndex >= session.questions.length) {
-      endQuiz();
-    } else {
-      setSession({
-        ...session,
+    setSession((prevSession) => {
+      if (!prevSession) return null;
+      const nextIndex = prevSession.currentIndex + 1;
+      if (nextIndex >= prevSession.questions.length) {
+        return prevSession;
+      }
+      return {
+        ...prevSession,
         currentIndex: nextIndex
-      });
-    }
+      };
+    });
+  };
+
+  const toggleFlagQuestion = (index: number) => {
+    setSession((prevSession) => {
+      if (!prevSession) return null;
+      const nextFlagged = prevSession.flagged ? [...prevSession.flagged] : Array(prevSession.questions.length).fill(false);
+      nextFlagged[index] = !nextFlagged[index];
+      return {
+        ...prevSession,
+        flagged: nextFlagged
+      };
+    });
+  };
+
+  const jumpToQuestion = (index: number) => {
+    setSession((prevSession) => {
+      if (!prevSession) return null;
+      if (index < 0 || index >= prevSession.questions.length) return prevSession;
+      return {
+        ...prevSession,
+        currentIndex: index
+      };
+    });
   };
 
   const endQuiz = (): SessionResult => {
     if (!session) {
-      return { correct: 0, wrong: 0, skipped: 0, total: 0, score: 0, accuracy: 0, totalTime: 0, avgTimePerQuestion: 0, xpEarned: 0 };
+      return { correct: 0, wrong: 0, skipped: 0, total: 0, score: 0, accuracy: 0, totalTime: 0, avgTimePerQuestion: 0 };
     }
 
     let correct = 0;
@@ -418,22 +506,34 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     const totalTime = Math.floor((Date.now() - session.startTime) / 1000);
     const avgTimePerQuestion = total > 0 ? totalTime / total : 0;
     
-    // Final session finish XP bonus
-    const finishBonus = 50;
-    setStats((prev) => {
-      const nextXP = prev.totalXP + finishBonus;
-      const nextLevel = Math.floor(nextXP / 500) + 1;
-      if (nextLevel > prev.level) {
-        setOldLevel(prev.level);
-        setShowLevelUp(true);
-      }
-      return {
-        ...prev,
-        totalXP: nextXP,
-        level: nextLevel,
-        sessionsCompleted: prev.sessionsCompleted + 1
+    // Save to history and update stats only if this is a newly completed session (not loaded from history)
+    if (!session.isComplete) {
+      setStats((prev) => {
+        return {
+          ...prev,
+          sessionsCompleted: (prev?.sessionsCompleted || 0) + 1
+        };
+      });
+
+      const newSavedSession: SavedSession = {
+        id: `session-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+        timestamp: Date.now(),
+        testType: session.testType,
+        mode: session.mode,
+        category: session.category,
+        difficulty: session.difficulty,
+        questions: session.questions,
+        answers: session.answers,
+        timePerQuestion: session.timePerQuestion,
+        flagged: session.flagged || Array(total).fill(false),
+        correctCount: correct,
+        totalQuestions: total,
+        duration: totalTime,
+        accuracy: accuracy
       };
-    });
+
+      setHistory((prev) => [newSavedSession, ...prev]);
+    }
 
     setSession({
       ...session,
@@ -448,9 +548,28 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       score,
       accuracy,
       totalTime,
-      avgTimePerQuestion,
-      xpEarned: finishBonus
+      avgTimePerQuestion
     };
+  };
+
+  const loadSavedSession = (saved: SavedSession) => {
+    setSession({
+      testType: saved.testType,
+      mode: saved.mode,
+      category: saved.category,
+      difficulty: saved.difficulty || 'seimbang',
+      questions: saved.questions,
+      currentIndex: 0,
+      answers: saved.answers,
+      timePerQuestion: saved.timePerQuestion,
+      flagged: saved.flagged || Array(saved.questions.length).fill(false),
+      startTime: Date.now() - (saved.duration * 1000), // mock starting time based on saved duration
+      isComplete: true
+    });
+  };
+
+  const deleteSavedSession = (id: string) => {
+    setHistory((prev) => prev.filter((s) => s.id !== id));
   };
 
   const quitQuiz = () => {
@@ -465,10 +584,6 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     setStats(initialStats);
   };
 
-  const dismissLevelUp = () => {
-    setShowLevelUp(false);
-  };
-
   return (
     <QuizContext.Provider
       value={{
@@ -476,19 +591,20 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         stats,
         settings,
         loading,
-        xpPopup,
-        showLevelUp,
-        oldLevel,
+        history,
         startSimulasi,
         startLatihan,
         submitAnswer,
         skipQuestion,
         nextQuestion,
+        toggleFlagQuestion,
+        jumpToQuestion,
         endQuiz,
         quitQuiz,
         updateSettings,
         resetStats,
-        dismissLevelUp
+        loadSavedSession,
+        deleteSavedSession
       }}
     >
       {children}
