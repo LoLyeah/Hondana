@@ -30,6 +30,9 @@ export default function Quiz() {
   const [timeUsed, setTimeUsed] = useState(0);
   const [showGrid, setShowGrid] = useState(false);
 
+  // Reference to hold transition timeout ID to prevent duplicate fires (e.g. from rapid double-clicks)
+  const advanceTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
   // If no session active, redirect back home
   useEffect(() => {
     if (!session) {
@@ -71,6 +74,13 @@ export default function Quiz() {
       setSelectedOption(answeredIdx !== null ? answeredIdx : null);
       setIsAnswered(answeredIdx !== null);
       setTimeUsed(0);
+
+      // Clear any pending transition timeout from the previous question
+      if (advanceTimeoutRef.current) {
+        clearTimeout(advanceTimeoutRef.current);
+        advanceTimeoutRef.current = null;
+      }
+
       if (currentQuestion) {
         resetTimer(currentQuestion.timeLimit);
       }
@@ -95,9 +105,15 @@ export default function Quiz() {
       } catch (e) {}
     }
 
+    // Clear any existing advance timeout to prevent duplicate triggers
+    if (advanceTimeoutRef.current) {
+      clearTimeout(advanceTimeoutRef.current);
+    }
+
     // Go directly to next question after a brief delay so they don't have to click next manually
-    setTimeout(() => {
+    advanceTimeoutRef.current = setTimeout(() => {
       handleNext();
+      advanceTimeoutRef.current = null;
     }, 800);
   };
 
@@ -115,6 +131,17 @@ export default function Quiz() {
     if (window.confirm('Apakah Anda yakin ingin mengakhiri sesi kuis ini? Progress latihan ini tidak akan disimpan.')) {
       quitQuiz();
       router.push('/');
+    }
+  };
+
+  const handleCompleteQuiz = () => {
+    if (window.confirm('Apakah Anda yakin ingin menyelesaikan sesi kuis ini dan melihat hasil?')) {
+      if (advanceTimeoutRef.current) {
+        clearTimeout(advanceTimeoutRef.current);
+        advanceTimeoutRef.current = null;
+      }
+      endQuiz();
+      router.push('/hasil');
     }
   };
 
@@ -245,16 +272,23 @@ export default function Quiz() {
           </span>
         </button>
 
-        {/* Next Button (only if not on the last question) */}
-        {session.currentIndex + 1 < session.questions.length && (
+        {/* Next Button or Selesaikan Sesi Button */}
+        {session.currentIndex + 1 < session.questions.length ? (
           <button
             onClick={() => jumpToQuestion(session.currentIndex + 1)}
-            className="px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 text-text-primary"
+            className="px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 text-text-primary flex items-center justify-center gap-1"
           >
             <span>Selanjutnya</span>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
+          </button>
+        ) : (
+          <button
+            onClick={handleCompleteQuiz}
+            className="px-4 py-2.5 bg-success hover:bg-success-hover text-white rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-md shadow-success/15 flex items-center justify-center gap-1"
+          >
+            <span>🏁 Selesaikan Sesi</span>
           </button>
         )}
       </footer>
@@ -353,6 +387,14 @@ export default function Quiz() {
                   <span>Belum Dijawab</span>
                 </div>
               </div>
+
+              {/* Complete Sesi Button in Drawer */}
+              <button
+                onClick={handleCompleteQuiz}
+                className="w-full py-3.5 bg-success hover:bg-success-hover text-white text-xs font-black rounded-2xl cursor-pointer transition-all active:scale-[0.98] outline-none flex items-center justify-center gap-1.5 mt-1.5 shadow-md shadow-success/15"
+              >
+                <span>🏁 Selesaikan Sesi Kuis</span>
+              </button>
             </motion.div>
           </>
         )}

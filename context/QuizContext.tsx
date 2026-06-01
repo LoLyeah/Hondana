@@ -95,6 +95,13 @@ function shuffleArray<T>(array: T[]): T[] {
 
 export function QuizProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<QuizSession | null>(null);
+  
+  // sessionRef maintains an up-to-date reference to prevent React stale closure issues in async callbacks
+  const sessionRef = React.useRef(session);
+  useEffect(() => {
+    sessionRef.current = session;
+  }, [session]);
+
   const [stats, setStats] = useLocalStorage<UserStats>('hondana_user_stats', initialStats);
   const [settings, setSettings] = useLocalStorage<AppSettings>('hondana_settings', initialSettings);
   const [loading, setLoading] = useState(false);
@@ -482,7 +489,8 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
   };
 
   const endQuiz = (): SessionResult => {
-    if (!session) {
+    const currentSession = sessionRef.current;
+    if (!currentSession) {
       return { correct: 0, wrong: 0, skipped: 0, total: 0, score: 0, accuracy: 0, totalTime: 0, avgTimePerQuestion: 0 };
     }
 
@@ -490,24 +498,24 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     let wrong = 0;
     let skipped = 0;
 
-    session.answers.forEach((ans, idx) => {
+    currentSession.answers.forEach((ans, idx) => {
       if (ans === null) {
         skipped++;
-      } else if (ans === session.questions[idx].correctAnswer) {
+      } else if (ans === currentSession.questions[idx].correctAnswer) {
         correct++;
       } else {
         wrong++;
       }
     });
 
-    const total = session.questions.length;
+    const total = currentSession.questions.length;
     const score = correct; // No penalty scoring per BAPPENAS
     const accuracy = total > 0 ? (correct / total) * 100 : 0;
-    const totalTime = Math.floor((Date.now() - session.startTime) / 1000);
+    const totalTime = Math.floor((Date.now() - currentSession.startTime) / 1000);
     const avgTimePerQuestion = total > 0 ? totalTime / total : 0;
     
     // Save to history and update stats only if this is a newly completed session (not loaded from history)
-    if (!session.isComplete) {
+    if (!currentSession.isComplete) {
       setStats((prev) => {
         return {
           ...prev,
@@ -518,14 +526,14 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       const newSavedSession: SavedSession = {
         id: `session-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
         timestamp: Date.now(),
-        testType: session.testType,
-        mode: session.mode,
-        category: session.category,
-        difficulty: session.difficulty,
-        questions: session.questions,
-        answers: session.answers,
-        timePerQuestion: session.timePerQuestion,
-        flagged: session.flagged || Array(total).fill(false),
+        testType: currentSession.testType,
+        mode: currentSession.mode,
+        category: currentSession.category,
+        difficulty: currentSession.difficulty,
+        questions: currentSession.questions,
+        answers: currentSession.answers,
+        timePerQuestion: currentSession.timePerQuestion,
+        flagged: currentSession.flagged || Array(total).fill(false),
         correctCount: correct,
         totalQuestions: total,
         duration: totalTime,
@@ -536,8 +544,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     }
 
     setSession({
-      ...session,
-      isComplete: true
+      ...currentSession,
+      isComplete: true,
+      duration: totalTime
     });
 
     return {
@@ -564,7 +573,8 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       timePerQuestion: saved.timePerQuestion,
       flagged: saved.flagged || Array(saved.questions.length).fill(false),
       startTime: Date.now() - (saved.duration * 1000), // mock starting time based on saved duration
-      isComplete: true
+      isComplete: true,
+      duration: saved.duration
     });
   };
 

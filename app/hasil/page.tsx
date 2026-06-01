@@ -56,7 +56,7 @@ export default function Hasil() {
         });
         const total = session.questions.length;
         const accuracy = total > 0 ? (correct / total) * 100 : 0;
-        const totalTime = session.timePerQuestion ? session.timePerQuestion.reduce((a, b) => a + b, 0) : 0;
+        const totalTime = session.duration !== undefined ? session.duration : Math.floor((Date.now() - session.startTime) / 1000);
         const avgTimePerQuestion = total > 0 ? totalTime / total : 0;
         
         setResult({

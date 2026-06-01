@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import Header from '../../components/Header';
 import ProgressBar from '../../components/ProgressBar';
 import QuizOption from '../../components/QuizOption';
@@ -14,6 +15,7 @@ export default function Pembahasan() {
   const router = useRouter();
   const { session } = useQuiz();
   const [reviewIndex, setReviewIndex] = useState(0);
+  const [showGrid, setShowGrid] = useState(false);
 
   // If no session active or not complete, redirect to home
   useEffect(() => {
@@ -144,33 +146,152 @@ export default function Pembahasan() {
           </p>
         </div>
 
-        {/* Navigation Bar */}
-        <div className="flex items-center gap-3 mt-4">
-          <button
-            onClick={handlePrev}
-            disabled={isFirst}
-            className={`flex-1 py-3.5 border rounded-2xl text-xs font-black transition-all active:scale-[0.98] outline-none ${
-              isFirst 
-                ? 'border-white/5 bg-transparent text-text-secondary/40 cursor-not-allowed'
-                : 'border-white/8 bg-white/5 hover:bg-white/10 text-text-primary cursor-pointer'
-            }`}
-          >
-            Sebelumnya
-          </button>
-
-          <button
-            onClick={handleNext}
-            className="flex-1 py-3.5 bg-accent hover:bg-accent-hover text-white text-xs font-black rounded-2xl cursor-pointer transition-all active:scale-[0.98] outline-none flex items-center justify-center gap-1.5"
-          >
-            <span>{isLast ? 'Selesai Review' : 'Selanjutnya'}</span>
-            {!isLast && (
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
-            )}
-          </button>
-        </div>
       </main>
+
+      {/* Review Navigation Controller (Sticky Bottom Control Bar) */}
+      <footer className="sticky bottom-0 left-0 right-0 z-30 bg-gray-950/80 backdrop-blur-md border-t border-white/5 px-4 py-3 flex items-center justify-between gap-3 w-full max-w-[720px] mx-auto">
+        {/* Prev Button */}
+        <button
+          onClick={handlePrev}
+          disabled={isFirst}
+          className="px-4 py-2.5 bg-white/5 hover:bg-white/10 disabled:opacity-40 disabled:hover:bg-white/5 border border-white/5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed active:scale-95 text-text-primary"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+          </svg>
+          <span>Sebelumnya</span>
+        </button>
+
+        {/* Daftar Soal Button */}
+        <button
+          onClick={() => setShowGrid(!showGrid)}
+          className="px-4 py-2.5 bg-accent/10 border border-accent/20 hover:bg-accent/25 text-accent rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+        >
+          <span>📋 Daftar Soal Review</span>
+          <span className="bg-accent text-white px-1.5 py-0.5 rounded-md text-[9px] font-black leading-none">
+            {session.answers.filter((ans, i) => ans === session.questions[i].correctAnswer).length}/{session.questions.length}
+          </span>
+        </button>
+
+        {/* Next Button */}
+        <button
+          onClick={handleNext}
+          className="px-4 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-md flex items-center justify-center gap-1"
+        >
+          <span>{isLast ? 'Selesai' : 'Selanjutnya'}</span>
+          {!isLast && (
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          )}
+        </button>
+      </footer>
+
+      {/* Collapsible Question Grid Drawer */}
+      <AnimatePresence>
+        {showGrid && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowGrid(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 cursor-pointer"
+            />
+
+            {/* Slide-up Drawer Container */}
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 220 }}
+              className="fixed bottom-0 left-0 right-0 z-50 bg-gray-950/95 border-t border-white/8 backdrop-blur-xl rounded-t-[32px] p-6 max-w-[720px] mx-auto w-full max-h-[70vh] overflow-y-auto flex flex-col gap-5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-white/5">
+                <div className="flex flex-col text-left">
+                  <h3 className="text-sm font-black uppercase tracking-wider text-text-primary">
+                    Daftar Soal Review
+                  </h3>
+                  <span className="text-[10px] font-bold text-text-secondary">
+                    Pilih nomor soal untuk langsung melompat ke pembahasan soal tersebut.
+                  </span>
+                </div>
+                <button
+                  onClick={() => setShowGrid(false)}
+                  className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-text-secondary flex items-center justify-center cursor-pointer outline-none min-h-0 min-w-0"
+                  style={{ minBlockSize: 0, minInlineSize: 0 }}
+                  aria-label="Tutup Daftar Soal Review"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Grid of numbers */}
+              <div className="grid grid-cols-5 sm:grid-cols-8 gap-2.5 my-2">
+                {session.questions.map((q, idx) => {
+                  const isCurrent = idx === reviewIndex;
+                  const userAns = session.answers[idx];
+                  const isCorr = userAns === q.correctAnswer;
+
+                  let style = 'bg-white/5 border-white/5 text-text-secondary hover:bg-white/10 hover:text-text-primary';
+                  let symbol = '';
+
+                  if (isCurrent) {
+                    style = 'bg-accent text-white border-accent shadow-[0_0_15px_rgba(95,99,242,0.3)] scale-105';
+                  } else if (userAns === null) {
+                    style = 'bg-white/5 border-white/5 text-text-secondary hover:bg-white/10 hover:text-text-primary';
+                    symbol = '⚪';
+                  } else if (isCorr) {
+                    style = 'bg-success/15 text-success border-success/25 hover:bg-success/25';
+                    symbol = '✅';
+                  } else {
+                    style = 'bg-error/15 text-error border-error/25 hover:bg-error/25';
+                    symbol = '❌';
+                  }
+
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setReviewIndex(idx);
+                        setShowGrid(false);
+                      }}
+                      className={`w-full aspect-square rounded-xl flex flex-col items-center justify-center font-black text-xs border transition-all duration-200 active:scale-90 cursor-pointer ${style}`}
+                    >
+                      <span>{idx + 1}</span>
+                      {symbol && <span className="text-[8px] mt-0.5">{symbol}</span>}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Legend info */}
+              <div className="flex items-center flex-wrap gap-4 text-[10px] font-bold text-text-secondary bg-white/3 p-3.5 rounded-2xl border border-white/5 mt-2">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded bg-accent" />
+                  <span>Aktif</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded bg-success/15 border border-success/25" />
+                  <span>Jawaban Benar (✅)</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded bg-error/15 border border-error/25" />
+                  <span>Jawaban Salah (❌)</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-3 rounded bg-white/5 border border-white/5" />
+                  <span>Dilewati (⚪)</span>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }

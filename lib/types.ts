@@ -70,6 +70,7 @@ export interface QuizSession {
   flagged: boolean[];
   startTime: number;
   isComplete: boolean;
+  duration?: number;
 }
 
 export interface SavedSession {
