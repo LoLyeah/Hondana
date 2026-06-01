@@ -92,8 +92,8 @@ function shuffleArray<T>(array: T[]): T[] {
 
 export function QuizProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<QuizSession | null>(null);
-  const [stats, setStats] = useLocalStorage<UserStats>('smartprep_user_stats', initialStats);
-  const [settings, setSettings] = useLocalStorage<AppSettings>('smartprep_settings', initialSettings);
+  const [stats, setStats] = useLocalStorage<UserStats>('hondana_user_stats', initialStats);
+  const [settings, setSettings] = useLocalStorage<AppSettings>('hondana_settings', initialSettings);
   const [loading, setLoading] = useState(false);
   const [xpPopup, setXpPopup] = useState<number | null>(null);
   const [showLevelUp, setShowLevelUp] = useState(false);

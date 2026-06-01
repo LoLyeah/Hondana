@@ -14,10 +14,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SmartPrep — Latihan Soal TPA & TBI Seleksi Kerja",
+  title: "Hondana — Latihan Soal TPA & TBI Seleksi Kerja",
   description: "Aplikasi latihan ujian TPA (Tes Potensi Akademik) dan TBI (Tes Bahasa Inggris / TOEFL) interaktif dengan analisis AI Groq untuk kelulusan BUMN, CPNS, dan seleksi kerja.",
   keywords: ["TPA", "TBI", "TOEFL ITP", "CPNS", "BUMN", "Seleksi Kerja", "Ujian", "Latihan Soal"],
-  authors: [{ name: "SmartPrep Team" }],
+  authors: [{ name: "Hondana Team" }],
 };
 
 export default function RootLayout({

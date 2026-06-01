@@ -126,7 +126,7 @@ export default function Pengaturan() {
 
         {/* About App Info */}
         <section className="flex flex-col items-center gap-1 mt-4 text-center select-none animate-float" style={{ animationDelay: '0.2s' }}>
-          <span className="text-xs font-black tracking-widest text-text-secondary/50">SMARTPREP V1.0.0</span>
+          <span className="text-xs font-black tracking-widest text-text-secondary/50">HONDANA V1.0.0</span>
           <span className="text-[10px] font-bold text-text-secondary/30">PREPARED BY GOOGLE DEEPMIND ANTIGRAVITY</span>
         </section>
       </main>
