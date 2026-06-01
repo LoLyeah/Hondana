@@ -18,13 +18,19 @@ export default function Pembahasan() {
   const [reviewIndex, setReviewIndex] = useState(0);
   const [showGrid, setShowGrid] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // If no session active or not complete, redirect to home
+  // Mark hydration/mounting as complete
   useEffect(() => {
-    if (!session || !session.isComplete) {
+    setMounted(true);
+  }, []);
+
+  // If no session active or not complete, redirect to home (only after client mount is complete)
+  useEffect(() => {
+    if (mounted && (!session || !session.isComplete)) {
       router.replace('/');
     }
-  }, [session, router]);
+  }, [session, router, mounted]);
 
   const currentQuestion = session?.questions[reviewIndex];
 
@@ -95,7 +101,7 @@ export default function Pembahasan() {
     }
   }, !showGrid && !showShortcuts && !!session && !!currentQuestion);
 
-  if (!session || !currentQuestion) return null;
+  if (!mounted || !session || !currentQuestion) return null;
 
   const isFirst = reviewIndex === 0;
   const isLast = session ? reviewIndex + 1 === session.questions.length : false;

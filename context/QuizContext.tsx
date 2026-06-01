@@ -97,7 +97,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export function QuizProvider({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<QuizSession | null>(null);
+  const [session, setSession] = useLocalStorage<QuizSession | null>('hondana_active_session', null);
   
   // sessionRef maintains an up-to-date reference to prevent React stale closure issues in async callbacks
   const sessionRef = React.useRef(session);

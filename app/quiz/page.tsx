@@ -31,16 +31,22 @@ export default function Quiz() {
   const [timeUsed, setTimeUsed] = useState(0);
   const [showGrid, setShowGrid] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // Reference to hold transition timeout ID to prevent duplicate fires (e.g. from rapid double-clicks)
   const advanceTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  // If no session active, redirect back home
+  // Mark hydration/mounting as complete
   useEffect(() => {
-    if (!session) {
+    setMounted(true);
+  }, []);
+
+  // If no session active, redirect back home (only after client mount is complete)
+  useEffect(() => {
+    if (mounted && !session) {
       router.replace('/');
     }
-  }, [session, router]);
+  }, [session, router, mounted]);
 
   const currentQuestion = session?.questions[session.currentIndex];
 
@@ -207,7 +213,7 @@ export default function Quiz() {
     }
   }, !showGrid && !showShortcuts && !!session && !!currentQuestion);
 
-  if (!session || !currentQuestion) return null;
+  if (!mounted || !session || !currentQuestion) return null;
 
   return (
     <div className="w-full max-w-[720px] mx-auto flex flex-col flex-1 relative">
