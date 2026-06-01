@@ -39,6 +39,14 @@ export default function Pengaturan() {
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  if (!mounted) {
+    return (
+      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
+        <span className="text-4xl animate-spin">⏳</span>
+      </div>
+    );
+  }
   
   // Pre-generate cache state
   const [pregenLoading, setPregenLoading] = React.useState<string | null>(null); // key currently generating
@@ -222,18 +230,6 @@ export default function Pengaturan() {
     }
     return [];
   };
-
-  if (!mounted) {
-    return (
-      <>
-        <Header title="Pengaturan" />
-        <div className="flex-1 flex items-center justify-center min-h-[50vh] md:pl-60">
-          <span className="text-4xl animate-spin">⏳</span>
-        </div>
-        <BottomNav />
-      </>
-    );
-  }
 
   return (
     <>
