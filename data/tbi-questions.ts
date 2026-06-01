@@ -1823,8 +1823,918 @@ const baseQuestions: Question[] = [
     correctAnswer: 1,
     explanation: 'Kata "awed" berarti membuat takjub atau terpesona. Oleh karena itu, makna terdekatnya adalah "amazed" (takjub/terperangah kagum).',
     timeLimit: 90
-  }
-];
+  },
+  // ─── NEW SET (101 TO 150) ───
+  // 101. Tenses (easy)
+  {
+    id: 'tbi-sc-101',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'mudah',
+    question: 'By the time the archeologist discovered the hidden tomb, tomb raiders _________ most of the gold artifacts.',
+    options: [
+      'had already stolen',
+      'stole',
+      'have stolen',
+      'steal',
+      'were stealing'
+    ],
+    correctAnswer: 0,
+    explanation: 'Keterangan waktu "By the time" diikuti dengan simple past ("discovered") menunjukkan peristiwa yang selesai sebelum peristiwa past lainnya terjadi. Hal ini membutuhkan past perfect tense ("had already stolen").',
+    timeLimit: 30
+  },
+  // 102. Tenses (easy)
+  {
+    id: 'tbi-sc-102',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'mudah',
+    question: 'By the end of this month, the construction crew _________ the main framework of the new university library.',
+    options: [
+      'will have completed',
+      'will complete',
+      'has completed',
+      'completes',
+      'is completing'
+    ],
+    correctAnswer: 0,
+    explanation: 'Keterangan waktu "By the end of this month" menunjukkan peristiwa yang akan sudah selesai di masa depan pada waktu tertentu, sehingga membutuhkan future perfect tense ("will have completed").',
+    timeLimit: 30
+  },
+  // 103. Tenses (medium)
+  {
+    id: 'tbi-sc-103',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'Marine biologists _________ the migration patterns of humpback whales in the Pacific Ocean since the project received funding last year.',
+    options: [
+      'have been studying',
+      'studied',
+      'had studied',
+      'are studying',
+      'study'
+    ],
+    correctAnswer: 0,
+    explanation: 'Penggunaan kata "since" (sejak) di sini menandakan tindakan yang dimulai di masa lampau dan masih berlanjut hingga sekarang, yang dinyatakan dengan present perfect progressive ("have been studying").',
+    timeLimit: 30
+  },
+  // 104. Tenses (medium)
+  {
+    id: 'tbi-sc-104',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'The researchers _________ for over five hours when the server suddenly crashed and wiped their unsaved simulations.',
+    options: [
+      'had been working',
+      'have been working',
+      'were working',
+      'worked',
+      'work'
+    ],
+    correctAnswer: 0,
+    explanation: 'Tindakan bekerja telah berlangsung selama durasi tertentu ("for over five hours") sebelum titik waktu tertentu di masa lalu ("when the server suddenly crashed"). Ini membutuhkan past perfect progressive ("had been working").',
+    timeLimit: 30
+  },
+  // 105. Tenses (hard)
+  {
+    id: 'tbi-sc-105',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sulit',
+    question: 'If the government had acted swiftly during the initial outbreak, the economic impact _________ less severe today.',
+    options: [
+      'would be',
+      'would have been',
+      'had been',
+      'is',
+      'will be'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat ini menggunakan Mixed Conditional (tipe 3 + tipe 2). Klausa "if" mengacu pada kejadian masa lalu ("had acted"), sedangkan klausa hasil mengacu pada efek saat ini ("today"), sehingga membutuhkan pola "would + bare infinitive" ("would be").',
+    timeLimit: 30
+  },
+  // 106. Tenses (hard)
+  {
+    id: 'tbi-sc-106',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sulit',
+    question: 'The board of directors demanded that the chief financial officer _________ a detailed report before the merger is finalized.',
+    options: [
+      'submit',
+      'submits',
+      'submitted',
+      'should have submitted',
+      'is submitting'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kata kerja "demanded" memicu struktur subjunctive mood pada anak kalimat (that-clause). Dalam subjunctive mood bahasa Inggris, kata kerja yang digunakan adalah bare infinitive ("submit") tanpa peduli subjek tunggal atau jamak.',
+    timeLimit: 30
+  },
+  // 107. Tenses (medium)
+  {
+    id: 'tbi-sc-107',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'While the ancient ruins _________ by the preservation team, a severe sandstorm halted their operations.',
+    options: [
+      'were being excavated',
+      'were excavating',
+      'had been excavated',
+      'excavated',
+      'are being excavated'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat ini menjelaskan kejadian pasif yang sedang berlangsung di masa lampau ketika disela kejadian lain. Bentuk past progressive pasif yang tepat adalah "were being excavated" (sedang diekskavasi).',
+    timeLimit: 30
+  },
+  // 108. S V Agreement (easy)
+  {
+    id: 'tbi-sc-108',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'mudah',
+    question: 'The lead scientist, along with his research assistants, _________ currently analyzing the satellite imagery of the glacier.',
+    options: [
+      'is',
+      'are',
+      'were',
+      'have been',
+      'be'
+    ],
+    correctAnswer: 0,
+    explanation: 'Frasa pengapit seperti "along with..." tidak mempengaruhi jumlah subjek utama. Subjek utama adalah "The lead scientist" yang bersifat tunggal, sehingga kata kerja yang sesuai adalah "is".',
+    timeLimit: 30
+  },
+  // 109. S V Agreement (easy)
+  {
+    id: 'tbi-sc-109',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'mudah',
+    question: 'Neither the department head nor the professors _________ satisfied with the proposed changes to the curriculum.',
+    options: [
+      'were',
+      'was',
+      'is',
+      'has been',
+      'being'
+    ],
+    correctAnswer: 0,
+    explanation: 'Pada pola "neither... nor", kata kerja disesuaikan dengan subjek terdekat. Subjek terdekat adalah plural ("the professors"), sehingga membutuhkan kata kerja bentuk jamak "were".',
+    timeLimit: 30
+  },
+  // 110. S V Agreement (medium)
+  {
+    id: 'tbi-sc-110',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'One of the primary reasons for the extinction of these bird species _________ the rapid loss of their natural forest habitats.',
+    options: [
+      'is',
+      'are',
+      'were',
+      'have been',
+      'being'
+    ],
+    correctAnswer: 0,
+    explanation: 'Subjek utama kalimat ini adalah "One" (One of...), yang bersifat tunggal. Penjelas "reasons" dan "species" adalah preposisional. Oleh karena itu, kata kerja harus berbentuk tunggal ("is").',
+    timeLimit: 30
+  },
+  // 111. S V Agreement (medium)
+  {
+    id: 'tbi-sc-111',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'Each of the experimental groups _________ monitored constantly by automated sensors to ensure data integrity.',
+    options: [
+      'is',
+      'are',
+      'were',
+      'have been',
+      'being'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kata ganti "Each" (masing-masing) selalu dianggap sebagai subjek tunggal. Maka dari itu, bentuk kata kerja bantu yang tepat adalah tunggal ("is").',
+    timeLimit: 30
+  },
+  // 112. S V Agreement (hard)
+  {
+    id: 'tbi-sc-112',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sulit',
+    question: 'High above the valley, nestled among the jagged mountain peaks, _________ the ruins of a prehistoric fortress.',
+    options: [
+      'lie',
+      'lies',
+      'is lying',
+      'has lain',
+      'lying'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat ini mengalami inversi (susun balik) karena diawali frasa keterangan tempat. Subjek sebenarnya berada di belakang kata kerja, yaitu "the ruins" (jamak), sehingga kata kerjanya harus jamak ("lie").',
+    timeLimit: 30
+  },
+  // 113. S V Agreement (hard)
+  {
+    id: 'tbi-sc-113',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sulit',
+    question: 'Economics, although historically considered a social science, _________ heavily on mathematical modeling and statistical analysis today.',
+    options: [
+      'relies',
+      'rely',
+      'relying',
+      'have relied',
+      'are relying'
+    ],
+    correctAnswer: 0,
+    explanation: 'Mata pelajaran atau cabang ilmu yang berakhiran "-ics" (seperti Economics) dianggap tunggal secara gramatikal, sehingga membutuhkan kata kerja tunggal dengan akhiran -s ("relies").',
+    timeLimit: 30
+  },
+  // 114. S V Agreement (medium)
+  {
+    id: 'tbi-sc-114',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'That the level of carbon emissions continues to rise globally _________ the urgency of implementing renewable energy mandates.',
+    options: [
+      'underscores',
+      'underscore',
+      'underscoring',
+      'have underscored',
+      'are underscoring'
+    ],
+    correctAnswer: 0,
+    explanation: 'Subjek kalimat ini berupa sebuah klausa utuh ("That the level... globally"). Subjek berupa klausa atau frasa gerund selalu dianggap tunggal, sehingga kata kerjanya harus berbentuk tunggal ("underscores").',
+    timeLimit: 30
+  },
+  // 115. Modal (easy)
+  {
+    id: 'tbi-sc-115',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'mudah',
+    question: 'To protect their intellectual property, all research staff must _________ the non-disclosure agreement before joining the project.',
+    options: [
+      'sign',
+      'signs',
+      'signing',
+      'signed',
+      'to sign'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kata kerja bantu modal ("must") selalu diikuti oleh kata kerja dasar (bare infinitive) tanpa imbuhan ("sign").',
+    timeLimit: 30
+  },
+  // 116. Modal (easy)
+  {
+    id: 'tbi-sc-116',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'mudah',
+    question: 'Due to extreme weather conditions, the scheduled outdoor concert might _________ to a later date.',
+    options: [
+      'be postponed',
+      'postpone',
+      'postponed',
+      'being postponed',
+      'to postpone'
+    ],
+    correctAnswer: 0,
+    explanation: 'Subjek kalimat adalah benda mati ("the scheduled outdoor concert") yang menerima tindakan (pasif). Bentuk pasif setelah modal "might" adalah "be + past participle" ("be postponed").',
+    timeLimit: 30
+  },
+  // 117. Modal (medium)
+  {
+    id: 'tbi-sc-117',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'The ancient civilization _________ from a sudden volcanic eruption, as geological layers show ash deposits from that period.',
+    options: [
+      'must have perished',
+      'should perish',
+      'must perish',
+      'could perish',
+      'should have perished'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat menunjukkan penarikan kesimpulan yang sangat kuat mengenai peristiwa masa lalu (past logical deduction). Pola yang digunakan adalah "must have + V3" ("must have perished").',
+    timeLimit: 30
+  },
+  // 118. Modal (medium)
+  {
+    id: 'tbi-sc-118',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'The management _________ the safety protocols earlier, which would have prevented the factory accident last night.',
+    options: [
+      'should have updated',
+      'must have updated',
+      'should update',
+      'would update',
+      'might update'
+    ],
+    correctAnswer: 0,
+    explanation: 'Konteks kalimat menunjukkan penyesalan atas kewajiban masa lalu yang tidak dipenuhi (unfulfilled past obligation). Struktur yang tepat adalah "should have + V3" ("should have updated").',
+    timeLimit: 30
+  },
+  // 119. Modal (hard)
+  {
+    id: 'tbi-sc-119',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sulit',
+    question: 'The confidential documents _________ in the secure vault, but they were left on the manager\'s desk instead.',
+    options: [
+      'ought to have been locked',
+      'must have locked',
+      'should lock',
+      'ought to lock',
+      'might be locked'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat bermakna pasif yang merujuk pada kewajiban moral di masa lampau yang tidak dipenuhi (dokumen seharusnya dikunci). Bentuk yang tepat adalah modal perfect pasif: "ought to have been + V3" ("ought to have been locked").',
+    timeLimit: 30
+  },
+  // 120. Modal (hard)
+  {
+    id: 'tbi-sc-120',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sulit',
+    question: 'The paleontologist argued that the fossilized tracks _________ by a small herbivore, given the depth and shape of the footprints.',
+    options: [
+      'could not have been made',
+      'must have made',
+      'should not make',
+      'might not make',
+      'had not been made'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat ini membutuhkan kesimpulan negatif masa lampau dalam bentuk pasif (jejak tersebut mustahil/tidak mungkin telah dibuat...). Pola modal pasif masa lampau yang tepat adalah "could not have been + V3" ("could not have been made").',
+    timeLimit: 30
+  },
+  // 121. Gerund & Infinitive (easy)
+  {
+    id: 'tbi-sc-121',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'mudah',
+    question: 'To prevent contamination of the samples, the lab technicians avoided _________ the sterile equipment without proper gloves.',
+    options: [
+      'touching',
+      'to touch',
+      'touch',
+      'touched',
+      'to be touching'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kata kerja "avoid" (menghindari) secara khusus harus diikuti oleh gerund (kata kerja berakhiran -ing), sehingga jawaban yang benar adalah "touching".',
+    timeLimit: 30
+  },
+  // 122. Gerund & Infinitive (easy)
+  {
+    id: 'tbi-sc-122',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'mudah',
+    question: 'The board of directors decided _________ the capital budget for research and development starting next fiscal year.',
+    options: [
+      'to increase',
+      'increasing',
+      'increase',
+      'increased',
+      'to be increasing'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kata kerja "decide" (memutuskan) secara khusus harus diikuti oleh to-infinitive, sehingga jawaban yang benar adalah "to increase".',
+    timeLimit: 30
+  },
+  // 123. Gerund & Infinitive (medium)
+  {
+    id: 'tbi-sc-123',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'The university committee congratulated the engineering team on _________ the prestigious national robot design competition.',
+    options: [
+      'winning',
+      'to win',
+      'win',
+      'won',
+      'having to win'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kata kerja atau kata sifat yang diikuti preposisi (dalam hal ini preposisi "on") harus diikuti oleh objek berbentuk gerund ("winning").',
+    timeLimit: 30
+  },
+  // 124. Gerund & Infinitive (medium)
+  {
+    id: 'tbi-sc-124',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'The software company hired a cybersecurity firm _________ a comprehensive audit of their cloud database.',
+    options: [
+      'to perform',
+      'performing',
+      'for perform',
+      'perform',
+      'performed'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat ini membutuhkan to-infinitive of purpose (infinitive untuk menyatakan tujuan atau maksud melakukan sesuatu: "untuk melakukan audit"). Jawabannya adalah "to perform".',
+    timeLimit: 30
+  },
+  // 125. Gerund & Infinitive (hard)
+  {
+    id: 'tbi-sc-125',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sulit',
+    question: 'The famous artist resented _________ about his private life during press conferences promoting his new exhibition.',
+    options: [
+      'being questioned',
+      'questioning',
+      'to be questioned',
+      'questioned',
+      'to question'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kata kerja "resent" diikuti gerund. Selain itu, maknanya harus pasif (seniman tersebut benci ditanyai tentang kehidupan pribadinya). Bentuk gerund pasif adalah "being + V3" ("being questioned").',
+    timeLimit: 30
+  },
+  // 126. Gerund & Infinitive (hard)
+  {
+    id: 'tbi-sc-126',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sulit',
+    question: 'The historic cathedral is believed _________ by a renowned medieval architect in the early twelfth century.',
+    options: [
+      'to have been designed',
+      'to design',
+      'designing',
+      'to be designing',
+      'having designed'
+    ],
+    correctAnswer: 0,
+    explanation: 'Struktur pasif "is believed" diikuti oleh to-infinitive. Karena perancangan katedral terjadi di masa lampau ("early twelfth century"), kita harus menggunakan perfect infinitive pasif ("to have been + V3") yaitu "to have been designed".',
+    timeLimit: 30
+  },
+  // 127. Parallel & Word Forms (easy)
+  {
+    id: 'tbi-sc-127',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'mudah',
+    question: 'The marketing campaign was highly successful because it was creative, cost-effective, and _________.',
+    options: [
+      'informative',
+      'inform',
+      'information',
+      'informatively',
+      'informing'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat ini menggunakan struktur paralel dengan kata hubung "and". Kata-kata pembanding sebelumnya adalah kata sifat ("creative", "cost-effective"), sehingga kata pelengkap terakhir juga harus berupa kata sifat ("informative").',
+    timeLimit: 30
+  },
+  // 128. Parallel & Word Forms (easy)
+  {
+    id: 'tbi-sc-128',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'mudah',
+    question: 'The high-speed train operated _________, even during the heavy snowfall that disrupted other transport networks.',
+    options: [
+      'efficiently',
+      'efficient',
+      'efficiency',
+      'efficacious',
+      'effect'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat membutuhkan kata keterangan (adverb) untuk menerangkan cara pengoperasian kata kerja "operated". Kata keterangan yang tepat berakhiran "-ly" yaitu "efficiently" (dengan efisien).',
+    timeLimit: 30
+  },
+  // 129. Parallel & Word Forms (medium)
+  {
+    id: 'tbi-sc-129',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'The new insulation material not only reduces energy consumption but also _________ the acoustics of the residential building.',
+    options: [
+      'improves',
+      'improving',
+      'to improve',
+      'improvement',
+      'is improved'
+    ],
+    correctAnswer: 0,
+    explanation: 'Struktur paralel berpasangan "not only... but also". Bagian pertama menggunakan kata kerja simple present tunggal ("reduces"), maka bagian kedua juga harus paralel dengan kata kerja simple present tunggal ("improves").',
+    timeLimit: 30
+  },
+  // 130. Parallel & Word Forms (medium)
+  {
+    id: 'tbi-sc-130',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'The continuous _________ of local wetlands has threatened several endangered species of migratory birds.',
+    options: [
+      'destruction',
+      'destroy',
+      'destructive',
+      'destructively',
+      'destroyed'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat membutuhkan kata benda (noun) yang bertindak sebagai subjek inti setelah kata sifat "continuous" dan sebelum preposisi "of". Kata benda yang tepat adalah "destruction" (perusakan).',
+    timeLimit: 30
+  },
+  // 131. Parallel & Word Forms (hard)
+  {
+    id: 'tbi-sc-131',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sulit',
+    question: 'Developing a reliable renewable energy grid is as much a political challenge as _________ a technological one.',
+    options: [
+      'establishing',
+      'to establish',
+      'establish',
+      'established',
+      'establishment'
+    ],
+    correctAnswer: 0,
+    explanation: 'Struktur perbandingan paralel dengan pola "as much... as". Kata benda pembanding pertama adalah gerund "Developing", sehingga kata benda pembanding kedua setelah "as" haruslah berbentuk gerund juga yaitu "establishing".',
+    timeLimit: 30
+  },
+  // 132. Parallel & Word Forms (hard)
+  {
+    id: 'tbi-sc-132',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sulit',
+    question: 'The city council sought to _________ the public of the safety of the municipal water supply after the repair works.',
+    options: [
+      'reassure',
+      'reassuring',
+      'reassurance',
+      'reassuringly',
+      'reassured'
+    ],
+    correctAnswer: 0,
+    explanation: 'Setelah to-infinitive penunjuk maksud ("sought to"), kita membutuhkan kata kerja bentuk dasar (verb base). Pilihan yang bertindak sebagai kata kerja adalah "reassure" (menyakinkan kembali).',
+    timeLimit: 30
+  },
+  // 133. Parallel & Word Forms (medium)
+  {
+    id: 'tbi-sc-133',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'In this chemistry experiment, students must either record the gas pressure manually or _________ the automated data logger.',
+    options: [
+      'utilize',
+      'utilizing',
+      'to utilize',
+      'utility',
+      'utilized'
+    ],
+    correctAnswer: 0,
+    explanation: 'Struktur paralel berpasangan "either... or". Pilihan pertama adalah kata kerja dasar "record" setelah modal "must", sehingga pilihan kedua setelah "or" juga harus berbentuk kata kerja dasar yaitu "utilize".',
+    timeLimit: 30
+  },
+  // 134. Adjective Clause including Reduced Adjective Clause & Participial Phrase (easy)
+  {
+    id: 'tbi-sc-134',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'mudah',
+    question: 'The atmospheric scientist _________ pioneered the study of greenhouse gases received a lifetime achievement award.',
+    options: [
+      'who',
+      'which',
+      'whom',
+      'whose',
+      'what'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat membutuhkan kata ganti relatif (relative pronoun) untuk merujuk pada orang ("The atmospheric scientist") yang bertindak sebagai subjek anak kalimat. Relative pronoun subjek yang tepat adalah "who".',
+    timeLimit: 30
+  },
+  // 135. Adjective Clause including Reduced Adjective Clause & Participial Phrase (easy)
+  {
+    id: 'tbi-sc-135',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'mudah',
+    question: 'The passengers _________ in the lobby are advised to check their boarding passes for any gate changes.',
+    options: [
+      'waiting',
+      'who waits',
+      'waited',
+      'are waiting',
+      'to wait'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat ini menggunakan reduced relative clause aktif (participial phrase). Frasa "waiting in the lobby" merupakan kependekan dari "who are waiting...". Pilihan "are waiting" salah karena menciptakan double verb utama.',
+    timeLimit: 30
+  },
+  // 136. Adjective Clause including Reduced Adjective Clause & Participial Phrase (medium)
+  {
+    id: 'tbi-sc-136',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'The laboratory _________ the novel compound was synthesized has been certified for international research standards.',
+    options: [
+      'in which',
+      'which',
+      'where in',
+      'that',
+      'who'
+    ],
+    correctAnswer: 0,
+    explanation: 'Klausa kata sifat menerangkan tempat ("The laboratory"). Sintaksis formal membutuhkan kombinasi "preposisi + relative pronoun" ("in which" yang setara dengan "where") untuk menghubungkan klausa "the novel compound was synthesized".',
+    timeLimit: 30
+  },
+  // 137. Adjective Clause including Reduced Adjective Clause & Participial Phrase (medium)
+  {
+    id: 'tbi-sc-137',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: 'The antique furniture _________ by the museum curators was crafted in the late seventeenth century.',
+    options: [
+      'restored',
+      'restoring',
+      'was restored',
+      'which restored',
+      'to restore'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat ini membutuhkan reduced adjective clause pasif untuk menerangkan objek mati "furniture". Bentuk kependekan dari "which was restored" adalah past participle tunggal "restored".',
+    timeLimit: 30
+  },
+  // 138. Adjective Clause including Reduced Adjective Clause & Participial Phrase (hard)
+  {
+    id: 'tbi-sc-138',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sulit',
+    question: 'The volcanic eruption triggered massive mudslides, _________ forced thousands of villagers to evacuate their homes immediately.',
+    options: [
+      'which',
+      'that',
+      'who',
+      'where',
+      'it'
+    ],
+    correctAnswer: 0,
+    explanation: 'Relative pronoun "which" dipisahkan tanda koma digunakan untuk merujuk pada keseluruhan peristiwa di klausa utama sebelumnya (letusan memicu lumpur longsor, hal mana memaksa ribuan warga mengungsi).',
+    timeLimit: 30
+  },
+  // 139. Adjective Clause including Reduced Adjective Clause & Participial Phrase (hard)
+  {
+    id: 'tbi-sc-139',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sulit',
+    question: '_________ that the chemical reaction was highly volatile, the lab supervisor ordered everyone to step behind the safety shield.',
+    options: [
+      'Realizing',
+      'Realized',
+      'To realize',
+      'Having realized',
+      'Having been realizing'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat diawali dengan klausa partisipial (participial phrase) aktif yang menerangkan subjek utama "the lab supervisor". Bentuk present participle "Realizing" (Menyadari...) tepat untuk menyatakan alasan aksi di klausa utama.',
+    timeLimit: 30
+  },
+  // 140. Adjective Clause including Reduced Adjective Clause & Participial Phrase (medium)
+  {
+    id: 'tbi-sc-140',
+    testType: 'TBI',
+    category: 'structure-completion',
+    difficulty: 'sedang',
+    question: '_________ by the critical success of their first product, the tech startup immediately began developing a second-generation application.',
+    options: [
+      'Encouraged',
+      'Encouraging',
+      'Having encouraged',
+      'Encourage',
+      'To encourage'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat diawali klausa partisipial pasif (karena mendapat dorongan/didorong oleh...). Bentuk past participle yang tepat adalah "Encouraged" (Didorong/disemangati oleh...).',
+    timeLimit: 30
+  },
+  // 141. Reading (easy)
+  {
+    id: 'tbi-rc-141',
+    testType: 'TBI',
+    category: 'reading-comprehension',
+    difficulty: 'mudah',
+    passage: 'The development of the printing press by Johannes Gutenberg in 1440 transformed European society by accelerating the dissemination of knowledge. Before this invention, books had been painstakingly hand-copied by scribes, rendering them extremely rare and expensive. Gutenberg\'s machine, utilizing movable metal type and a modified wooden press, permitted rapid mass production of texts. This technological leap not only democratized literacy but also paved the way for the Scientific Revolution. By the end of the fifteenth century, printing presses had been established in over two hundred cities across Europe, which allowed millions of pages to circulate. Despite facing initial skepticism from traditional institutions, the printed word quickly became the cornerstone of modern intellectual exchange.',
+    question: 'According to the passage, how were books produced before Gutenberg\'s invention?',
+    options: [
+      'They were hand-copied by scribes.',
+      'They were printed using wooden blocks.',
+      'They were imported from Asia.',
+      'They did not exist in Europe.',
+      'They were manufactured in factories.'
+    ],
+    correctAnswer: 0,
+    explanation: 'Paragraf pertama kalimat kedua menyatakan secara eksplisit: "Before this invention, books had been painstakingly hand-copied by scribes...".',
+    timeLimit: 90
+  },
+  // 142. Reading (easy)
+  {
+    id: 'tbi-rc-142',
+    testType: 'TBI',
+    category: 'reading-comprehension',
+    difficulty: 'mudah',
+    passage: 'The development of the printing press by Johannes Gutenberg in 1440 transformed European society by accelerating the dissemination of knowledge. Before this invention, books had been painstakingly hand-copied by scribes, rendering them extremely rare and expensive. Gutenberg\'s machine, utilizing movable metal type and a modified wooden press, permitted rapid mass production of texts. This technological leap not only democratized literacy but also paved the way for the Scientific Revolution. By the end of the fifteenth century, printing presses had been established in over two hundred cities across Europe, which allowed millions of pages to circulate. Despite facing initial skepticism from traditional institutions, the printed word quickly became the cornerstone of modern intellectual exchange.',
+    question: 'The word "paved" in the sentence "paved the way for the Scientific Revolution" is closest in meaning to ___________',
+    options: [
+      'prepared',
+      'blocked',
+      'followed',
+      'completed',
+      'delayed'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kiasan "paved the way" (merintis jalan atau mempersiapkan jalan) paling dekat maknanya dengan "prepared" (mempersiapkan).',
+    timeLimit: 90
+  },
+  // 143. Reading (medium)
+  {
+    id: 'tbi-rc-143',
+    testType: 'TBI',
+    category: 'reading-comprehension',
+    difficulty: 'sedang',
+    passage: 'The development of the printing press by Johannes Gutenberg in 1440 transformed European society by accelerating the dissemination of knowledge. Before this invention, books had been painstakingly hand-copied by scribes, rendering them extremely rare and expensive. Gutenberg\'s machine, utilizing movable metal type and a modified wooden press, permitted rapid mass production of texts. This technological leap not only democratized literacy but also paved the way for the Scientific Revolution. By the end of the fifteenth century, printing presses had been established in over two hundred cities across Europe, which allowed millions of pages to circulate. Despite facing initial skepticism from traditional institutions, the printed word quickly became the cornerstone of modern intellectual exchange.',
+    question: 'By the end of the fifteenth century, approximately how many European cities had printing presses?',
+    options: [
+      'Over two hundred',
+      'Exactly Gutenberg\'s city',
+      'Only a few capital cities',
+      'Over a thousand',
+      'None of the above'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat kelima secara eksplisit memuat data: "By the end of the fifteenth century, printing presses had been established in over two hundred cities across Europe...".',
+    timeLimit: 90
+  },
+  // 144. Reading (medium)
+  {
+    id: 'tbi-rc-144',
+    testType: 'TBI',
+    category: 'reading-comprehension',
+    difficulty: 'sedang',
+    passage: 'The development of the printing press by Johannes Gutenberg in 1440 transformed European society by accelerating the dissemination of knowledge. Before this invention, books had been painstakingly hand-copied by scribes, rendering them extremely rare and expensive. Gutenberg\'s machine, utilizing movable metal type and a modified wooden press, permitted rapid mass production of texts. This technological leap not only democratized literacy but also paved the way for the Scientific Revolution. By the end of the fifteenth century, printing presses had been established in over two hundred cities across Europe, which allowed millions of pages to circulate. Despite facing initial skepticism from traditional institutions, the printed word quickly became the cornerstone of modern intellectual exchange.',
+    question: 'It can be inferred from the passage that traditional institutions initially ___________',
+    options: [
+      'expressed doubt about the new technology',
+      'funded Gutenberg\'s experiments',
+      'outlawed all printed books',
+      'bought most of the printed books',
+      'closed down all paper mills'
+    ],
+    correctAnswer: 0,
+    explanation: 'Frasa akhir menyatakan "Despite facing initial skepticism from traditional institutions..." yang berarti lembaga tradisional awalnya meragukan atau skeptis ("expressed doubt") terhadap teknologi baru tersebut.',
+    timeLimit: 90
+  },
+  // 145. Reading (hard)
+  {
+    id: 'tbi-rc-145',
+    testType: 'TBI',
+    category: 'reading-comprehension',
+    difficulty: 'sulit',
+    passage: 'The development of the printing press by Johannes Gutenberg in 1440 transformed European society by accelerating the dissemination of knowledge. Before this invention, books had been painstakingly hand-copied by scribes, rendering them extremely rare and expensive. Gutenberg\'s machine, utilizing movable metal type and a modified wooden press, permitted rapid mass production of texts. This technological leap not only democratized literacy but also paved the way for the Scientific Revolution. By the end of the fifteenth century, printing presses had been established in over two hundred cities across Europe, which allowed millions of pages to circulate. Despite facing initial skepticism from traditional institutions, the printed word quickly became the cornerstone of modern intellectual exchange.',
+    question: 'In the sentence "Gutenberg\'s machine, utilizing movable metal type...", the word "utilizing" functions as ___________',
+    options: [
+      'a reduced adjective clause / active participle',
+      'a main verb of the sentence',
+      'an infinitive',
+      'a gerund subject',
+      'a modal auxiliary'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kata "utilizing" diapit tanda koma di sini bertindak sebagai present participle (active participle) yang memotong/mereduksi adjective clause ("which utilized").',
+    timeLimit: 90
+  },
+  // 146. Reading (easy)
+  {
+    id: 'tbi-rc-146',
+    testType: 'TBI',
+    category: 'reading-comprehension',
+    difficulty: 'mudah',
+    passage: 'Forest ecosystems rely heavily on a microscopic network beneath the soil, where mycorrhizal fungi form symbiotic relationships with tree roots. This subterranean network, which researchers have termed the "Wood Wide Web," facilitates the exchange of nutrients and vital biochemical signals between plants. Tree roots, struggling to absorb sufficient phosphorus and nitrogen on their own, depend on the extensive fungal threads to access these deep resources. In return, the trees supply the fungi with carbon-rich sugars produced through photosynthesis. Besides facilitating nutrient transfer, the fungal network serves as an early-warning system. By transmitting defense signals, it warns neighboring plants of active pest infestations, allowing them to prepare their own chemical defenses in advance.',
+    question: 'What do trees receive from the mycorrhizal fungi network?',
+    options: [
+      'Phosphorus and nitrogen',
+      'Carbon-rich sugars',
+      'Photosynthetic energy',
+      'Water and carbon dioxide',
+      'Pest infestations'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat ketiga menyatakan bahwa akar pohon bergantung pada fungi untuk menyerap zat fosfor dan nitrogen ("phosphorus and nitrogen").',
+    timeLimit: 90
+  },
+  // 147. Reading (easy)
+  {
+    id: 'tbi-rc-147',
+    testType: 'TBI',
+    category: 'reading-comprehension',
+    difficulty: 'mudah',
+    passage: 'Forest ecosystems rely heavily on a microscopic network beneath the soil, where mycorrhizal fungi form symbiotic relationships with tree roots. This subterranean network, which researchers have termed the "Wood Wide Web," facilitates the exchange of nutrients and vital biochemical signals between plants. Tree roots, struggling to absorb sufficient phosphorus and nitrogen on their own, depend on the extensive fungal threads to access these deep resources. In return, the trees supply the fungi with carbon-rich sugars produced through photosynthesis. Besides facilitating nutrient transfer, the fungal network serves as an early-warning system. By transmitting defense signals, it warns neighboring plants of active pest infestations, allowing them to prepare their own chemical defenses in advance.',
+    question: 'The word "subterranean" in the passage is closest in meaning to ___________',
+    options: [
+      'underground',
+      'elevated',
+      'superficial',
+      'artificial',
+      'atmospheric'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kata "subterranean" berasal dari bahasa Latin (sub = bawah, terra = tanah) yang berarti di bawah tanah, sehingga sinonim terdekatnya adalah "underground".',
+    timeLimit: 90
+  },
+  // 148. Reading (medium)
+  {
+    id: 'tbi-rc-148',
+    testType: 'TBI',
+    category: 'reading-comprehension',
+    difficulty: 'sedang',
+    passage: 'Forest ecosystems rely heavily on a microscopic network beneath the soil, where mycorrhizal fungi form symbiotic relationships with tree roots. This subterranean network, which researchers have termed the "Wood Wide Web," facilitates the exchange of nutrients and vital biochemical signals between plants. Tree roots, struggling to absorb sufficient phosphorus and nitrogen on their own, depend on the extensive fungal threads to access these deep resources. In return, the trees supply the fungi with carbon-rich sugars produced through photosynthesis. Besides facilitating nutrient transfer, the fungal network serves as an early-warning system. By transmitting defense signals, it warns neighboring plants of active pest infestations, allowing them to prepare their own chemical defenses in advance.',
+    question: 'How do neighboring trees prepare chemical defenses against pests before being infested?',
+    options: [
+      'By receiving warning signals through the fungal threads',
+      'By growing deeper root systems',
+      'By absorbing sugars from the soil',
+      'By breaking down nitrogen',
+      'By shutting off photosynthesis'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kalimat-kalimat terakhir menyatakan: "By transmitting defense signals, it warns neighboring plants... allowing them to prepare their own chemical defenses". Jadi, mereka menerima sinyal peringatan pertahanan melalui benang jamur.',
+    timeLimit: 90
+  },
+  // 149. Reading (hard)
+  {
+    id: 'tbi-rc-149',
+    testType: 'TBI',
+    category: 'reading-comprehension',
+    difficulty: 'sulit',
+    passage: 'Forest ecosystems rely heavily on a microscopic network beneath the soil, where mycorrhizal fungi form symbiotic relationships with tree roots. This subterranean network, which researchers have termed the "Wood Wide Web," facilitates the exchange of nutrients and vital biochemical signals between plants. Tree roots, struggling to absorb sufficient phosphorus and nitrogen on their own, depend on the extensive fungal threads to access these deep resources. In return, the trees supply the fungi with carbon-rich sugars produced through photosynthesis. Besides facilitating nutrient transfer, the fungal network serves as an early-warning system. By transmitting defense signals, it warns neighboring plants of active pest infestations, allowing them to prepare their own chemical defenses in advance.',
+    question: 'In the phrase "Tree roots, struggling to absorb...", the word "struggling" represents ___________',
+    options: [
+      'a participial phrase modifying tree roots',
+      'the main verb of the sentence',
+      'a gerund functioning as the subject',
+      'an infinitive of purpose',
+      'a modal passive'
+    ],
+    correctAnswer: 0,
+    explanation: 'Kata "struggling" di sini berbentuk present participle yang mengawali participial phrase (klausa partisipial aktif) untuk menjelaskan subjek "Tree roots".',
+    timeLimit: 90
+  },
+  // 150. Reading (hard)
+  {
+    id: 'tbi-rc-150',
+    testType: 'TBI',
+    category: 'reading-comprehension',
+    difficulty: 'sulit',
+    passage: 'Forest ecosystems rely heavily on a microscopic network beneath the soil, where mycorrhizal fungi form symbiotic relationships with tree roots. This subterranean network, which researchers have termed the "Wood Wide Web," facilitates the exchange of nutrients and vital biochemical signals between plants. Tree roots, struggling to absorb sufficient phosphorus and nitrogen on their own, depend on the extensive fungal threads to access these deep resources. In return, the trees supply the fungi with carbon-rich sugars produced through photosynthesis. Besides facilitating nutrient transfer, the fungal network serves as an early-warning system. By transmitting defense signals, it warns neighboring plants of active pest infestations, allowing them to prepare their own chemical defenses in advance.',
+    question: 'What is the primary purpose of the passage?',
+    options: [
+      'To explain the symbiotic functions of mycorrhizal soil networks.',
+      'To advocate for pesticide use in forestry.',
+      'To contrast photosynthesis with cellular respiration.',
+      'To describe how timber is harvested.',
+      'To analyze the physical structure of tree trunks.'
+    ],
+    correctAnswer: 0,
+    explanation: 'Keseluruhan teks membahas tentang bagaimana jaringan jamur mikroskopis di bawah tanah (mycorrhizal network) mendukung hubungan simbiosis nutrisi dan komunikasi antar pohon di hutan.',
+    timeLimit: 90
+  }];
 
 export function getTBIQuestions(): Question[] {
   return baseQuestions;
