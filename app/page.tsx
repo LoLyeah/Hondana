@@ -35,10 +35,27 @@ const itemVariants = {
 export default function Home() {
   const router = useRouter();
   const { stats } = useQuiz();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSelectModule = (type: 'TPA' | 'TBI') => {
     router.push(`/kategori?type=${type}`);
   };
+
+  if (!mounted) {
+    return (
+      <>
+        <Header title="Hondana" />
+        <div className="flex-1 flex items-center justify-center min-h-[50vh] md:pl-60">
+          <span className="text-4xl animate-spin">⏳</span>
+        </div>
+        <BottomNav />
+      </>
+    );
+  }
 
   return (
     <>

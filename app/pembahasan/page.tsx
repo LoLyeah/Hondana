@@ -108,6 +108,16 @@ export default function Pembahasan() {
         showBack
         onBack={() => router.push('/hasil')}
         noSidebar
+        rightElement={
+          <button
+            onClick={() => setShowShortcuts(!showShortcuts)}
+            className="hidden sm:flex w-9 h-9 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-text-secondary hover:text-text-primary items-center justify-center font-bold text-xs transition-all active:scale-95 cursor-pointer shrink-0"
+            title="Shortcut Keyboard (?)"
+            aria-label="Shortcut Keyboard"
+          >
+            <span>⌨️</span>
+          </button>
+        }
       />
 
       <main className="flex-1 flex flex-col gap-5 px-4 py-5 pb-16">
@@ -228,15 +238,7 @@ export default function Pembahasan() {
           </span>
         </button>
 
-        {/* Shortcut Keyboard Legend Button (Desktop only) */}
-        <button
-          onClick={() => setShowShortcuts(!showShortcuts)}
-          className="hidden sm:flex w-9 h-9 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-text-secondary hover:text-text-primary items-center justify-center font-bold text-xs transition-all active:scale-95 cursor-pointer shrink-0"
-          title="Shortcut Keyboard (?)"
-          aria-label="Shortcut Keyboard"
-        >
-          <span>⌨️</span>
-        </button>
+
 
         {/* Next Button */}
         <button

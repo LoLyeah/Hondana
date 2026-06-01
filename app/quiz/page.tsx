@@ -227,11 +227,23 @@ export default function Quiz() {
           </span>
         </div>
  
-        {settings.timerEnabled ? (
-          <TimerRing timeLeft={timeLeft} timeLimit={totalDurationSeconds} />
-        ) : (
-          <div className="w-12 h-12" />
-        )}
+        <div className="flex items-center gap-2">
+          {/* Shortcut Keyboard Legend Button (Desktop only) */}
+          <button
+            onClick={() => setShowShortcuts(!showShortcuts)}
+            className="hidden sm:flex w-9 h-9 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-text-secondary hover:text-text-primary items-center justify-center font-bold text-xs transition-all active:scale-95 cursor-pointer shrink-0"
+            title="Shortcut Keyboard (?)"
+            aria-label="Shortcut Keyboard"
+          >
+            <span>⌨️</span>
+          </button>
+
+          {settings.timerEnabled ? (
+            <TimerRing timeLeft={timeLeft} timeLimit={totalDurationSeconds} />
+          ) : (
+            <div className="w-12 h-12" />
+          )}
+        </div>
       </header>
  
       <main className="flex-1 flex flex-col gap-5 px-4 py-5 pb-12">
@@ -332,15 +344,7 @@ export default function Quiz() {
           </span>
         </button>
 
-        {/* Shortcut Keyboard Legend Button (Desktop only) */}
-        <button
-          onClick={() => setShowShortcuts(!showShortcuts)}
-          className="hidden sm:flex w-9 h-9 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-text-secondary hover:text-text-primary items-center justify-center font-bold text-xs transition-all active:scale-95 cursor-pointer shrink-0"
-          title="Shortcut Keyboard (?)"
-          aria-label="Shortcut Keyboard"
-        >
-          <span>⌨️</span>
-        </button>
+
 
         {/* Next Button or Selesaikan Sesi Button */}
         {session.currentIndex + 1 < session.questions.length ? (

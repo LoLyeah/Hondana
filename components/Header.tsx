@@ -10,9 +10,10 @@ interface HeaderProps {
   showBack?: boolean;
   onBack?: () => void;
   noSidebar?: boolean;
+  rightElement?: React.ReactNode;
 }
 
-export default function Header({ title, showBack = false, onBack, noSidebar = false }: HeaderProps) {
+export default function Header({ title, showBack = false, onBack, noSidebar = false, rightElement }: HeaderProps) {
   const router = useRouter();
   const { settings, updateSettings } = useQuiz();
 
@@ -55,16 +56,19 @@ export default function Header({ title, showBack = false, onBack, noSidebar = fa
         </h1>
       </div>
 
-      <button
-        onClick={toggleTheme}
-        className="p-2 rounded-xl bg-white/4 border border-white/8 hover:bg-white/8 active:scale-95 transition-all text-text-primary flex items-center justify-center cursor-pointer outline-none min-h-0 min-w-0"
-        style={{ minBlockSize: 0, minInlineSize: 0 }}
-        aria-label="Toggle Theme"
-      >
-        <span className="text-sm select-none leading-none">
-          {settings.theme === 'light' ? '🌙' : '☀️'}
-        </span>
-      </button>
+      <div className="flex items-center gap-2">
+        {rightElement}
+        <button
+          onClick={toggleTheme}
+          className="p-2 rounded-xl bg-white/4 border border-white/8 hover:bg-white/8 active:scale-95 transition-all text-text-primary flex items-center justify-center cursor-pointer outline-none min-h-0 min-w-0"
+          style={{ minBlockSize: 0, minInlineSize: 0 }}
+          aria-label="Toggle Theme"
+        >
+          <span className="text-sm select-none leading-none">
+            {settings.theme === 'light' ? '🌙' : '☀️'}
+          </span>
+        </button>
+      </div>
     </header>
   );
 }
