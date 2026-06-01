@@ -2,7 +2,7 @@
 
 **Hondana** is a state-of-the-art, gamified, and AI-powered interactive preparation platform designed to help candidates prepare for highly competitive job recruitments, civil service exams (**CPNS**), state-owned enterprise entry tests (**BUMN**), and academic selection procedures in Indonesia. 
 
-By blending cognitive tests (**TPA - Tes Potensi Akademik**) and language proficiency tests (**TBI - Tes Bahasa Inggris / TOEFL**) with modern RPG-inspired gamification and live AI-powered question generation, Hondana makes exam preparation engaging, dynamic, and highly effective.
+By blending cognitive tests (**TPA - Tes Potensi Akademik**) and language proficiency tests (**TBI - Tes Bahasa Inggris / TOEFL**) with modern animated UI layouts, persistent learning logs, and multi-provider AI question generation, Hondana makes exam preparation engaging, professional, and highly effective.
 
 ---
 
@@ -17,29 +17,37 @@ Hondana offers structured practice and simulations across the complete official 
 | | **Numerik** | Number Series (Deret), Basic Arithmetic, Comparisons, and Word Problems | Scratchpad-ready numerical workflows |
 | | **Logika** | Syllogisms, Analytical Reasoning, Logical deductions, and Venn Diagrams | Relational logic structures |
 | | **Figural** | Pattern recognition, spatial rotation, and visual relationship series | Integrated SVG visual renderer (`FiguralDisplay.tsx`) |
-| **TBI** *(Tes Bahasa Inggris)* | **Listening** | Short Conversations, Long Conversations, and Extended Talks | Media playback UI with interactive audio/script simulation (`TranscriptCard.tsx`) |
-| | **Structure** | Sentence Completion and Error Identification | Syntactic correction analysis |
+| **TBI** *(Tes Bahasa Inggris)* | **Structure** | Sentence Completion and Error Identification | Syntactic correction analysis |
 | | **Reading** | Reading Comprehension and Vocabulary-in-Context | Dedicated dual-pane passage interface (`PassageCard.tsx`) |
 
-### 2. ⚡ Game-Inspired Progress Engine (RPG Progression)
-To maximize user retention and daily training streaks, Hondana is designed as an interactive learning game:
-* **Dynamic XP System**: Earn XP for every correct answer, scaled dynamically by difficulty level:
-  * **Mudah (Easy)**: `+10 XP`
-  * **Sedang (Medium)**: `+20 XP`
-  * **Sulit (Hard)**: `+30 XP`
-* **Streak Multiplier**: Answer consecutively correct to gain streak bonuses (`+5 XP` bonus for every 3 consecutive correct answers). Features physical floating XP animations when answered.
-* **Competency Leveling**: Advance through character levels (every `500 XP` unlocks a new rank) celebrated with an immersive, full-screen Level Up Modal (`LevelUpModal.tsx`).
-* **Interactive Statistics**: Track real-time metrics including **Total XP**, **Active Streak**, **Completed Sessions**, and section-by-section accuracy distributions.
+### 2. 🤖 Advanced Multi-Provider AI Generation (Groq, OpenAI, Gemini & Custom)
+Hondana features an enterprise-grade AI question-generation pipeline supporting multiple model providers:
+* **Multiple AI Providers**: Integrated support for:
+  * **Groq AI (Built-in)**: Zero-config, out-of-the-box free question generator.
+  * **Groq AI (Custom Key)**: Insert your own Groq API key for high-volume custom queries.
+  * **OpenAI (Custom Key)**: Full compatibility with OpenAI endpoints.
+  * **Gemini (Custom Key)**: Built-in compatibility with Google Gemini API endpoints.
+* **Custom Base URLs (Ollama / DeepSeek Compatible)**: Supports custom Endpoint Base URLs, allowing seamless integration with local models (via Ollama) or alternative third-party providers (like DeepSeek, OpenRouter).
+* **Live Connection Status Widget**: Displays a real-time status indicator (`Siap`, `Memeriksa...`, `Error`, `Belum Siap`) with descriptive connection feedback.
+* **Groq Model Catalog Modal**: Fetches active models dynamically from the Groq API, letting users view the context windows, creators, and release dates of active models (such as `llama-3.3-70b-versatile`, `llama-3.1-8b-instant`, etc.) in an elegant scrollable UI.
 
-### 3. 🤖 AI-Powered Live Generation (Groq & Llama 3.3)
-Hondana features a fully integrated generative AI pipeline that guarantees infinite high-quality practice sets:
-* **Server-Side Generation**: An edge-ready API route (`/api/generate`) utilizes the **Groq SDK** running **Llama 3.3 70B Versatile** (`llama-3.3-70b-versatile`) to generate contextually accurate questions.
-* **Exact Schema Enforcement**: The engine outputs fully typed, validated, and structured JSON questions complete with answer keys, tailored difficulty parameters, and highly detailed step-by-step solutions (Pembahasan) written in Bahasa Indonesia.
-* **High-Fidelity Offline Fallback**: If the API key is not set or the network is unavailable, the application seamlessly and silently falls back to a curated offline mock bank with dozens of pre-designed complex TPA and TBI scenarios.
+### 3. 💾 Session History Logs & Deep Review Mode
+* **Complete Session Archiving**: Completed sessions are fully logged as `SavedSession` entities and stored securely inside local storage (`hondana_session_history`).
+* **Detailed Accuracy Audits**: Tracks duration, category, accuracy percentage, time-spent per question, flagged items, and exact answers.
+* **Interactive Restorations**: Users can load, view, and deep-dive into past sessions to review questions and answers step-by-step, or delete saved logs.
+* **Learning Accuracy Stats**: Tracks real-time overall progress metrics including **Completed Sessions**, **Total Questions Answered**, and overall **Learning Accuracy** ratio on the main dashboard.
 
-### 4. ⏱️ Advanced Practice Modes
-* **Latihan (Targeted Practice)**: Pick a single subcategory, choose your difficulty, adjust the question count, and practice specific weak areas.
-* **Simulasi (Simulated Exam)**: A full-length mock exam (60 questions for TPA, 50 questions for TBI) adhering strictly to standard time constraints and scoring conventions (no penalty scoring).
+### 4. ⏱️ Rich Exam Taking Utilities
+* **Flag / Bookmark Questions**: Bookmark uncertain questions during the exam so you can easily review them later using the HUD index grid.
+* **Direct Jump Navigation**: Instantly navigate between different questions using the grid layout.
+* **Balanced Cognitive Matrix Builder**: Fetches questions using official cognitive proportions (TPA: 2 Mudah, 1 Sedang, 2 Sulit; TBI: 40% Mudah, 20% Sedang, 40% Sulit) for balanced and authentic exam simulations.
+* **Latihan (Practice Mode)**: Custom training sessions focusing on a single subcategory with custom item counts.
+* **Simulasi (Simulated Exam)**: Full-length mock exam (60 questions for TPA, 50 questions for TBI) adhering strictly to standard time constraints.
+
+### 5. 🎨 Aesthetic Fluid Transitions & Dark/Light Themes
+* **System-wide Theme Switching**: Native dark/light mode toggles which synchronously adjust document roots (`data-theme` and class lists) for responsive theme adjustments.
+* **Staggered Page Animations**: Smooth, high-fidelity element staggering powered by `framer-motion` for a modern, fluid user experience.
+* **Premium Glassmorphic Aesthetics**: Modern gradients, custom SVG rendering grids, and responsive sidebar layouts suited for mobile HUDs up to wide desktop screens.
 
 ---
 
@@ -49,8 +57,9 @@ Hondana is built on a clean, modern frontend engineering stack:
 
 * **Core Framework**: [Next.js 16.2](https://nextjs.org/) (App Router layout, utilising React Server and Client Components)
 * **Rendering Engine**: [React 19](https://react.dev/) (Hooks, Context-based State Management, and LocalStorage synchronization)
-* **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/) with Vanilla CSS custom configurations (glassmorphic cards, custom keyframe animations, dark mode theme palette)
-* **API Middleware**: Groq SDK Node/Edge wrapper (`groq-sdk`)
+* **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/) with Vanilla CSS variables and configurations.
+* **Animations**: [Framer Motion](https://www.framer.com/motion/) for premium staggering and micro-animations.
+* **API Middleware**: Groq Node/Edge SDK wrapper (`groq-sdk`) & custom AI providers route wrappers
 * **Type System**: Fully typed with strict TypeScript configurations
 
 ---
@@ -63,32 +72,32 @@ The project code follows a modular, feature-oriented structure:
 hondana/
 ├── app/                        # Next.js App Router root
 │   ├── api/                    # Server-side API endpoints
-│   │   └── generate/           # Groq AI generation route
+│   │   ├── generate/           # Multi-provider AI question generation route
+│   │   ├── groq-models/        # Live Groq active models fetch route
+│   │   └── test-ai/            # Connectivity health checking endpoint
 │   ├── hasil/                  # Quiz summary & session results page
 │   ├── kategori/               # Syllabus and category selection page
 │   ├── pembahasan/             # Explanation review and transcript page
-│   ├── pengaturan/             # Settings, sound, and local stats reset page
+│   ├── pengaturan/             # Settings, sound, themes, and AI provider configurations
 │   ├── quiz/                   # Interactive exam player and HUD
 │   ├── globals.css             # Tailwind v4 utility styles & design system tokens
-│   ├── layout.tsx              # Root HTML & metadata wrapper
+│   ├── layout.tsx              # Root HTML, light/dark controller & metadata wrapper
 │   └── page.tsx                # Home / dashboard welcome page
 ├── components/                 # Reusable UI component layer
 │   ├── FiguralDisplay.tsx      # SVG canvas for visual figural TPA patterns
-│   ├── LevelUpModal.tsx        # High-impact RPG level promotion modal
 │   ├── PassageCard.tsx         # Dedicated reading context component
-│   ├── TranscriptCard.tsx      # Dual listening dialogue container
 │   ├── TimerRing.tsx           # SVG countdown timer with warning colors
 │   └── ...                     # Global layout, cards, and navigation elements
 ├── context/                    # Context Provider
-│   └── QuizContext.tsx         # Central application state (Session, XP, Stats, Settings)
+│   └── QuizContext.tsx         # Central application state (Session, History Logs, Settings)
 ├── data/                       # Curated offline question banks
 │   ├── figural-patterns.ts     # Offline bank for figural pattern-matching
-│   ├── tbi-questions.ts        # Offline bank for English (Structure, Reading, Listening)
+│   ├── tbi-questions.ts        # Offline bank for English (Structure, Reading)
 │   └── tpa-questions.ts        # Offline bank for TPA (Verbal, Numeric, Logic)
 ├── hooks/                      # Custom utility React hooks
 │   └── useLocalStorage.ts      # Automatic reactive storage sync
 ├── lib/                        # Core business logic and shared TS types
-│   ├── groq.ts                 # Groq SDK configuration & prompts
+│   ├── groq.ts                 # AI providers config & prompts
 │   └── types.ts                # TypeScript interfaces and type definitions
 ├── public/                     # Static public assets and media
 ├── tsconfig.json               # TypeScript configuration
@@ -119,7 +128,7 @@ Open the `.env` file and insert your Groq API key:
 ```env
 GROQ_API_KEY=gsk_your_groq_api_key_here
 ```
-> **Note:** If the key is not set, Hondana will run seamlessly in **Offline Mode**, loading questions from its built-in offline database.
+> **Note:** If the key is not set, Hondana will run seamlessly in **Offline Mode**, loading questions from its built-in offline database. Custom keys can also be inserted directly via the in-app settings screen.
 
 ### 4. Running the Development Server
 Launch the development server:
