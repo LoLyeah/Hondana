@@ -9,6 +9,8 @@ import StatsCard from '../../components/StatsCard';
 import ResultBar from '../../components/ResultBar';
 import { useQuiz } from '../../context/QuizContext';
 import { SessionResult, SavedSession } from '../../lib/types';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import LoadingSkeleton from '../../components/LoadingSkeleton';
 
 const containerVariants = {
   hidden: { opacity: 0, y: 15 },
@@ -75,9 +77,23 @@ export default function Hasil() {
 
   if (!mounted) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
-        <span className="text-4xl animate-spin">⏳</span>
-      </div>
+      <>
+        <Header title="Hasil Ujian" />
+        <main className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6 min-h-[60vh] opacity-60">
+          {/* Main header block mimic */}
+          <div className="glass border border-white/5 p-6 flex flex-col gap-4 animate-pulse">
+            <div className="h-4 w-32 bg-white/10 rounded-md" />
+            <div className="h-8 w-48 bg-white/10 rounded-md mt-1" />
+            <div className="h-3 w-64 bg-white/5 rounded-md" />
+          </div>
+
+          <LoadingSkeleton type="stats" />
+
+          {/* Details list mimic */}
+          <LoadingSkeleton type="list" count={3} className="mt-2" />
+        </main>
+        <BottomNav />
+      </>
     );
   }
 
