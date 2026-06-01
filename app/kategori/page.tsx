@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Header from '../../components/Header';
 import BottomNav from '../../components/BottomNav';
@@ -17,19 +17,18 @@ function KategoriContent() {
 
   const { stats, settings, updateSettings, startSimulasi, startLatihan, loading } = useQuiz();
   const [difficulty, setDifficulty] = useState<Difficulty>('sedang');
-  const [useAI, setUseAI] = useState(settings.useAI);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const [latihanCount, setLatihanCount] = useState<number>(settings.latihanCount);
 
-  // Sync settings AI state
-  useEffect(() => {
-    updateSettings({ useAI });
-  }, [useAI, updateSettings]);
+  const useAI = settings.useAI;
+  const latihanCount = settings.latihanCount;
 
-  // Sync settings count state
-  useEffect(() => {
-    updateSettings({ latihanCount });
-  }, [latihanCount, updateSettings]);
+  const setUseAI = (val: boolean) => {
+    updateSettings({ useAI: val });
+  };
+
+  const setLatihanCount = (val: number) => {
+    updateSettings({ latihanCount: val });
+  };
 
   const handleStartSimulasi = async () => {
     await startSimulasi(type, difficulty, useAI);
