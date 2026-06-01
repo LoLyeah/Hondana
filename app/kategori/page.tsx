@@ -6,8 +6,11 @@ import { motion } from 'framer-motion';
 import Header from '../../components/Header';
 import BottomNav from '../../components/BottomNav';
 import CategoryCard from '../../components/CategoryCard';
+import QuestionExhaustionModal from '../../components/QuestionExhaustionModal';
 import { useQuiz } from '../../context/QuizContext';
 import { TestType } from '../../lib/types';
+import { getTPAQuestions } from '../../data/tpa-questions';
+import { getTBIQuestions } from '../../data/tbi-questions';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -41,6 +44,14 @@ function KategoriContent() {
   const { stats, settings, updateSettings, startSimulasi, startLatihan, loading } = useQuiz();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
+  // Exhaustion modal state
+  const [exhaustionModal, setExhaustionModal] = useState<{
+    isOpen: boolean;
+    catKey: string;
+    catLabel: string;
+    available: number;
+  }>({ isOpen: false, catKey: '', catLabel: '', available: 0 });
+
   const useAI = settings.useAI;
   const latihanCount = settings.latihanCount;
 
@@ -57,9 +68,37 @@ function KategoriContent() {
     router.push('/quiz');
   };
 
-  const handleStartLatihan = async (catKey: string) => {
+  // Returns how many unique offline questions exist for a category
+  const getAvailableOfflineCount = (catKey: string): number => {
+    if (type === 'TPA') {
+      return getTPAQuestions().filter((q) => q.category === catKey).length;
+    }
+    return getTBIQuestions().filter((q) => q.category === catKey).length;
+  };
+
+  const doStartLatihan = async (catKey: string) => {
     await startLatihan(type, catKey, latihanCount, useAI);
     router.push('/quiz');
+  };
+
+  const handleStartLatihan = (catKey: string) => {
+    // If AI is on, no need to check exhaustion
+    if (useAI) {
+      doStartLatihan(catKey);
+      return;
+    }
+    const available = getAvailableOfflineCount(catKey);
+    if (available < latihanCount) {
+      const catEntry = activeCategories.find((c) => c.key === catKey);
+      setExhaustionModal({
+        isOpen: true,
+        catKey,
+        catLabel: catEntry?.label || catKey,
+        available
+      });
+    } else {
+      doStartLatihan(catKey);
+    }
   };
 
   // Sub-category specifications
@@ -280,6 +319,24 @@ function KategoriContent() {
       </motion.main>
 
       <BottomNav />
+
+      {/* Exhaustion Modal */}
+      <QuestionExhaustionModal
+        isOpen={exhaustionModal.isOpen}
+        categoryLabel={exhaustionModal.catLabel}
+        availableCount={exhaustionModal.available}
+        requestedCount={latihanCount}
+        onUseAI={() => {
+          setExhaustionModal((prev) => ({ ...prev, isOpen: false }));
+          updateSettings({ useAI: true });
+          doStartLatihan(exhaustionModal.catKey);
+        }}
+        onContinueAnyway={() => {
+          setExhaustionModal((prev) => ({ ...prev, isOpen: false }));
+          doStartLatihan(exhaustionModal.catKey);
+        }}
+        onCancel={() => setExhaustionModal((prev) => ({ ...prev, isOpen: false }))}
+      />
     </>
   );
 }

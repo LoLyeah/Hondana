@@ -24,6 +24,7 @@ interface QuizContextValue {
   settings: AppSettings;
   loading: boolean;
   history: SavedSession[];
+  preGeneratedCache: Record<string, Question[]>;
   
   startSimulasi: (testType: TestType, useAI: boolean) => Promise<void>;
   startLatihan: (testType: TestType, category: string, count: number, useAI: boolean) => Promise<void>;
@@ -38,6 +39,8 @@ interface QuizContextValue {
   resetStats: () => void;
   loadSavedSession: (saved: SavedSession) => void;
   deleteSavedSession: (id: string) => void;
+  preGenerateQuestions: (testType: TestType, category: string, count: number) => Promise<void>;
+  clearPreGenerated: (key?: string) => void;
 }
 
 const QuizContext = createContext<QuizContextValue | undefined>(undefined);
@@ -106,6 +109,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useLocalStorage<AppSettings>('hondana_settings', initialSettings);
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useLocalStorage<SavedSession[]>('hondana_session_history', []);
+  const [preGeneratedCache, setPreGeneratedCache] = useLocalStorage<Record<string, Question[]>>('hondana_pregen_cache', {});
 
   // Sync Theme preference with Document root
   useEffect(() => {
@@ -121,12 +125,65 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     }
   }, [settings.theme]);
 
-  // Helper to fetch offline questions
+  // ─── Pre-Generate cache helpers ───
+  const preGenerateQuestions = async (
+    testType: TestType,
+    category: string,
+    count: number
+  ): Promise<void> => {
+    const cacheKey = `${testType}:${category}`;
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        testType,
+        category,
+        difficulty: 'seimbang',
+        count,
+        aiProvider: settings.aiProvider,
+        customApiKey: settings.customApiKey,
+        aiModel: settings.aiModel
+      })
+    });
+    if (!res.ok) throw new Error('Gagal generate soal AI');
+    const data = await res.json();
+    const newQuestions: Question[] = data.questions || [];
+    setPreGeneratedCache((prev) => ({
+      ...prev,
+      [cacheKey]: [...(prev[cacheKey] || []), ...newQuestions]
+    }));
+  };
+
+  const clearPreGenerated = (key?: string) => {
+    if (key) {
+      setPreGeneratedCache((prev) => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      });
+    } else {
+      setPreGeneratedCache({});
+    }
+  };
+
+  // Helper to fetch offline questions (drains pre-gen cache first)
   const fetchOfflineQuestions = (
     testType: TestType,
     category: string | 'all',
     count: number
   ): Question[] => {
+    // For latihan sessions, try to drain the pre-generated AI cache first
+    if (category !== 'all') {
+      const cacheKey = `${testType}:${category}`;
+      const cached = preGeneratedCache[cacheKey] || [];
+      if (cached.length >= count) {
+        const taken = cached.slice(0, count);
+        const remaining = cached.slice(count);
+        setPreGeneratedCache((prev) => ({ ...prev, [cacheKey]: remaining }));
+        return shuffleArray(taken);
+      }
+    }
+
     if (testType === 'TPA') {
       const allTpa = getTPAQuestions();
       // If Simulasi, pick 5 random per each of 12 categories (balanced difficulty: 2 mudah, 1 sedang, 2 sulit)
@@ -602,6 +659,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         settings,
         loading,
         history,
+        preGeneratedCache,
         startSimulasi,
         startLatihan,
         submitAnswer,
@@ -614,7 +672,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         updateSettings,
         resetStats,
         loadSavedSession,
-        deleteSavedSession
+        deleteSavedSession,
+        preGenerateQuestions,
+        clearPreGenerated
       }}
     >
       {children}
