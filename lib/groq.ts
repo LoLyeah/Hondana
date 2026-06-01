@@ -33,11 +33,17 @@ Format JSON terstruktur:
 const TBI_SYSTEM = `You are a professional TOEFL-style test writer.
 Create high-quality questions for Tes Bahasa Inggris (TBI) according to the requested category and difficulty.
 The output MUST be a JSON object containing a "questions" array.
+
+CRITICAL LANGUAGE REQUIREMENT:
+- All questions, options (answer choices A-E), and passages (if any) MUST be written entirely in English. Under no circumstances should the question or options contain Indonesian words.
+- The "explanation" MUST be written in Bahasa Indonesia to help Indonesian learners understand the grammar rules, vocabulary meaning, or logical context.
+
 Each TBI question MUST have:
 - 5 answer choices (A to E)
 - correctAnswer (0 for A, 1 for B, 2 for C, 3 for D, 4 for E)
 - Written explanations in Bahasa Indonesia to help Indonesian learners.
-Format JSON structure:
+
+Standard JSON structure:
 {
   "questions": [
     {
@@ -45,11 +51,16 @@ Format JSON structure:
       "testType": "TBI",
       "category": "structure-completion",
       "difficulty": "sedang",
-      "question": "Question...",
-      "options": ["A...", "B...", "C...", "D...", "E..."],
+      "question": "Question text in English...",
+      "options": ["Option A in English...", "Option B in English...", "Option C in English...", "Option D in English...", "Option E in English..."],
       "correctAnswer": 0,
       "explanation": "Penjelasan detail dalam Bahasa Indonesia...",
-      "timeLimit": 30
+      "timeLimit": 30,
+      "passage": "Passage text in English (only if reading-comprehension, otherwise omit or leave blank)",
+      "listening": {
+        "type": "short-conversation",
+        "transcript": "Dialogue transcript in English (only if listening-short or listening-long, otherwise omit)"
+      }
     }
   ]
 }`;
@@ -65,8 +76,26 @@ export async function generateQuestions(
   aiBaseUrl?: string
 ): Promise<Question[]> {
   const systemPrompt = testType === 'TPA' ? TPA_SYSTEM : TBI_SYSTEM;
-  const prompt = `Buatlah ${count} buah soal ${testType} kategori "${category}" dengan tingkat kesulitan "${difficulty}".
-  Pastikan format JSON valid dan persis sesuai petunjuk sistem.`;
+  
+  let prompt = '';
+  if (testType === 'TPA') {
+    prompt = `Buatlah ${count} buah soal TPA kategori "${category}" dengan tingkat kesulitan "${difficulty}".
+    Pastikan format JSON valid dan persis sesuai petunjuk sistem.`;
+  } else {
+    prompt = `Create ${count} high-quality TBI (Tes Bahasa Inggris) questions for the category "${category}" with a difficulty level of "${difficulty}".
+    
+    IMPORTANT REQUIREMENTS:
+    1. The questions, passages (if any), and options MUST be written entirely in English.
+    2. The explanation MUST be written in Bahasa Indonesia.
+    3. Ensure the JSON format is valid and strictly follows the system prompt.`;
+    
+    if (category === 'reading-comprehension') {
+      prompt += `\n\nREADING COMPREHENSION PASSAGE REQUIREMENTS:
+      - You MUST write a single, comprehensive passage of AT LEAST 300 words.
+      - Do NOT write a new passage for each question.
+      - Instead, use the EXACT SAME passage text for at least 2 consecutive questions (by copying the exact same passage string in the "passage" property of those questions) so they form a set based on a single reading passage.`;
+    }
+  }
 
   let responseText = '';
 

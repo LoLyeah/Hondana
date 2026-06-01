@@ -38,6 +38,7 @@ export default function Pengaturan() {
   const [pregenPreset, setPregenPreset] = React.useState<5 | 10 | 20>(10);
   const [pregenTestType, setPregenTestType] = React.useState<'TPA' | 'TBI'>('TPA');
   const [pregenCategory, setPregenCategory] = React.useState<string>('verbal-sinonim');
+  const [selectedTPACategories, setSelectedTPACategories] = React.useState<string[]>(['verbal-sinonim']);
 
   // Custom States
   const [showKey, setShowKey] = React.useState(false);
@@ -162,15 +163,39 @@ export default function Pengaturan() {
   };
 
   const handlePreGenerate = async () => {
-    const cacheKey = `${pregenTestType}:${pregenCategory}`;
-    setPregenLoading(cacheKey);
     setPregenError(null);
-    try {
-      await preGenerateQuestions(pregenTestType, pregenCategory, pregenPreset);
-    } catch (e: any) {
-      setPregenError(e?.message || 'Gagal menghasilkan soal AI. Cek konfigurasi AI terlebih dahulu.');
-    } finally {
+    if (pregenTestType === 'TPA') {
+      if (selectedTPACategories.length === 0) {
+        setPregenError('Silakan pilih minimal 1 kategori TPA untuk di-generate.');
+        return;
+      }
+      
+      let failedCategories: string[] = [];
+      for (const cat of selectedTPACategories) {
+        setPregenLoading(cat);
+        try {
+          await preGenerateQuestions('TPA', cat, pregenPreset);
+        } catch (e: any) {
+          console.error(`Failed to pre-generate ${cat}:`, e);
+          const catLabel = pregenTPACategories.find(c => c.key === cat)?.label || cat;
+          failedCategories.push(catLabel);
+        }
+      }
       setPregenLoading(null);
+      
+      if (failedCategories.length > 0) {
+        setPregenError(`Gagal men-generate kategori: ${failedCategories.join(', ')}. Pastikan kunci API kustom Anda valid dan status AI 'Siap'.`);
+      }
+    } else {
+      const cacheKey = `${pregenTestType}:${pregenCategory}`;
+      setPregenLoading(cacheKey);
+      try {
+        await preGenerateQuestions(pregenTestType, pregenCategory, pregenPreset);
+      } catch (e: any) {
+        setPregenError(e?.message || 'Gagal menghasilkan soal AI. Cek konfigurasi AI terlebih dahulu.');
+      } finally {
+        setPregenLoading(null);
+      }
     }
   };
 
@@ -569,31 +594,93 @@ export default function Pengaturan() {
 
             {/* Category Selector */}
             <div className="flex flex-col gap-1.5">
-              <label className="text-[10px] font-black uppercase tracking-wider text-text-secondary">
-                KATEGORI
+              <label className="text-[10px] font-black uppercase tracking-wider text-text-secondary flex justify-between">
+                <span>KATEGORI</span>
+                {pregenTestType === 'TPA' && (
+                  <span className="text-[9px] text-accent font-black">
+                    {selectedTPACategories.length}/5 Terpilih
+                  </span>
+                )}
               </label>
-              <div className="relative">
-                <select
-                  value={pregenCategory}
-                  onChange={(e) => setPregenCategory(e.target.value)}
-                  className="w-full bg-white/4 border border-white/8 hover:border-white/12 focus:border-accent/40 rounded-xl px-3 py-2 text-sm font-bold text-text-primary outline-none transition-all appearance-none cursor-pointer pr-10 min-h-0 [min-block-size:0] [min-inline-size:0]"
-                  style={{ minBlockSize: 0, minInlineSize: 0 }}
-                >
-                  {pregenCategories.map((cat) => (
-                    <option key={cat.key} value={cat.key} className="bg-gray-950 text-white font-bold">
-                      {cat.label}
-                      {(preGeneratedCache?.[`${pregenTestType}:${cat.key}`] || []).length > 0
-                        ? ` (${(preGeneratedCache?.[`${pregenTestType}:${cat.key}`] || []).length} di cache)`
-                        : ''}
-                    </option>
-                  ))}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-text-secondary">
-                  <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
-                    <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                  </svg>
+              
+              {pregenTestType === 'TPA' ? (
+                // Checklist Grid for TPA (Max 5 selection)
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3 bg-white/3 border border-white/6 rounded-2xl">
+                  {pregenTPACategories.map((cat) => {
+                    const isSelected = selectedTPACategories.includes(cat.key);
+                    const cacheCount = (preGeneratedCache?.[`TPA:${cat.key}`] || []).length;
+                    const isDisabled = !isSelected && selectedTPACategories.length >= 5;
+                    const isGenerating = pregenLoading === cat.key;
+                    
+                    return (
+                      <button
+                        key={cat.key}
+                        type="button"
+                        disabled={!!pregenLoading || (isDisabled && !isSelected)}
+                        onClick={() => {
+                          if (isSelected) {
+                            if (selectedTPACategories.length > 1) {
+                              setSelectedTPACategories(prev => prev.filter(k => k !== cat.key));
+                            }
+                          } else {
+                            if (selectedTPACategories.length < 5) {
+                              setSelectedTPACategories(prev => [...prev, cat.key]);
+                            }
+                          }
+                        }}
+                        className={`flex flex-col items-start gap-1 p-2.5 rounded-xl border text-left transition-all relative ${
+                          isSelected 
+                            ? 'bg-accent/10 border-accent/40 text-text-primary' 
+                            : 'bg-white/2 border-white/6 text-text-secondary hover:border-white/12 hover:text-text-primary'
+                        } ${isDisabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'} ${pregenLoading ? 'cursor-not-allowed' : ''}`}
+                      >
+                        <div className="flex items-center gap-1.5 w-full">
+                          <span className={`h-3 w-3 rounded flex items-center justify-center text-[8px] font-black ${
+                            isSelected ? 'bg-accent text-white' : 'border border-white/20'
+                          }`}>
+                            {isSelected && '✓'}
+                          </span>
+                          <span className="text-[10px] font-bold truncate leading-tight select-none">
+                            {cat.label}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 mt-0.5 justify-between w-full">
+                          <span className="text-[8px] text-text-secondary font-bold select-none">
+                            {cacheCount > 0 ? `${cacheCount} di cache` : '0 di cache'}
+                          </span>
+                          {isGenerating && (
+                            <span className="absolute bottom-1 right-2 inline-block h-3 w-3 animate-spin rounded-full border border-accent border-t-transparent" />
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
-              </div>
+              ) : (
+                // Dropdown Selector for TBI
+                <div className="relative">
+                  <select
+                    value={pregenCategory}
+                    onChange={(e) => setPregenCategory(e.target.value)}
+                    className="w-full bg-white/4 border border-white/8 hover:border-white/12 focus:border-accent/40 rounded-xl px-3 py-2 text-sm font-bold text-text-primary outline-none transition-all appearance-none cursor-pointer pr-10 min-h-0 [min-block-size:0] [min-inline-size:0]"
+                    style={{ minBlockSize: 0, minInlineSize: 0 }}
+                  >
+                    {pregenCategories.map((cat) => (
+                      <option key={cat.key} value={cat.key} className="bg-gray-950 text-white font-bold">
+                        {cat.label}
+                        {(preGeneratedCache?.[`${pregenTestType}:${cat.key}`] || []).length > 0
+                          ? ` (${(preGeneratedCache?.[`${pregenTestType}:${cat.key}`] || []).length} di cache)`
+                          : ''}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-text-secondary">
+                    <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                      <path d="M7 7l3-3 3 3m0 6l-3 3-3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                    </svg>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Preset Quantity */}
@@ -635,7 +722,11 @@ export default function Pengaturan() {
               {pregenLoading ? (
                 <>
                   <LoadingSpinner size="sm" />
-                  <span>Menyiapkan Soal AI...</span>
+                  <span>
+                    {pregenTestType === 'TPA' 
+                      ? `Generating: ${pregenTPACategories.find(c => c.key === pregenLoading)?.label || 'Soal TPA'}...`
+                      : 'Menyiapkan Soal AI...'}
+                  </span>
                 </>
               ) : (
                 <>
