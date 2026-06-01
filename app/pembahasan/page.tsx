@@ -10,12 +10,14 @@ import FiguralDisplay from '../../components/FiguralDisplay';
 import TranscriptCard from '../../components/TranscriptCard';
 import PassageCard from '../../components/PassageCard';
 import { useQuiz } from '../../context/QuizContext';
+import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 
 export default function Pembahasan() {
   const router = useRouter();
   const { session } = useQuiz();
   const [reviewIndex, setReviewIndex] = useState(0);
   const [showGrid, setShowGrid] = useState(false);
+  const [showShortcuts, setShowShortcuts] = useState(false);
 
   // If no session active or not complete, redirect to home
   useEffect(() => {
@@ -42,6 +44,58 @@ export default function Pembahasan() {
       setReviewIndex((prev) => prev - 1);
     }
   };
+
+  // Active when drawer is CLOSED
+  useKeyboardShortcuts({
+    'ArrowRight': () => {
+      if (reviewIndex + 1 < session.questions.length) {
+        setReviewIndex((prev) => prev + 1);
+      } else {
+        router.push('/hasil');
+      }
+    },
+    'l': () => {
+      if (reviewIndex + 1 < session.questions.length) {
+        setReviewIndex((prev) => prev + 1);
+      } else {
+        router.push('/hasil');
+      }
+    },
+    'ArrowLeft': () => {
+      if (reviewIndex > 0) {
+        setReviewIndex((prev) => prev - 1);
+      }
+    },
+    'j': () => {
+      if (reviewIndex > 0) {
+        setReviewIndex((prev) => prev - 1);
+      }
+    },
+    'g': () => {
+      setShowGrid(true);
+    },
+  }, !showGrid && !showShortcuts);
+
+  // Active when drawer or shortcuts is OPEN
+  useKeyboardShortcuts({
+    'Escape': () => {
+      setShowGrid(false);
+      setShowShortcuts(false);
+    },
+    'g': () => {
+      if (showGrid) setShowGrid(false);
+    },
+    '?': () => {
+      if (showShortcuts) setShowShortcuts(false);
+    }
+  }, showGrid || showShortcuts);
+
+  // Active when both are CLOSED (to open shortcuts with '?')
+  useKeyboardShortcuts({
+    '?': () => {
+      setShowShortcuts(true);
+    }
+  }, !showGrid && !showShortcuts);
 
   const isFirst = reviewIndex === 0;
   const isLast = reviewIndex + 1 === session.questions.length;
@@ -174,6 +228,16 @@ export default function Pembahasan() {
           </span>
         </button>
 
+        {/* Shortcut Keyboard Legend Button (Desktop only) */}
+        <button
+          onClick={() => setShowShortcuts(!showShortcuts)}
+          className="hidden sm:flex w-9 h-9 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-text-secondary hover:text-text-primary items-center justify-center font-bold text-xs transition-all active:scale-95 cursor-pointer shrink-0"
+          title="Shortcut Keyboard (?)"
+          aria-label="Shortcut Keyboard"
+        >
+          <span>⌨️</span>
+        </button>
+
         {/* Next Button */}
         <button
           onClick={handleNext}
@@ -288,6 +352,112 @@ export default function Pembahasan() {
                   <div className="w-3 h-3 rounded bg-white/5 border border-white/5" />
                   <span>Dilewati (⚪)</span>
                 </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Keyboard Shortcuts Legend Drawer */}
+      <AnimatePresence>
+        {showShortcuts && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowShortcuts(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 cursor-pointer"
+            />
+
+            {/* Slide-up Drawer Container */}
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 220 }}
+              className="fixed bottom-0 left-0 right-0 z-50 bg-gray-950/95 border-t border-white/8 backdrop-blur-xl rounded-t-[32px] p-6 max-w-[720px] mx-auto w-full max-h-[70vh] overflow-y-auto flex flex-col gap-5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] text-left"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-white/5">
+                <div className="flex flex-col text-left">
+                  <h3 className="text-sm font-black uppercase tracking-wider text-text-primary flex items-center gap-2">
+                    <span>⌨️</span> Shortcut Keyboard Review
+                  </h3>
+                  <span className="text-[10px] font-bold text-text-secondary">
+                    Gunakan shortcut berikut untuk navigasi review sesi kuis lebih cepat.
+                  </span>
+                </div>
+                <button
+                  onClick={() => setShowShortcuts(false)}
+                  className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-text-secondary flex items-center justify-center cursor-pointer outline-none min-h-0 min-w-0"
+                  style={{ minBlockSize: 0, minInlineSize: 0 }}
+                  aria-label="Tutup Shortcut"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Shortcuts Table/Grid */}
+              <div className="flex flex-col gap-3 my-2">
+                <div className="grid grid-cols-12 gap-2 pb-2.5 border-b border-white/5 text-[10px] font-black uppercase tracking-wider text-text-secondary">
+                  <div className="col-span-5">Fungsi / Aksi</div>
+                  <div className="col-span-7 text-right">Tombol Keyboard</div>
+                </div>
+
+                <div className="flex flex-col gap-4 py-2">
+                  <div className="grid grid-cols-12 items-center gap-2">
+                    <div className="col-span-8 flex flex-col">
+                      <span className="text-xs font-bold text-text-primary">Review Selanjutnya</span>
+                      <span className="text-[10px] text-text-secondary">Pindah ke pembahasan berikutnya</span>
+                    </div>
+                    <div className="col-span-4 flex justify-end gap-1">
+                      <kbd className="px-2 py-1 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary">L</kbd>
+                      <span className="text-text-secondary text-xs">atau</span>
+                      <kbd className="px-2 py-1 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary">→</kbd>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-12 items-center gap-2">
+                    <div className="col-span-8 flex flex-col">
+                      <span className="text-xs font-bold text-text-primary">Review Sebelumnya</span>
+                      <span className="text-[10px] text-text-secondary">Pindah ke pembahasan sebelumnya</span>
+                    </div>
+                    <div className="col-span-4 flex justify-end gap-1">
+                      <kbd className="px-2 py-1 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary">J</kbd>
+                      <span className="text-text-secondary text-xs">atau</span>
+                      <kbd className="px-2 py-1 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary">←</kbd>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-12 items-center gap-2">
+                    <div className="col-span-9 flex flex-col">
+                      <span className="text-xs font-bold text-text-primary">Buka/Tutup Daftar Soal Review</span>
+                      <span className="text-[10px] text-text-secondary">Toggle grid daftar soal review</span>
+                    </div>
+                    <div className="col-span-3 flex justify-end">
+                      <kbd className="px-2 py-1 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary">G</kbd>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-12 items-center gap-2">
+                    <div className="col-span-9 flex flex-col">
+                      <span className="text-xs font-bold text-text-primary">Tutup Menu / Drawer</span>
+                      <span className="text-[10px] text-text-secondary">Menutup popover shortcut atau daftar soal review</span>
+                    </div>
+                    <div className="col-span-3 flex justify-end">
+                      <kbd className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary">Esc</kbd>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Close Info */}
+              <div className="text-[10px] font-bold text-text-secondary bg-white/3 p-3.5 rounded-2xl border border-white/5 mt-2 text-center">
+                Tekan <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded font-mono text-[9px] text-text-primary">Esc</kbd> atau <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded font-mono text-[9px] text-text-primary">?</kbd> untuk menutup petunjuk ini.
               </div>
             </motion.div>
           </>
