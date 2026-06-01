@@ -45,6 +45,14 @@ function KategoriContent() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [mounted, setMounted] = React.useState(false);
 
+  // Exhaustion modal state — must be before any conditional return (Rules of Hooks)
+  const [exhaustionModal, setExhaustionModal] = useState<{
+    isOpen: boolean;
+    catKey: string;
+    catLabel: string;
+    available: number;
+  }>({ isOpen: false, catKey: '', catLabel: '', available: 0 });
+
   React.useEffect(() => {
     setMounted(true);
   }, []);
@@ -56,14 +64,6 @@ function KategoriContent() {
       </div>
     );
   }
-
-  // Exhaustion modal state
-  const [exhaustionModal, setExhaustionModal] = useState<{
-    isOpen: boolean;
-    catKey: string;
-    catLabel: string;
-    available: number;
-  }>({ isOpen: false, catKey: '', catLabel: '', available: 0 });
 
   const useAI = settings.useAI;
   const latihanCount = settings.latihanCount;

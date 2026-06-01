@@ -30,9 +30,97 @@ export default function Pengaturan() {
   const [installStatus, setInstallStatus] = React.useState<'idle' | 'accepted' | 'dismissed'>('idle');
   const [mounted, setMounted] = React.useState(false);
 
+  // Pre-generate cache state — ALL hooks must be before any conditional return
+  const [pregenLoading, setPregenLoading] = React.useState<string | null>(null);
+  const [pregenError, setPregenError] = React.useState<string | null>(null);
+  const [pregenPreset, setPregenPreset] = React.useState<5 | 10 | 20>(10);
+  const [pregenTestType, setPregenTestType] = React.useState<'TPA' | 'TBI'>('TPA');
+  const [pregenCategory, setPregenCategory] = React.useState<string>('verbal-sinonim');
+
+  // Custom States
+  const [showKey, setShowKey] = React.useState(false);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [status, setStatus] = React.useState<'ready' | 'checking' | 'error' | 'unconfigured'>('checking');
+  const [statusError, setStatusError] = React.useState<string | null>(null);
+
+  // Dynamic Groq Models States
+  const [fetchedModels, setFetchedModels] = React.useState<any[]>([]);
+  const [isLoadingModels, setIsLoadingModels] = React.useState(false);
+  const [modelsFetchError, setModelsFetchError] = React.useState<string | null>(null);
+
+  // Safe default extractors to prevent crash when settings are loaded from outdated localStorage
+  const aiProvider = settings?.aiProvider || 'built-in';
+  const aiModel = settings?.aiModel || 'llama-3.1-8b-instant';
+  const customApiKey = settings?.customApiKey || '';
+  const aiBaseUrl = settings?.aiBaseUrl || '';
+
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Fetch Groq models when modal opens — must be before early return
+  React.useEffect(() => {
+    if (!mounted) return;
+    if (isModalOpen && (aiProvider === 'built-in' || aiProvider === 'groq-custom')) {
+      const doFetch = async () => {
+        setIsLoadingModels(true);
+        setModelsFetchError(null);
+        try {
+          const res = await fetch('/api/groq-models', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ aiProvider, customApiKey })
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            setFetchedModels(data.models || []);
+          } else {
+            setModelsFetchError(data.error || 'Gagal mengambil daftar model dari Groq.');
+          }
+        } catch (e: any) {
+          setModelsFetchError(e.message || 'Terjadi kesalahan saat menghubungi API kuis.');
+        } finally {
+          setIsLoadingModels(false);
+        }
+      };
+      doFetch();
+    }
+  }, [mounted, isModalOpen, aiProvider, customApiKey]);
+
+  // Debounced connection status trigger — must be before early return
+  React.useEffect(() => {
+    if (!mounted) return;
+    const delayDebounce = setTimeout(() => {
+      const doTest = async () => {
+        if (aiProvider !== 'built-in' && (!customApiKey || customApiKey.trim() === '')) {
+          setStatus('unconfigured');
+          setStatusError(null);
+          return;
+        }
+        setStatus('checking');
+        setStatusError(null);
+        try {
+          const res = await fetch('/api/test-ai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ aiProvider, customApiKey, aiBaseUrl })
+          });
+          const data = await res.json();
+          if (data.success) {
+            setStatus('ready');
+          } else {
+            setStatus('error');
+            setStatusError(data.error);
+          }
+        } catch (e: any) {
+          setStatus('error');
+          setStatusError(e.message || 'Gagal menghubungi server kuis');
+        }
+      };
+      doTest();
+    }, 850);
+    return () => clearTimeout(delayDebounce);
+  }, [mounted, aiProvider, customApiKey, aiBaseUrl]);
 
   if (!mounted) {
     return (
@@ -42,13 +130,6 @@ export default function Pengaturan() {
     );
   }
   
-  // Pre-generate cache state
-  const [pregenLoading, setPregenLoading] = React.useState<string | null>(null); // key currently generating
-  const [pregenError, setPregenError] = React.useState<string | null>(null);
-  const [pregenPreset, setPregenPreset] = React.useState<5 | 10 | 20>(10);
-  const [pregenTestType, setPregenTestType] = React.useState<'TPA' | 'TBI'>('TPA');
-  const [pregenCategory, setPregenCategory] = React.useState<string>('verbal-sinonim');
-
   const pregenTPACategories = [
     { key: 'verbal-sinonim', label: 'Sinonim' },
     { key: 'verbal-antonim', label: 'Antonim' },
@@ -90,23 +171,6 @@ export default function Pengaturan() {
   // Total cached questions
   const totalCached = Object.values(preGeneratedCache || {}).reduce((s, arr) => s + arr.length, 0);
 
-  
-  // Safe default extractors to prevent crash when settings are loaded from outdated localStorage
-  const aiProvider = settings?.aiProvider || 'built-in';
-  const aiModel = settings?.aiModel || 'llama-3.1-8b-instant';
-  const customApiKey = settings?.customApiKey || '';
-  const aiBaseUrl = settings?.aiBaseUrl || '';
-
-  // Custom States
-  const [showKey, setShowKey] = React.useState(false);
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [status, setStatus] = React.useState<'ready' | 'checking' | 'error' | 'unconfigured'>('checking');
-  const [statusError, setStatusError] = React.useState<string | null>(null);
-
-  // Dynamic Groq Models States
-  const [fetchedModels, setFetchedModels] = React.useState<any[]>([]);
-  const [isLoadingModels, setIsLoadingModels] = React.useState(false);
-  const [modelsFetchError, setModelsFetchError] = React.useState<string | null>(null);
 
   const fetchGroqModels = async () => {
     setIsLoadingModels(true);
@@ -132,13 +196,6 @@ export default function Pengaturan() {
       setIsLoadingModels(false);
     }
   };
-
-  // Fetch when modal opens and provider is Groq
-  React.useEffect(() => {
-    if (isModalOpen && (aiProvider === 'built-in' || aiProvider === 'groq-custom')) {
-      fetchGroqModels();
-    }
-  }, [isModalOpen, aiProvider]);
 
   // Connection Tester
   const testConnection = async () => {
@@ -174,15 +231,6 @@ export default function Pengaturan() {
       setStatusError(e.message || 'Gagal menghubungi server kuis');
     }
   };
-
-  // Debounced connection status trigger
-  React.useEffect(() => {
-    const delayDebounce = setTimeout(() => {
-      testConnection();
-    }, 850);
-
-    return () => clearTimeout(delayDebounce);
-  }, [aiProvider, customApiKey, aiBaseUrl]);
 
   const handleProviderChange = (provider: typeof settings.aiProvider) => {
     let defaultModel = 'llama-3.1-8b-instant';

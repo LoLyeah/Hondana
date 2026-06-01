@@ -37,16 +37,9 @@ export default function Hasil() {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return (
-      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
-        <span className="text-4xl animate-spin">⏳</span>
-      </div>
-    );
-  }
-
-  // Compute final results on mount
+  // Compute final results on mount — this hook MUST be before any conditional return
   useEffect(() => {
+    if (!mounted) return;
     if (session) {
       if (!session.isComplete) {
         const res = endQuiz();
@@ -78,7 +71,15 @@ export default function Hasil() {
         });
       }
     }
-  }, [session, endQuiz]);
+  }, [mounted, session, endQuiz]);
+
+  if (!mounted) {
+    return (
+      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
+        <span className="text-4xl animate-spin">⏳</span>
+      </div>
+    );
+  }
 
   // Helper formatting for durations
   const formatTime = (secs: number) => {
