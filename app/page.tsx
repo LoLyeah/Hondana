@@ -58,13 +58,13 @@ export default function Home() {
       <Header title="Hondana" />
 
       <motion.main
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
         className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6"
       >
         {/* Welcome Section */}
-        <motion.section variants={itemVariants} className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-2">
             <span className="text-xl">🎯</span>
             <span className="text-[10px] font-black uppercase tracking-widest text-accent">PREMIUM PREPARATION</span>
@@ -75,10 +75,10 @@ export default function Home() {
           <p className="text-sm font-semibold text-text-secondary leading-relaxed">
             Latih kemampuan berpikir taktis TPA dan keahlian bahasa TBI sesuai standar resmi ujian seleksi.
           </p>
-        </motion.section>
+        </div>
 
         {/* Stats Grid */}
-        <motion.section variants={itemVariants} className="grid grid-cols-1 min-[480px]:grid-cols-3 gap-3 w-full">
+        <div className="grid grid-cols-1 min-[480px]:grid-cols-3 gap-3 w-full">
           <StatsCard
             title="Sesi Selesai"
             value={stats?.sessionsCompleted ?? 0}
@@ -97,10 +97,10 @@ export default function Home() {
             icon="🎯"
             desc="Rasio jawaban benar"
           />
-        </motion.section>
+        </div>
 
         {/* Modules Grid */}
-        <motion.section variants={itemVariants} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-black uppercase tracking-wider text-text-secondary">
               Pilih Modul Ujian
@@ -124,7 +124,7 @@ export default function Home() {
               onClick={() => handleSelectModule('TBI')}
             />
           </div>
-        </motion.section>
+        </div>
       </motion.main>
 
       <BottomNav />

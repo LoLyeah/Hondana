@@ -145,9 +145,9 @@ function KategoriContent() {
       <Header title={`Modul ${type}`} showBack onBack={() => router.push('/')} />
 
       <motion.main
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
         className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6"
       >
         {/* Loading Indicator Overlay */}
@@ -159,7 +159,7 @@ function KategoriContent() {
         )}
 
         {/* Configurations Area */}
-        <motion.section variants={itemVariants} className="glass border border-white/8 p-5 flex flex-col gap-4">
+        <div className="glass border border-white/8 p-5 flex flex-col gap-4">
           <div className="flex items-center justify-between border-b border-white/5 pb-2">
             <h3 className="text-xs font-black uppercase tracking-wider text-text-secondary">
               Konfigurasi Latihan ({type})
@@ -243,10 +243,10 @@ function KategoriContent() {
               </button>
             </div>
           </div>
-        </motion.section>
+        </div>
 
         {/* Simulasi Ujian Section */}
-        <motion.section variants={itemVariants}>
+        <div>
           <div className="glass border border-accent/20 bg-accent/5 p-6 flex flex-col gap-4 glow-tpa">
             <div className="flex flex-col gap-1.5">
               <div className="flex items-center gap-2">
@@ -267,10 +267,10 @@ function KategoriContent() {
               <span>🚀 Mulai Simulasi Ujian</span>
             </button>
           </div>
-        </motion.section>
+        </div>
 
         {/* Latihan Per Kategori Section */}
-        <motion.section variants={itemVariants} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <h3 className="text-sm font-black uppercase tracking-wider text-text-secondary">
               📚 Latihan Per Kategori
@@ -328,7 +328,7 @@ function KategoriContent() {
               </div>
             ))}
           </div>
-        </motion.section>
+        </div>
       </motion.main>
 
       <BottomNav />
