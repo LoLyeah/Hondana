@@ -11,6 +11,8 @@ import { useQuiz } from '../../context/QuizContext';
 import { TestType } from '../../lib/types';
 import { getTPAQuestions } from '../../data/tpa-questions';
 import { getTBIQuestions } from '../../data/tbi-questions';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import LoadingSkeleton from '../../components/LoadingSkeleton';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -59,9 +61,36 @@ function KategoriContent() {
 
   if (!mounted) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
-        <span className="text-4xl animate-spin">⏳</span>
-      </div>
+      <>
+        <Header title={`Modul ${type}`} />
+        <main className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6 min-h-[60vh] opacity-60">
+          {/* Config area mimic */}
+          <div className="glass border border-white/5 p-5 flex flex-col gap-4 animate-pulse">
+            <div className="h-3.5 w-36 bg-white/10 rounded-md border-b border-white/5 pb-2" />
+            <div className="flex flex-col gap-4 mt-2">
+              {Array.from({ length: 3 }).map((_, idx) => (
+                <div key={idx} className="flex items-center justify-between">
+                  <div className="flex flex-col gap-1.5">
+                    <div className="h-4 w-32 bg-white/10 rounded-md" />
+                    <div className="h-2 w-44 bg-white/5 rounded-md" />
+                  </div>
+                  <div className="w-12 h-6 rounded-full bg-white/10" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Main simulation button mimic */}
+          <div className="glass border border-white/5 p-6 h-28 animate-pulse rounded-2xl bg-white/3" />
+          
+          {/* Categories Grid mimic */}
+          <div className="flex flex-col gap-2.5">
+            <div className="h-3.5 w-40 bg-white/10 rounded-md animate-pulse" />
+            <LoadingSkeleton type="categories" count={4} className="mt-2" />
+          </div>
+        </main>
+        <BottomNav />
+      </>
     );
   }
 
@@ -152,9 +181,13 @@ function KategoriContent() {
       >
         {/* Loading Indicator Overlay */}
         {loading && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex flex-col items-center justify-center gap-3">
-            <span className="text-4xl animate-spin">⏳</span>
-            <span className="text-sm font-bold text-accent animate-pulse">Menyiapkan Paket Soal AI...</span>
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex flex-col items-center justify-center">
+            <div className="glass p-8 flex flex-col items-center justify-center border-accent/20 max-w-[320px] mx-4 text-center">
+              <LoadingSpinner size="lg" label="Menyiapkan Paket Soal AI..." />
+              <p className="text-[10px] font-bold text-text-secondary mt-3.5 leading-relaxed">
+                Harap tunggu, model AI sedang merancang paket soal simulasi khusus untuk Anda.
+              </p>
+            </div>
           </div>
         )}
 
@@ -357,9 +390,8 @@ function KategoriContent() {
 export default function Kategori() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-950 text-white gap-3">
-        <span className="text-4xl animate-spin">⏳</span>
-        <span className="text-sm font-bold text-accent animate-pulse">Memuat Kategori...</span>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg-primary)] text-[var(--text-primary)]">
+        <LoadingSpinner size="lg" label="Memuat Kategori..." />
       </div>
     }>
       <KategoriContent />

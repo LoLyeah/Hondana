@@ -269,6 +269,12 @@
     }
   }
 
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
   @keyframes float-up {
     0% {
       opacity: 0;

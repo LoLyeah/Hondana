@@ -6,6 +6,8 @@ import Header from '../../components/Header';
 import BottomNav from '../../components/BottomNav';
 import { useQuiz } from '../../context/QuizContext';
 import { usePWAInstall } from '../../hooks/usePWAInstall';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import LoadingSkeleton from '../../components/LoadingSkeleton';
 
 const containerVariants = {
   hidden: { opacity: 0, y: 15 },
@@ -124,9 +126,13 @@ export default function Pengaturan() {
 
   if (!mounted) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
-        <span className="text-4xl animate-spin">⏳</span>
-      </div>
+      <>
+        <Header title="Pengaturan" />
+        <main className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6 min-h-[60vh] opacity-60">
+          <LoadingSkeleton type="settings" />
+        </main>
+        <BottomNav />
+      </>
     );
   }
   
@@ -628,8 +634,8 @@ export default function Pengaturan() {
             >
               {pregenLoading ? (
                 <>
-                  <span className="animate-spin text-sm">⏳</span>
-                  Menyiapkan Soal AI...
+                  <LoadingSpinner size="sm" />
+                  <span>Menyiapkan Soal AI...</span>
                 </>
               ) : (
                 <>
@@ -941,9 +947,8 @@ export default function Pengaturan() {
               {/* Modal Body - Dynamic scrollable list */}
               <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-3 scrollbar-thin">
                 {isLoadingModels ? (
-                  <div className="flex flex-col items-center justify-center py-16 gap-3">
-                    <span className="text-3xl animate-spin">⏳</span>
-                    <span className="text-xs font-bold text-accent animate-pulse">Menghubungi API Groq & Mengambil Model...</span>
+                  <div className="flex flex-col items-center justify-center py-16">
+                    <LoadingSpinner size="md" label="Menghubungi API Groq & Mengambil Model..." />
                   </div>
                 ) : modelsFetchError ? (
                   <div className="p-5 bg-error/10 border border-error/20 rounded-2xl flex flex-col gap-3 text-center items-center">

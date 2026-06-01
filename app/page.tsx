@@ -8,6 +8,7 @@ import BottomNav from '../components/BottomNav';
 import StatsCard from '../components/StatsCard';
 import TestTypeCard from '../components/TestTypeCard';
 import { useQuiz } from '../context/QuizContext';
+import LoadingSkeleton from '../components/LoadingSkeleton';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -47,9 +48,23 @@ export default function Home() {
 
   if (!mounted) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
-        <span className="text-4xl animate-spin">⏳</span>
-      </div>
+      <>
+        <Header title="Hondana" />
+        <main className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6 min-h-[60vh] opacity-60">
+          {/* Welcome Section mimic */}
+          <div className="flex flex-col gap-1.5 animate-pulse">
+            <div className="h-3 w-32 bg-white/10 rounded-md" />
+            <div className="h-7 w-60 bg-white/10 rounded-md mt-1" />
+            <div className="h-3.5 w-96 bg-white/5 rounded-md mt-1" />
+          </div>
+          
+          <LoadingSkeleton type="stats" className="mt-2" />
+          
+          <div className="h-3 w-28 bg-white/10 rounded-md mt-4 animate-pulse" />
+          <LoadingSkeleton type="categories" count={2} className="mt-1" />
+        </main>
+        <BottomNav />
+      </>
     );
   }
 
