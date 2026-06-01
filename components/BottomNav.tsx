@@ -99,11 +99,7 @@ export default function BottomNav() {
           </div>
         </div>
  
-        {/* Brand Copyright Footer */}
-        <div className="glass border border-white/8 p-4 rounded-2xl flex flex-col items-center justify-center gap-1 select-none text-center">
-          <span className="text-[10px] font-black uppercase tracking-wider text-text-secondary">PROGRAM BELAJAR</span>
-          <span className="text-[9px] font-bold text-accent/80 leading-none">© {new Date().getFullYear()} Hondana</span>
-        </div>
+
       </aside>
     </>
   );
