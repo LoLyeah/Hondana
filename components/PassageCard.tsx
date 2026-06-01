@@ -45,9 +45,18 @@ export default function PassageCard({ passage }: PassageCardProps) {
           isOpen ? 'max-h-[350px] p-5 overflow-y-auto border-t-0' : 'max-h-0 overflow-hidden'
         }`}
       >
-        <p className="text-sm leading-relaxed text-text-primary text-justify whitespace-pre-wrap">
-          {passage}
-        </p>
+        {passage.split(/\r?\n/).map((paragraph, index) => {
+          const trimmed = paragraph.trim();
+          if (!trimmed) return null;
+          return (
+            <p
+              key={index}
+              className="text-sm leading-relaxed text-text-primary text-justify mb-4 last:mb-0"
+            >
+              {trimmed}
+            </p>
+          );
+        })}
       </div>
     </div>
   );
