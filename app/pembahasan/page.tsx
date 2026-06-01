@@ -48,11 +48,12 @@ export default function Pembahasan() {
   const userChosen = session.answers[reviewIndex];
 
   return (
-    <>
+    <div className="w-full max-w-[720px] mx-auto flex flex-col flex-1 relative">
       <Header
         title={`Review ${session.testType}`}
         showBack
         onBack={() => router.push('/hasil')}
+        noSidebar
       />
 
       <main className="flex-1 flex flex-col gap-5 px-4 py-5 pb-16">
@@ -292,6 +293,6 @@ export default function Pembahasan() {
           </>
         )}
       </AnimatePresence>
-    </>
+    </div>
   );
 }

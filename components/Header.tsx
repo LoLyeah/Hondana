@@ -9,9 +9,10 @@ interface HeaderProps {
   title: string;
   showBack?: boolean;
   onBack?: () => void;
+  noSidebar?: boolean;
 }
 
-export default function Header({ title, showBack = false, onBack }: HeaderProps) {
+export default function Header({ title, showBack = false, onBack, noSidebar = false }: HeaderProps) {
   const router = useRouter();
   const { settings, updateSettings } = useQuiz();
 
@@ -28,7 +29,7 @@ export default function Header({ title, showBack = false, onBack }: HeaderProps)
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full glass border-b border-white/8 backdrop-blur-md px-4 md:pl-60 py-3 flex items-center justify-between">
+    <header className={`sticky top-0 z-40 w-full glass border-b border-white/8 backdrop-blur-md px-4 ${noSidebar ? '' : 'md:pl-60'} py-3 flex items-center justify-between`}>
       <div className="flex items-center gap-3">
         {showBack && (
           <button
