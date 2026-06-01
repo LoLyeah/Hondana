@@ -11,26 +11,20 @@ import { useQuiz } from '../../context/QuizContext';
 import { SessionResult, SavedSession } from '../../lib/types';
 
 const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08
-    }
-  }
-};
-
-const itemVariants = {
   hidden: { opacity: 0, y: 15 },
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring" as const,
-      stiffness: 260,
-      damping: 22
+      duration: 0.35,
+      ease: "easeOut" as const
     }
   }
+};
+
+const itemVariants = {
+  hidden: {},
+  show: {}
 };
 
 export default function Hasil() {
