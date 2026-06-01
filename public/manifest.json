@@ -1,0 +1,42 @@
+{
+  "name": "Hondana — Latihan TPA & TBI",
+  "short_name": "Hondana",
+  "description": "Aplikasi latihan ujian TPA dan TBI interaktif dengan analisis AI untuk kelulusan BUMN, CPNS, dan seleksi kerja.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#5f63f2",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "id",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Latihan TPA",
+      "short_name": "TPA",
+      "url": "/kategori?type=TPA",
+      "description": "Mulai latihan soal TPA"
+    },
+    {
+      "name": "Latihan TBI",
+      "short_name": "TBI",
+      "url": "/kategori?type=TBI",
+      "description": "Mulai latihan soal TBI / TOEFL"
+    }
+  ]
+}
