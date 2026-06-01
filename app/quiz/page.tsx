@@ -42,20 +42,26 @@ export default function Quiz() {
 
   const currentQuestion = session?.questions[session.currentIndex];
 
+  // Total duration in seconds based on test type (TPA: 60 minutes, TBI: 50 minutes)
+  const totalDurationSeconds = session?.testType === 'TPA' ? 3600 : 3000;
+
   // Callback when timer expires
   const handleTimeUp = () => {
-    if (isAnswered) return;
-    
-    // Auto submit as skipped
-    handleAnswerSubmit(null);
+    if (advanceTimeoutRef.current) {
+      clearTimeout(advanceTimeoutRef.current);
+      advanceTimeoutRef.current = null;
+    }
+    alert('Waktu ujian Anda telah habis! Sesi kuis akan diselesaikan secara otomatis.');
+    endQuiz();
+    router.push('/hasil');
   };
 
-  // Timer Hook integration
-  const timerLimit = currentQuestion?.timeLimit || 60;
-  const { timeLeft, resetTimer } = useTimer({
-    initialTime: timerLimit,
+  // Timer Hook integration (session-level stable countdown)
+  const { timeLeft } = useTimer({
+    startTime: session?.startTime || Date.now(),
+    totalDurationSeconds,
     onTimeUp: handleTimeUp,
-    isActive: session !== null && !session.isComplete && !isAnswered && settings.timerEnabled
+    isActive: session !== null && !session.isComplete && settings.timerEnabled
   });
 
   // Track time used per question
@@ -80,12 +86,8 @@ export default function Quiz() {
         clearTimeout(advanceTimeoutRef.current);
         advanceTimeoutRef.current = null;
       }
-
-      if (currentQuestion) {
-        resetTimer(currentQuestion.timeLimit);
-      }
     }
-  }, [session?.currentIndex, currentQuestion, resetTimer]);
+  }, [session?.currentIndex, currentQuestion]);
 
   if (!session || !currentQuestion) return null;
 
@@ -168,7 +170,7 @@ export default function Quiz() {
         </div>
  
         {settings.timerEnabled ? (
-          <TimerRing timeLeft={timeLeft} timeLimit={timerLimit} />
+          <TimerRing timeLeft={timeLeft} timeLimit={totalDurationSeconds} />
         ) : (
           <div className="w-12 h-12" />
         )}

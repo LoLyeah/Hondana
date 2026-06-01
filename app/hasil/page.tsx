@@ -337,6 +337,28 @@ export default function Hasil() {
         animate="show"
         className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6"
       >
+        {/* Back to history button */}
+        <motion.div variants={itemVariants}>
+          <button
+            onClick={handleClose}
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-text-secondary hover:text-text-primary transition-colors cursor-pointer outline-none select-none group"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5"
+            >
+              <path
+                fillRule="evenodd"
+                d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L4.862 9.25H16.25A.75.75 0 0 1 17 10Z"
+                clipRule="evenodd"
+              />
+            </svg>
+            Kembali ke Riwayat
+          </button>
+        </motion.div>
+
         {/* Congratulations Banner */}
         <motion.section variants={itemVariants} className="flex flex-col gap-1.5 text-center items-center py-4">
           <span className="text-5xl">🎉</span>

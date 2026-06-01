@@ -3,13 +3,17 @@
 import { useState, useEffect, useRef } from 'react';
 
 interface UseTimerProps {
-  initialTime: number;
+  startTime: number;
+  totalDurationSeconds: number;
   onTimeUp: () => void;
   isActive: boolean;
 }
 
-export function useTimer({ initialTime, onTimeUp, isActive }: UseTimerProps) {
-  const [timeLeft, setTimeLeft] = useState(initialTime);
+export function useTimer({ startTime, totalDurationSeconds, onTimeUp, isActive }: UseTimerProps) {
+  const [timeLeft, setTimeLeft] = useState(() => {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    return Math.max(0, totalDurationSeconds - elapsed);
+  });
   const onTimeUpRef = useRef(onTimeUp);
 
   // Keep callback ref fresh to avoid restarting timer when it changes
@@ -17,43 +21,36 @@ export function useTimer({ initialTime, onTimeUp, isActive }: UseTimerProps) {
     onTimeUpRef.current = onTimeUp;
   }, [onTimeUp]);
 
-  // Reset time left when initialTime changes
   useEffect(() => {
-    setTimeLeft(initialTime);
-  }, [initialTime]);
+    if (!isActive) return;
 
-  useEffect(() => {
-    if (!isActive || timeLeft <= 0) {
-      if (timeLeft <= 0 && isActive) {
-        onTimeUpRef.current();
-      }
-      return;
-    }
-
-    const startTime = Date.now();
-    const startVal = timeLeft;
-
-    const interval = setInterval(() => {
+    const tick = () => {
       const elapsed = Math.floor((Date.now() - startTime) / 1000);
-      const nextTime = Math.max(0, startVal - elapsed);
-      
+      const nextTime = Math.max(0, totalDurationSeconds - elapsed);
       setTimeLeft(nextTime);
 
-      if (nextTime === 0) {
-        clearInterval(interval);
+      if (nextTime <= 0) {
         onTimeUpRef.current();
+        return true;
+      }
+      return false;
+    };
+
+    // Run tick immediately on effect start
+    const isDone = tick();
+    if (isDone) return;
+
+    const interval = setInterval(() => {
+      const isDone = tick();
+      if (isDone) {
+        clearInterval(interval);
       }
     }, 200);
 
     return () => clearInterval(interval);
-  }, [isActive, timeLeft, initialTime]);
-
-  const resetTimer = (newTime = initialTime) => {
-    setTimeLeft(newTime);
-  };
+  }, [isActive, startTime, totalDurationSeconds]);
 
   return {
     timeLeft,
-    resetTimer,
   };
 }

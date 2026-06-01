@@ -185,7 +185,7 @@ function KategoriContent() {
               <div className="flex flex-col">
                 <span className="text-sm font-bold">Batasan Waktu (Timer)</span>
                 <span className="text-[10px] font-bold text-text-secondary leading-tight">
-                  Aktifkan countdown penghitung waktu mundur per soal
+                  Aktifkan batasan waktu ujian per sesi (TPA: 60 menit, TBI: 50 menit)
                 </span>
               </div>
               <button

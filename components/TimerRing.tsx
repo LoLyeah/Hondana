@@ -20,12 +20,19 @@ export default function TimerRing({ timeLeft, timeLimit }: TimerRingProps) {
   let ringColor = 'stroke-success';
   let isUrgent = false;
 
-  if (progress <= 0.2) {
+  if (progress <= 0.1) {
     ringColor = 'stroke-error';
     isUrgent = true;
-  } else if (progress <= 0.5) {
+  } else if (progress <= 0.25) {
     ringColor = 'stroke-amber-500';
   }
+
+  // Format time as MM:SS (e.g. 59:59)
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   return (
     <div className="relative flex items-center justify-center w-12 h-12">
@@ -51,8 +58,8 @@ export default function TimerRing({ timeLeft, timeLimit }: TimerRingProps) {
         />
       </svg>
       {/* Time Text */}
-      <span className={`absolute text-xs font-bold ${isUrgent ? 'text-error animate-pulse' : 'text-text-primary'}`}>
-        {timeLeft}s
+      <span className={`absolute text-[9px] font-black tracking-tighter ${isUrgent ? 'text-error animate-pulse' : 'text-text-primary'}`}>
+        {formatTime(timeLeft)}
       </span>
     </div>
   );
