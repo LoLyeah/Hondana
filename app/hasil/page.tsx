@@ -240,7 +240,7 @@ export default function Hasil() {
                         className="glass border border-white/8 p-4 rounded-2xl flex flex-col gap-4 hover:border-white/15 transition-all"
                       >
                         {/* Header Details */}
-                        <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-center justify-between gap-4">
                           <div className="flex flex-col gap-1.5">
                             <div className="flex items-center gap-2">
                               <span className={`text-[10px] font-black px-2 py-0.5 rounded-md border leading-none ${
