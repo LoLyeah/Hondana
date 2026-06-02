@@ -9,6 +9,7 @@ import { usePWAInstall } from '../../hooks/usePWAInstall';
 import { sfx } from '../../lib/audio';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
+import versionData from '../../data/version.json';
 
 const containerVariants = {
   hidden: { opacity: 0, y: 15 },
@@ -1072,8 +1073,8 @@ export default function Pengaturan() {
 
         {/* About App Info */}
         <motion.section variants={itemVariants} className="flex flex-col items-center gap-1 mt-4 text-center select-none">
-          <span className="text-xs font-black tracking-widest text-text-secondary/50">HONDANA V1.0.0</span>
-          <span className="text-[10px] font-bold text-text-secondary/30">PREPARED BY GOOGLE DEEPMIND ANTIGRAVITY</span>
+          <span className="text-xs font-black tracking-widest text-text-secondary/50">HONDANA V{versionData.version}</span>
+          <span className="text-[10px] font-bold text-text-secondary/30">DEVELOPED BY {versionData.developedBy}</span>
         </motion.section>
       </motion.main>
 
