@@ -53,7 +53,7 @@ export default function QuizOption({
       <div className="flex-1 text-sm font-semibold leading-relaxed">
         {isFigural ? (
           <div
-            className="w-full max-h-[80px] flex items-center justify-center"
+            className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center"
             dangerouslySetInnerHTML={{ __html: text }}
           />
         ) : (
