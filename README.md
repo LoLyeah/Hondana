@@ -115,12 +115,13 @@ If AI generation fails or no API key is configured, the app silently falls back 
 
 ### 7. ⚙️ Settings (`/pengaturan`)
 
-- AI provider, model, and API key configuration (described above).
-- Timer on/off toggle.
-- Sound effects on/off toggle.
+- **Highlighted PWA Installation** — A prominent installation card has been moved to the very top of the Settings screen with a `REKOMENDASI` badge, guiding users step-by-step to install the app on mobile (Safari iOS Share menu) or desktop/Android (direct install prompt button).
+- AI provider, model, and API key configuration.
+- Timer on/off toggle and sound effects on/off toggle.
 - **AI Question Pre-generation Cache** (described below).
 - **Stats overview** — sessions completed, questions answered, overall accuracy.
-- **Reset progress** — clears all local stats and session history permanently.
+- **Reset Progress** — clears local accuracy stats and session history.
+- **Troubleshooting App Reset** — a dedicated emergency action under Settings that clears all local application keys (`statistik`, `riwayat`, `sesi aktif`, `cache soal AI`, and `pengaturan`) and forces a clean app reload. Useful for resolving data corruption or redirection loop states.
 - Dark/Light **theme switching** — syncs to the document root (`data-theme` attribute and CSS class) via a `useEffect` in `QuizContext`.
 
 ---
@@ -143,7 +144,12 @@ Speed up navigation and answers during tests with built-in hotkey support on the
 
 Hondana can be installed as a standalone PWA application on mobile, tablet, and desktop:
 - **Home Screen Installation** — installs with native desktop/mobile application behavior, including a custom app icon and standalone window styling.
-- **Service Worker (`sw.js`)** — registers a service worker to handle offline capability, asset caching, and loading optimizations.
+- **High-Performance Service Worker (`sw.js`)** — registers service worker version `hondana-v2` with an optimized hybrid caching policy:
+  - **Network-First** for primary HTML page navigation (ensures online users always run the latest build assets).
+  - **Cache-First** for uniquely-hashed Next.js static chunks (`_next/static/*`), guaranteeing instantaneous asset loads.
+  - **Stale-While-Revalidate** for local assets (icons, manifests, configurations) to load offline immediately while updating silently in the background.
+  - **Network-Only** for API routes (`/api/*`).
+- **Live SW Update Reload Trigger** — monitors Service Worker updates in the background. When a new code bundle is deployed, it automatically updates and triggers a page refresh to apply the changes, with a safeguard to **not** reload if the user is currently answering a quiz (`/quiz`) to avoid progress loss.
 - **Install Promo Prompt** — displays a premium, custom install dialog banner (`usePWAInstall`) when loading the app to encourage home screen installation.
 
 ---
@@ -169,8 +175,8 @@ To support study sessions in low-connectivity or high-latency environments:
 | Styling | Tailwind CSS 4.0 + vanilla CSS custom properties |
 | Animations | Framer Motion |
 | AI | Groq SDK (`groq-sdk`), OpenAI-compatible fetch, Gemini REST |
-| State & Cache | React Context + `useLocalStorage` persistence |
-| PWA | Web App Manifest (`manifest.json`), Service Worker (`sw.js`) |
+| State & Cache | React Context + `useLocalStorage` persistence (with schema merge defenses and active session corruption guards) |
+| PWA | Web App Manifest (`manifest.json`), Service Worker (`sw.js` v2) |
 | Language | TypeScript (strict) |
 
 ---
@@ -187,15 +193,15 @@ hondana/
 │   ├── hasil/                  # Results page + session history dashboard
 │   ├── kategori/               # Module & category selection
 │   ├── pembahasan/             # Answer review with explanations
-│   ├── pengaturan/             # Settings (AI config, theme, stats, pregen cache)
-│   ├── quiz/                   # Interactive quiz player with active session persistence
+│   ├── pengaturan/             # Settings (AI config, highlighted PWA installer, data troubleshooting)
+│   ├── quiz/                   # Interactive quiz player with active session persistence and corruption auto-reset
 │   ├── globals.css             # Design system tokens, premium animations, tailwind directives
 │   ├── layout.tsx              # Root layout, theme config, suppressHydrationWarning
 │   └── page.tsx                # Home dashboard with PWA promotion
 ├── components/
 │   ├── CategoryCard.tsx        # Per-subcategory card with historical accuracy
 │   ├── FiguralDisplay.tsx      # SVG renderer for diagram/figural TPA questions
-│   ├── Header.tsx              # Application header with shortcuts keyboard launcher
+│   ├── Header.tsx              # Application header with logo icon integration
 │   ├── LoadingSkeleton.tsx     # Premium shimmering glass loading skeletons [NEW]
 │   ├── LoadingSpinner.tsx      # Premium gradient rotating SVG spinners [NEW]
 │   ├── PassageCard.tsx         # Reading passage container
@@ -205,24 +211,24 @@ hondana/
 │   ├── ResultBar.tsx           # Per-category accuracy bar in results
 │   ├── StatsCard.tsx           # Summary stat card
 │   ├── TimerRing.tsx           # SVG countdown ring
-│   └── ...                     # BottomNav, Dialog, etc.
+│   └── ...                     # BottomNav (logo integration), Dialog, etc.
 ├── context/
-│   └── QuizContext.tsx         # Global state: active session, history, pregen cache, settings
+│   └── QuizContext.tsx         # Global state: active session validation, history, pregen cache, settings
 ├── data/
 │   ├── tpa-questions.ts        # Offline TPA question bank (12 subcategories, 50 new Unair questions)
 │   ├── tbi-questions.ts        # Offline TBI question bank (structure + reading)
 │   └── figural-patterns.ts    # SVG pattern data for figural questions
 ├── hooks/
 │   ├── useKeyboardShortcuts.ts # Reusable keyboard shortcut hook [NEW]
-│   ├── useLocalStorage.ts      # Reactive localStorage sync hook
-│   ├── usePWAInstall.ts        # Native PWA installation interception hook [NEW]
+│   ├── useLocalStorage.ts      # Reactive localStorage sync hook with schema merging capabilities
+│   ├── usePWAInstall.ts        # Native PWA installation and Service Worker update tracking [NEW]
 │   └── useTimer.ts             # Countdown timer hook
 ├── lib/
 │   ├── groq.ts                 # AI provider client and prompt templates
 │   └── types.ts                # Shared TypeScript types
 ├── public/
 │   ├── manifest.json           # Web App Manifest for PWA properties [NEW]
-│   ├── sw.js                   # Service Worker script for resource caching [NEW]
+│   ├── sw.js                   # Service Worker v2 script with advanced caching strategy [NEW]
 │   ├── icon-192.png            # 192px app launcher icon [NEW]
 │   └── icon-512.png            # 512px app launcher icon [NEW]
 └── ...

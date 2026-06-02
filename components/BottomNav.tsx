@@ -68,7 +68,7 @@ export default function BottomNav() {
         <div className="flex flex-col gap-8">
           {/* Logo / Brand Header */}
           <div className="flex items-center gap-3 px-2">
-            <span className="text-2xl">🎯</span>
+            <img src="/icon-192.png" alt="Hondana Logo" className="w-8 h-8 rounded-lg object-contain shrink-0" />
             <span className="text-lg font-black bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text text-transparent">
               Hondana
             </span>

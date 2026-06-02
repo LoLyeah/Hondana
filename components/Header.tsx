@@ -51,6 +51,9 @@ export default function Header({ title, showBack = false, onBack, noSidebar = fa
             </svg>
           </button>
         )}
+        {title === 'Hondana' && (
+          <img src="/icon-192.png" alt="Hondana Logo" className="w-6 h-6 rounded-md object-contain md:hidden shrink-0" />
+        )}
         <h1 className="text-lg font-black bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text text-transparent">
           {title}
         </h1>
