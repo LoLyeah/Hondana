@@ -13,6 +13,7 @@ import { getTPAQuestions } from '../../data/tpa-questions';
 import { getTBIQuestions } from '../../data/tbi-questions';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
+import { sfx } from '../../lib/audio';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -97,12 +98,33 @@ function KategoriContent() {
   const useAI = settings.useAI;
   const latihanCount = settings.latihanCount;
 
-  const setUseAI = (val: boolean) => {
-    updateSettings({ useAI: val });
+  const toggleUseAI = () => {
+    const newVal = !useAI;
+    updateSettings({ useAI: newVal });
+    if (settings.soundEnabled) {
+      sfx.playToggle(newVal);
+    }
   };
-
-  const setLatihanCount = (val: number) => {
+ 
+  const toggleTimer = () => {
+    const newVal = !settings.timerEnabled;
+    updateSettings({ timerEnabled: newVal });
+    if (settings.soundEnabled) {
+      sfx.playToggle(newVal);
+    }
+  };
+ 
+  const toggleSound = () => {
+    const newVal = !settings.soundEnabled;
+    updateSettings({ soundEnabled: newVal });
+    sfx.playToggle(newVal);
+  };
+ 
+  const selectLatihanCount = (val: number) => {
     updateSettings({ latihanCount: val });
+    if (settings.soundEnabled) {
+      sfx.playClick();
+    }
   };
 
   const handleStartSimulasi = async () => {
@@ -209,7 +231,7 @@ function KategoriContent() {
                 </span>
               </div>
               <button
-                onClick={() => setUseAI(!useAI)}
+                onClick={toggleUseAI}
                 className={`relative inline-flex h-[31px] w-[51px] shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out outline-none min-h-0 min-w-0 [min-block-size:0] [min-inline-size:0] ${
                   useAI ? 'bg-[#34C759]' : 'bg-[#E9E9EA] dark:bg-[#39393D]'
                 }`}
@@ -235,7 +257,7 @@ function KategoriContent() {
                 </span>
               </div>
               <button
-                onClick={() => updateSettings({ timerEnabled: !settings.timerEnabled })}
+                onClick={toggleTimer}
                 className={`relative inline-flex h-[31px] w-[51px] shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out outline-none min-h-0 min-w-0 [min-block-size:0] [min-inline-size:0] ${
                   settings.timerEnabled ? 'bg-[#34C759]' : 'bg-[#E9E9EA] dark:bg-[#39393D]'
                 }`}
@@ -261,7 +283,7 @@ function KategoriContent() {
                 </span>
               </div>
               <button
-                onClick={() => updateSettings({ soundEnabled: !settings.soundEnabled })}
+                onClick={toggleSound}
                 className={`relative inline-flex h-[31px] w-[51px] shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out outline-none min-h-0 min-w-0 [min-block-size:0] [min-inline-size:0] ${
                   settings.soundEnabled ? 'bg-[#34C759]' : 'bg-[#E9E9EA] dark:bg-[#39393D]'
                 }`}
@@ -318,7 +340,7 @@ function KategoriContent() {
             {[10, 20, 30].map((count) => (
               <button
                 key={count}
-                onClick={() => setLatihanCount(count)}
+                onClick={() => selectLatihanCount(count)}
                 className={`py-1.5 px-4 rounded-xl text-xs font-bold cursor-pointer transition-all ${
                   latihanCount === count ? 'bg-accent text-white' : 'text-text-secondary hover:text-text-primary'
                 }`}

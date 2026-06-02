@@ -13,6 +13,7 @@ import { useQuiz } from '../../context/QuizContext';
 import { useTimer } from '../../hooks/useTimer';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { useFullscreen } from '../../hooks/useFullscreen';
+import { sfx } from '../../lib/audio';
 
 export default function Quiz() {
   const router = useRouter();
@@ -109,11 +110,7 @@ export default function Quiz() {
 
     // Neutral select sound effect so as not to reveal correctness
     if (settings.soundEnabled) {
-      try {
-        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-84.wav');
-        audio.volume = 0.25;
-        audio.play().catch(() => {});
-      } catch (e) {}
+      sfx.playClick();
     }
 
     // Clear any existing advance timeout to prevent duplicate triggers

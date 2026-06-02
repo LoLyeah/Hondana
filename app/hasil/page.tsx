@@ -8,6 +8,7 @@ import BottomNav from '../../components/BottomNav';
 import StatsCard from '../../components/StatsCard';
 import ResultBar from '../../components/ResultBar';
 import { useQuiz } from '../../context/QuizContext';
+import { sfx } from '../../lib/audio';
 import { SessionResult, SavedSession } from '../../lib/types';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
@@ -31,7 +32,7 @@ const itemVariants = {
 
 export default function Hasil() {
   const router = useRouter();
-  const { session, stats, history, endQuiz, quitQuiz, loadSavedSession, deleteSavedSession } = useQuiz();
+  const { session, stats, history, endQuiz, quitQuiz, loadSavedSession, deleteSavedSession, settings } = useQuiz();
   const [result, setResult] = useState<SessionResult | null>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -46,6 +47,9 @@ export default function Hasil() {
       if (!session.isComplete) {
         const res = endQuiz();
         setResult(res);
+        if (settings.soundEnabled) {
+          sfx.playSuccess();
+        }
       } else {
         // Already ended, compute manually
         let correct = 0;

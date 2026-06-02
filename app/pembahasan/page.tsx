@@ -11,10 +11,11 @@ import TranscriptCard from '../../components/TranscriptCard';
 import PassageCard from '../../components/PassageCard';
 import { useQuiz } from '../../context/QuizContext';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
+import { sfx } from '../../lib/audio';
 
 export default function Pembahasan() {
   const router = useRouter();
-  const { session } = useQuiz();
+  const { session, settings } = useQuiz();
   const [reviewIndex, setReviewIndex] = useState(0);
   const [showGrid, setShowGrid] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
@@ -24,6 +25,19 @@ export default function Pembahasan() {
   useEffect(() => {
     setMounted(true);
   }, []);
+ 
+  // Play correctness feedback sound during question review
+  useEffect(() => {
+    if (mounted && session && settings.soundEnabled) {
+      const q = session.questions[reviewIndex];
+      const ans = session.answers[reviewIndex];
+      if (ans === q.correctAnswer) {
+        sfx.playCorrect();
+      } else if (ans !== null) {
+        sfx.playIncorrect();
+      }
+    }
+  }, [reviewIndex, mounted, session, settings.soundEnabled]);
 
   // If no session active or not complete, redirect to home (only after client mount is complete)
   useEffect(() => {

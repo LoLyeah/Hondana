@@ -6,6 +6,7 @@ import Header from '../../components/Header';
 import BottomNav from '../../components/BottomNav';
 import { useQuiz } from '../../context/QuizContext';
 import { usePWAInstall } from '../../hooks/usePWAInstall';
+import { sfx } from '../../lib/audio';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
 
@@ -301,11 +302,17 @@ export default function Pengaturan() {
   };
 
   const toggleTimer = () => {
-    updateSettings({ timerEnabled: !settings.timerEnabled });
+    const newVal = !settings.timerEnabled;
+    updateSettings({ timerEnabled: newVal });
+    if (settings.soundEnabled) {
+      sfx.playToggle(newVal);
+    }
   };
-
+ 
   const toggleSound = () => {
-    updateSettings({ soundEnabled: !settings.soundEnabled });
+    const newVal = !settings.soundEnabled;
+    updateSettings({ soundEnabled: newVal });
+    sfx.playToggle(newVal);
   };
 
   // Determine model list based on provider
