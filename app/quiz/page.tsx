@@ -223,23 +223,28 @@ export default function Quiz() {
         className="sticky top-0 z-40 w-full glass border-b border-white/8 backdrop-blur-md px-4 flex items-center justify-between"
         style={{ paddingTop: 'calc(12px + env(safe-area-inset-top, 0px))', paddingBottom: '12px' }}
       >
-        <button
-          onClick={handleQuit}
-          className="p-2 -ml-2 rounded-xl hover:bg-white/5 active:scale-95 transition-all text-text-primary flex items-center justify-center"
-          aria-label="Keluar Kuis"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-error">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+        {/* Left Side: Exit Button */}
+        <div className="flex-1 flex justify-start">
+          <button
+            onClick={handleQuit}
+            className="p-2 -ml-2 rounded-xl hover:bg-white/5 active:scale-95 transition-all text-text-primary flex items-center justify-center cursor-pointer"
+            aria-label="Keluar Kuis"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 text-error">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
  
-        <div className="flex flex-col items-center">
+        {/* Center: Title */}
+        <div className="flex-initial flex flex-col items-center">
           <span className="text-[10px] font-black uppercase tracking-widest text-accent leading-none">
             {session.testType} {session.mode === 'simulasi' ? 'SIMULASI' : 'LATIHAN'}
           </span>
         </div>
  
-        <div className="flex items-center gap-2">
+        {/* Right Side: Controls */}
+        <div className="flex-1 flex items-center justify-end gap-2">
           {/* Fullscreen Toggle Button */}
           <button
             onClick={toggleFullscreen}
