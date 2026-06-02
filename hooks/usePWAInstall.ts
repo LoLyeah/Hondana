@@ -36,10 +36,32 @@ export function usePWAInstall(): UsePWAInstall {
 
     checkInstalled();
 
-    // Register service worker
+    // Register service worker and listen for updates
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
         .register('/sw.js')
+        .then((registration) => {
+          // Force check for sw updates immediately on load
+          registration.update().catch(() => {});
+
+          // Track new worker installations
+          registration.addEventListener('updatefound', () => {
+            const installingWorker = registration.installing;
+            if (installingWorker) {
+              installingWorker.addEventListener('statechange', () => {
+                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  // A new service worker has been activated. Force a refresh to load fresh bundle hashes
+                  // only if the user is not in the middle of a quiz session.
+                  const isQuizPage = window.location.pathname === '/quiz';
+                  if (!isQuizPage) {
+                    console.log('Update PWA terdeteksi! Memuat ulang halaman...');
+                    window.location.reload();
+                  }
+                }
+              });
+            }
+          });
+        })
         .catch((err) => console.warn('SW registration failed:', err));
     }
 
