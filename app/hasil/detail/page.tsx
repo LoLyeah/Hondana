@@ -272,7 +272,7 @@ export default function StatistikDetail() {
           ) : (
             <div className="flex flex-col gap-4">
               {/* Responsive layout chart */}
-              <div className="h-64 border-b border-l border-white/5 flex items-end justify-between px-2 pt-6 gap-1 md:gap-3 overflow-x-auto select-none sm:scrollbar-thin">
+              <div className="h-72 border-b border-l border-white/5 flex items-end justify-between px-2 pt-24 gap-1 md:gap-3 overflow-x-auto select-none sm:scrollbar-thin">
                 {attemptedCategories.map((cat) => {
                   const isHovered = hoveredBar === cat.key;
                   const value = cat.total > 0 ? cat.accuracy : 0;
@@ -292,7 +292,7 @@ export default function StatistikDetail() {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 5 }}
                             transition={{ duration: 0.15 }}
-                            className="absolute bottom-full mb-3 bg-bg-surface border border-white/10 p-2.5 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.4)] z-30 flex flex-col gap-1 w-44"
+                            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 bg-bg-surface border border-white/10 p-2.5 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.4)] z-30 flex flex-col gap-1 w-44"
                           >
                             <span className="text-[10px] font-black text-text-primary leading-tight uppercase border-b border-white/5 pb-1">
                               {cat.label}
