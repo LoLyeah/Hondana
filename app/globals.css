@@ -361,6 +361,12 @@
   .safe-bottom {
     padding-block-end: env(safe-area-inset-bottom);
   }
+
+  /* Remove bottom padding on root layout container when quiz or pembahasan is active */
+  body:has(#quiz-page) div.pb-24,
+  body:has(#pembahasan-page) div.pb-24 {
+    padding-bottom: 0 !important;
+  }
 }
 
 /* Reduced Motion Compatibility */

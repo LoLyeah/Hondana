@@ -12,6 +12,7 @@ import PassageCard from '../../components/PassageCard';
 import { useQuiz } from '../../context/QuizContext';
 import { useTimer } from '../../hooks/useTimer';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
+import { useFullscreen } from '../../hooks/useFullscreen';
 
 export default function Quiz() {
   const router = useRouter();
@@ -32,6 +33,7 @@ export default function Quiz() {
   const [showGrid, setShowGrid] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const { isFullscreen, toggleFullscreen } = useFullscreen();
 
   // Reference to hold transition timeout ID to prevent duplicate fires (e.g. from rapid double-clicks)
   const advanceTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -216,11 +218,14 @@ export default function Quiz() {
   if (!mounted || !session || !currentQuestion) return null;
 
   return (
-    <div className="w-full max-w-[720px] mx-auto flex flex-col flex-1 relative">
+    <div id="quiz-page" className="w-full max-w-[720px] mx-auto flex flex-col flex-1 relative">
 
  
       {/* Header bar */}
-      <header className="sticky top-0 z-40 w-full glass border-b border-white/8 backdrop-blur-md px-4 py-3 flex items-center justify-between">
+      <header
+        className="sticky top-0 z-40 w-full glass border-b border-white/8 backdrop-blur-md px-4 flex items-center justify-between"
+        style={{ paddingTop: 'calc(12px + env(safe-area-inset-top, 0px))', paddingBottom: '12px' }}
+      >
         <button
           onClick={handleQuit}
           className="p-2 -ml-2 rounded-xl hover:bg-white/5 active:scale-95 transition-all text-text-primary flex items-center justify-center"
@@ -238,6 +243,25 @@ export default function Quiz() {
         </div>
  
         <div className="flex items-center gap-2">
+          {/* Fullscreen Toggle Button */}
+          <button
+            onClick={toggleFullscreen}
+            className="p-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-text-secondary hover:text-text-primary flex items-center justify-center transition-all active:scale-95 cursor-pointer shrink-0 min-h-0 min-w-0"
+            style={{ minBlockSize: 0, minInlineSize: 0, width: '36px', height: '36px' }}
+            title="Toggle Fullscreen"
+            aria-label="Toggle Fullscreen"
+          >
+            {isFullscreen ? (
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5M15 15l5.25 5.25" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+              </svg>
+            )}
+          </button>
+
           {/* Shortcut Keyboard Legend Button (Desktop only) */}
           <button
             onClick={() => setShowShortcuts(!showShortcuts)}
@@ -318,38 +342,46 @@ export default function Quiz() {
       </main>
 
       {/* Quiz Navigation Controller (Bottom Control Bar) */}
-      <footer className="sticky bottom-0 left-0 right-0 z-30 bg-gray-950/80 backdrop-blur-md border-t border-white/5 px-4 py-3 flex items-center justify-between gap-3 w-full max-w-[720px] mx-auto">
+      <footer
+        className="sticky bottom-0 left-0 right-0 z-30 bg-gray-950/80 backdrop-blur-md border-t border-white/5 px-2.5 min-[480px]:px-4 flex items-center justify-between gap-2.5 w-full max-w-[720px] mx-auto shrink-0"
+        style={{ paddingTop: '12px', paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))' }}
+      >
         {/* Prev Button */}
         <button
           onClick={() => jumpToQuestion(session.currentIndex - 1)}
           disabled={session.currentIndex === 0}
-          className="px-4 py-2.5 bg-white/5 hover:bg-white/10 disabled:opacity-40 disabled:hover:bg-white/5 border border-white/5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed active:scale-95 text-text-primary"
+          className="px-2.5 py-2.5 min-[480px]:px-4 bg-white/5 hover:bg-white/10 disabled:opacity-40 disabled:hover:bg-white/5 border border-white/5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed active:scale-95 text-text-primary shrink-0 min-h-0 min-w-0"
+          style={{ minBlockSize: 0, minInlineSize: 0 }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
-          <span>Sebelumnya</span>
+          <span className="hidden min-[480px]:inline">Sebelumnya</span>
         </button>
 
         {/* Flag Button (Ragu-Ragu) */}
         <button
           onClick={() => toggleFlagQuestion(session.currentIndex)}
-          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 border ${
+          className={`px-2.5 py-2.5 min-[480px]:px-4 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 border shrink-0 min-h-0 min-w-0 ${
             session.flagged?.[session.currentIndex]
               ? 'bg-amber-500/10 text-amber-500 border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.1)]'
               : 'bg-white/5 border-white/5 text-text-secondary hover:text-text-primary hover:bg-white/10'
           }`}
+          style={{ minBlockSize: 0, minInlineSize: 0 }}
         >
-          <span>{session.flagged?.[session.currentIndex] ? '🚩 Ragu-Ragu' : '🏳️ Ragu-Ragu'}</span>
+          <span>{session.flagged?.[session.currentIndex] ? '🚩' : '🏳️'}</span>
+          <span className="hidden min-[480px]:inline">Ragu-Ragu</span>
         </button>
 
         {/* Navigasi / Grid Toggle Button */}
         <button
           onClick={() => setShowGrid(!showGrid)}
-          className="px-4 py-2.5 bg-accent/10 border border-accent/20 hover:bg-accent/25 text-accent rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+          className="px-2.5 py-2.5 min-[480px]:px-4 bg-accent/10 border border-accent/20 hover:bg-accent/25 text-accent rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shrink-0 min-h-0 min-w-0"
+          style={{ minBlockSize: 0, minInlineSize: 0 }}
         >
-          <span>📋 Daftar Soal</span>
-          <span className="bg-accent text-white px-1.5 py-0.5 rounded-md text-[9px] font-black leading-none">
+          <span>📋</span>
+          <span className="hidden min-[480px]:inline">Daftar Soal</span>
+          <span className="bg-accent text-white px-1.5 py-0.5 rounded-md text-[9px] font-black leading-none shrink-0">
             {session.answers.filter(a => a !== null).length}/{session.questions.length}
           </span>
         </button>
@@ -360,9 +392,10 @@ export default function Quiz() {
         {session.currentIndex + 1 < session.questions.length ? (
           <button
             onClick={() => jumpToQuestion(session.currentIndex + 1)}
-            className="px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 text-text-primary flex items-center justify-center gap-1"
+            className="px-2.5 py-2.5 min-[480px]:px-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 text-text-primary flex items-center justify-center gap-1 shrink-0 min-h-0 min-w-0"
+            style={{ minBlockSize: 0, minInlineSize: 0 }}
           >
-            <span>Selanjutnya</span>
+            <span className="hidden min-[480px]:inline">Selanjutnya</span>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
@@ -370,9 +403,11 @@ export default function Quiz() {
         ) : (
           <button
             onClick={handleCompleteQuiz}
-            className="px-4 py-2.5 bg-success hover:bg-success-hover text-white rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-md shadow-success/15 flex items-center justify-center gap-1"
+            className="px-2.5 py-2.5 min-[480px]:px-4 bg-success hover:bg-success-hover text-white rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-md shadow-success/15 flex items-center justify-center gap-1 shrink-0 min-h-0 min-w-0"
+            style={{ minBlockSize: 0, minInlineSize: 0 }}
           >
-            <span>🏁 Selesaikan Sesi</span>
+            <span className="hidden min-[480px]:inline">🏁 Selesaikan Sesi</span>
+            <span className="min-[480px]:hidden">🏁 Selesai</span>
           </button>
         )}
       </footer>
@@ -397,6 +432,7 @@ export default function Quiz() {
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 220 }}
               className="fixed bottom-0 left-0 right-0 z-50 bg-gray-950/95 border-t border-white/8 backdrop-blur-xl rounded-t-[32px] p-6 max-w-[720px] mx-auto w-full max-h-[70vh] overflow-y-auto flex flex-col gap-5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]"
+              style={{ paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}
             >
               {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-white/5">
@@ -504,6 +540,7 @@ export default function Quiz() {
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 220 }}
               className="fixed bottom-0 left-0 right-0 z-50 bg-gray-950/95 border-t border-white/8 backdrop-blur-xl rounded-t-[32px] p-6 max-w-[720px] mx-auto w-full max-h-[70vh] overflow-y-auto flex flex-col gap-5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] text-left"
+              style={{ paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}
             >
               {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-white/5">

@@ -3,7 +3,7 @@
   "short_name": "Hondana",
   "description": "Aplikasi latihan ujian TPA dan TBI interaktif dengan analisis AI untuk kelulusan BUMN, CPNS, dan seleksi kerja.",
   "start_url": "/",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#09090b",
   "theme_color": "#5f63f2",
   "orientation": "portrait-primary",

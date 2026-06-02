@@ -108,7 +108,7 @@ export default function Pembahasan() {
   const userChosen = session ? session.answers[reviewIndex] : null;
 
   return (
-    <div className="w-full max-w-[720px] mx-auto flex flex-col flex-1 relative">
+    <div id="pembahasan-page" className="w-full max-w-[720px] mx-auto flex flex-col flex-1 relative">
       <Header
         title={`Review ${session.testType}`}
         showBack
@@ -220,26 +220,33 @@ export default function Pembahasan() {
       </main>
 
       {/* Review Navigation Controller (Sticky Bottom Control Bar) */}
-      <footer className="sticky bottom-0 left-0 right-0 z-30 bg-gray-950/80 backdrop-blur-md border-t border-white/5 px-4 py-3 flex items-center justify-between gap-3 w-full max-w-[720px] mx-auto">
+      <footer
+        className="sticky bottom-0 left-0 right-0 z-30 bg-gray-950/80 backdrop-blur-md border-t border-white/5 px-2.5 min-[480px]:px-4 flex items-center justify-between gap-2.5 w-full max-w-[720px] mx-auto shrink-0"
+        style={{ paddingTop: '12px', paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))' }}
+      >
         {/* Prev Button */}
         <button
           onClick={handlePrev}
           disabled={isFirst}
-          className="px-4 py-2.5 bg-white/5 hover:bg-white/10 disabled:opacity-40 disabled:hover:bg-white/5 border border-white/5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed active:scale-95 text-text-primary"
+          className="px-2.5 py-2.5 min-[480px]:px-4 bg-white/5 hover:bg-white/10 disabled:opacity-40 disabled:hover:bg-white/5 border border-white/5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed active:scale-95 text-text-primary shrink-0 min-h-0 min-w-0"
+          style={{ minBlockSize: 0, minInlineSize: 0 }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
-          <span>Sebelumnya</span>
+          <span className="hidden min-[480px]:inline">Sebelumnya</span>
         </button>
 
         {/* Daftar Soal Button */}
         <button
           onClick={() => setShowGrid(!showGrid)}
-          className="px-4 py-2.5 bg-accent/10 border border-accent/20 hover:bg-accent/25 text-accent rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+          className="px-2.5 py-2.5 min-[480px]:px-4 bg-accent/10 border border-accent/20 hover:bg-accent/25 text-accent rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shrink-0 min-h-0 min-w-0"
+          style={{ minBlockSize: 0, minInlineSize: 0 }}
         >
-          <span>📋 Daftar Soal Review</span>
-          <span className="bg-accent text-white px-1.5 py-0.5 rounded-md text-[9px] font-black leading-none">
+          <span>📋</span>
+          <span className="hidden min-[480px]:inline"> Daftar Soal Review</span>
+          <span className="min-[480px]:hidden"> Review</span>
+          <span className="bg-accent text-white px-1.5 py-0.5 rounded-md text-[9px] font-black leading-none shrink-0">
             {session.answers.filter((ans, i) => ans === session.questions[i].correctAnswer).length}/{session.questions.length}
           </span>
         </button>
@@ -249,9 +256,11 @@ export default function Pembahasan() {
         {/* Next Button */}
         <button
           onClick={handleNext}
-          className="px-4 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-md flex items-center justify-center gap-1"
+          className="px-2.5 py-2.5 min-[480px]:px-4 bg-accent hover:bg-accent-hover text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-md flex items-center justify-center gap-1 shrink-0 min-h-0 min-w-0"
+          style={{ minBlockSize: 0, minInlineSize: 0 }}
         >
-          <span>{isLast ? 'Selesai' : 'Selanjutnya'}</span>
+          <span className="hidden min-[480px]:inline">{isLast ? 'Selesai' : 'Selanjutnya'}</span>
+          <span className="min-[480px]:hidden">{isLast ? 'Selesai' : 'Lanjut'}</span>
           {!isLast && (
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
@@ -280,6 +289,7 @@ export default function Pembahasan() {
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 220 }}
               className="fixed bottom-0 left-0 right-0 z-50 bg-gray-950/95 border-t border-white/8 backdrop-blur-xl rounded-t-[32px] p-6 max-w-[720px] mx-auto w-full max-h-[70vh] overflow-y-auto flex flex-col gap-5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]"
+              style={{ paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}
             >
               {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-white/5">
@@ -386,6 +396,7 @@ export default function Pembahasan() {
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 220 }}
               className="fixed bottom-0 left-0 right-0 z-50 bg-gray-950/95 border-t border-white/8 backdrop-blur-xl rounded-t-[32px] p-6 max-w-[720px] mx-auto w-full max-h-[70vh] overflow-y-auto flex flex-col gap-5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] text-left"
+              style={{ paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}
             >
               {/* Header */}
               <div className="flex items-center justify-between pb-3 border-b border-white/5">
