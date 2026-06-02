@@ -237,7 +237,7 @@ export default function Hasil() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                        className="glass border border-white/8 p-4 rounded-2xl flex flex-col gap-4 hover:border-white/15 transition-all"
+                        className="glass border border-white/8 p-4 rounded-2xl flex flex-col gap-4 hover:border-white/15 transition-colors duration-200"
                       >
                         {/* Header Details */}
                         <div className="flex items-center justify-between gap-4">
