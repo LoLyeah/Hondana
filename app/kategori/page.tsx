@@ -290,7 +290,7 @@ function KategoriContent() {
               </div>
               <h2 className="text-xl font-black tracking-tight">🎯 Sesi Simulasi Ujian</h2>
               <p className="text-xs font-semibold text-text-secondary leading-relaxed">
-                Ujian full paket terstandarisasi. {type === 'TPA' ? '60 soal TPA seimbang (Verbal, Numerik, Logika) selama 60 menit' : '50 soal TBI (Structure & Reading) selama 40 menit'}. Tanpa penalti nilai.
+                Ujian full paket terstandarisasi. {type === 'TPA' ? '60 soal TPA seimbang (Verbal, Numerik, Logika) selama 60 menit' : '50 soal TBI (Structure & Reading) selama 50 menit'}. Tanpa penalti nilai.
               </p>
             </div>
             <button

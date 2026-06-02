@@ -176,6 +176,16 @@ export default function Hasil() {
                 desc="Rasio jawaban benar"
               />
             </div>
+            
+            <button
+              onClick={() => router.push('/hasil/detail')}
+              className="mt-2 w-full py-3 bg-white/4 hover:bg-white/8 border border-white/8 hover:border-white/15 text-text-primary text-xs font-black rounded-xl cursor-pointer transition-all active:scale-[0.98] flex items-center justify-center gap-2 outline-none group"
+            >
+              <span>📊 Analisis Detail & Grafik</span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5 text-text-secondary transition-transform group-hover:translate-x-0.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+              </svg>
+            </button>
           </motion.section>
 
           {/* Practice History List */}
