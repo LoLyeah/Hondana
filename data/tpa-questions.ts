@@ -231,22 +231,52 @@ export function getTPAQuestions(): Question[] {
         }
         else if (cat === 'logika-diagram') {
           timeLimit = 60;
-          // Rotate options / use pre-built SVGs
-          const patternKey = i % 2 === 0 ? 'series1' : i % 2 === 1 ? 'series2' : 'analogy1';
-          const basePattern = figuralPatterns[patternKey as 'series1' | 'series2' | 'analogy1'];
+          const patternKeys = [
+            'series1', 'series2', 'series3', 'series4', 'series5',
+            'analogy1', 'analogy2', 'analogy3', 'analogy4', 'analogy5'
+          ];
+          let patternIndex = i;
+          if (diff === 'sedang') {
+            patternIndex = (i + 3) % patternKeys.length;
+          } else if (diff === 'sulit') {
+            patternIndex = (i + 7) % patternKeys.length;
+          }
+          const patternKey = patternKeys[patternIndex];
+          const basePattern = figuralPatterns[patternKey as keyof typeof figuralPatterns];
           
           figuralData = {
-            type: (patternKey === 'series1' || patternKey === 'series2' ? 'pattern-series' : 'analogy') as 'pattern-series' | 'analogy',
+            type: (patternKey.startsWith('series') ? 'pattern-series' : 'analogy') as 'pattern-series' | 'analogy',
             figures: [basePattern.q1, basePattern.q2, basePattern.q3],
             options: [...basePattern.opts]
           };
           
           questionText = `Perhatikan deret pola/diagram di bawah ini. Pilih gambar selanjutnya yang logis untuk melengkapi deret gambar tersebut.`;
-          options = ['A', 'B', 'C', 'D', 'E']; // Will be replaced by inline SVG buttons
-          correctAnswer = patternKey === 'series1' ? 0 : patternKey === 'series2' ? 1 : 1;
-          explanation = patternKey === 'series1' 
-            ? 'Garis berputar 90 derajat searah jarum jam (CW), sedangkan titik kuning bertambah 1 di setiap suku. Suku berikutnya harus menunjuk ke kiri (270 deg) dan memiliki 4 titik.' 
-            : 'Sisi bangun datar di dalam lingkaran bertambah 1 di setiap suku (Segitiga -> Segiempat -> Segilima -> Segienam). Suku berikutnya adalah segienam.';
+          options = ['A', 'B', 'C', 'D', 'E']; // Will be replaced by inline SVG buttons in the UI
+          correctAnswer = (patternKey === 'series1' || patternKey === 'series4' || patternKey === 'series5') ? 0 : 1;
+          
+          let explanationText = '';
+          if (patternKey === 'series1') {
+            explanationText = 'Garis berputar 90 derajat searah jarum jam (CW), sedangkan titik kuning bertambah 1 di setiap suku. Suku berikutnya harus menunjuk ke kiri (270 deg) dan memiliki 4 titik.';
+          } else if (patternKey === 'series2') {
+            explanationText = 'Sisi bangun datar di dalam persegi bertambah 1 di setiap suku (Segitiga -> Segiempat -> Segilima -> Segienam). Suku berikutnya adalah segienam.';
+          } else if (patternKey === 'series3') {
+            explanationText = 'Segitiga berputar 90 derajat searah jarum jam (CW) di setiap suku. Suku berikutnya harus menunjuk ke kiri (270 deg).';
+          } else if (patternKey === 'series4') {
+            explanationText = 'Jumlah kotak kecil yang diarsir bertambah 1 di setiap langkah searah jarum jam (1 -> 2 -> 3 -> 4). Suku berikutnya harus memiliki semua 4 kotak diarsir.';
+          } else if (patternKey === 'series5') {
+            explanationText = 'Jumlah lingkaran konsentris bertambah 1 di setiap langkah (1 -> 2 -> 3 -> 4). Suku berikutnya harus memiliki 4 lingkaran konsentris.';
+          } else if (patternKey === 'analogy1') {
+            explanationText = 'Hubungan gambar pertama dan kedua adalah bentuk luar dan dalam saling bertukar posisi. Maka, lingkaran di luar dan segitiga di dalam berubah menjadi segitiga di luar dan lingkaran di dalam.';
+          } else if (patternKey === 'analogy2') {
+            explanationText = 'Bentuk pertama diisi penuh (solid) dan bentuk kedua kosong (outline). Dengan hubungan yang sama, persegi padat berubah menjadi persegi kosong.';
+          } else if (patternKey === 'analogy3') {
+            explanationText = 'Gambar kedua merupakan hasil pencerminan secara vertikal (dibalik ke bawah) dari gambar pertama. Maka setengah lingkaran menghadap ke atas dibalik menjadi menghadap ke bawah.';
+          } else if (patternKey === 'analogy4') {
+            explanationText = 'Jumlah sisi bangun datar bertambah 1 (Segitiga [3] -> Persegi [4]). Dengan pola yang sama, Segilima [5] berubah menjadi Segienam [6].';
+          } else if (patternKey === 'analogy5') {
+            explanationText = 'Gambar kedua membagi bentuk gambar pertama menjadi dua kali lipat lebih banyak bagian (2 bagian menjadi 4 bagian). Maka lingkaran dengan 2 bagian terbagi menjadi 4 bagian.';
+          }
+          explanation = explanationText;
         }
 
         // Mix option index to avoid standard index 0 bias for generated options

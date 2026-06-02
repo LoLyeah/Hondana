@@ -186,7 +186,7 @@ export default function Pembahasan() {
               <QuizOption
                 key={idx}
                 index={idx}
-                text={option}
+                text={currentQuestion.figural ? currentQuestion.figural.options[idx] : option}
                 isSelected={isChosen}
                 isCorrect={isCorrect}
                 isFigural={!!currentQuestion.figural}

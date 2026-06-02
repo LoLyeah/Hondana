@@ -42,6 +42,63 @@ export const figuralPatterns = {
     ]
   },
 
+  // Pattern Series 3: Rotating Triangle Arrow (Up -> Right -> Down -> Left)
+  series3: {
+    q1: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,15 80,75 20,75" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+    q2: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="85,50 25,20 25,80" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+    q3: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,85 20,25 80,25" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+    opts: [
+      // Opt A (Triangle pointing Up)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,15 80,75 20,75" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+      // Opt B (Correct: Triangle pointing Left)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="15,50 75,20 75,80" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+      // Opt C (Triangle pointing Up-Right)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="75,25 75,75 25,75" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+      // Opt D (Circle)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="30" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+      // Opt E (Double line triangle)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,20 78,73 22,73"/><polygon points="50,30 70,70 30,70" class="fill-amber-500/10 stroke-amber-500"/></svg>`
+    ]
+  },
+
+  // Pattern Series 4: Grid of filled squares (1 -> 2 -> 3 -> 4)
+  series4: {
+    q1: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="15" y="15" width="70" height="70" class="stroke-gray-600"/><line x1="50" y1="15" x2="50" y2="85" stroke-dasharray="3 3" class="stroke-gray-600"/><line x1="15" y1="50" x2="85" y2="50" stroke-dasharray="3 3" class="stroke-gray-600"/><rect x="20" y="20" width="25" height="25" class="fill-amber-500 stroke-amber-500"/></svg>`,
+    q2: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="15" y="15" width="70" height="70" class="stroke-gray-600"/><line x1="50" y1="15" x2="50" y2="85" stroke-dasharray="3 3" class="stroke-gray-600"/><line x1="15" y1="50" x2="85" y2="50" stroke-dasharray="3 3" class="stroke-gray-600"/><rect x="20" y="20" width="25" height="25" class="fill-amber-500 stroke-amber-500"/><rect x="55" y="20" width="25" height="25" class="fill-amber-500 stroke-amber-500"/></svg>`,
+    q3: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="15" y="15" width="70" height="70" class="stroke-gray-600"/><line x1="50" y1="15" x2="50" y2="85" stroke-dasharray="3 3" class="stroke-gray-600"/><line x1="15" y1="50" x2="85" y2="50" stroke-dasharray="3 3" class="stroke-gray-600"/><rect x="20" y="20" width="25" height="25" class="fill-amber-500 stroke-amber-500"/><rect x="55" y="20" width="25" height="25" class="fill-amber-500 stroke-amber-500"/><rect x="55" y="55" width="25" height="25" class="fill-amber-500 stroke-amber-500"/></svg>`,
+    opts: [
+      // Opt A (Correct: All 4 filled)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="15" y="15" width="70" height="70" class="stroke-gray-600"/><line x1="50" y1="15" x2="50" y2="85" stroke-dasharray="3 3" class="stroke-gray-600"/><line x1="15" y1="50" x2="85" y2="50" stroke-dasharray="3 3" class="stroke-gray-600"/><rect x="20" y="20" width="25" height="25" class="fill-amber-500 stroke-amber-500"/><rect x="55" y="20" width="25" height="25" class="fill-amber-500 stroke-amber-500"/><rect x="55" y="55" width="25" height="25" class="fill-amber-500 stroke-amber-500"/><rect x="20" y="55" width="25" height="25" class="fill-amber-500 stroke-amber-500"/></svg>`,
+      // Opt B (Only top-left and bottom-left filled)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="15" y="15" width="70" height="70" class="stroke-gray-600"/><line x1="50" y1="15" x2="50" y2="85" stroke-dasharray="3 3" class="stroke-gray-600"/><line x1="15" y1="50" x2="85" y2="50" stroke-dasharray="3 3" class="stroke-gray-600"/><rect x="20" y="20" width="25" height="25" class="fill-amber-500 stroke-amber-500"/><rect x="20" y="55" width="25" height="25" class="fill-amber-500 stroke-amber-500"/></svg>`,
+      // Opt C (Only bottom-right filled)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="15" y="15" width="70" height="70" class="stroke-gray-600"/><line x1="50" y1="15" x2="50" y2="85" stroke-dasharray="3 3" class="stroke-gray-600"/><line x1="15" y1="50" x2="85" y2="50" stroke-dasharray="3 3" class="stroke-gray-600"/><rect x="55" y="55" width="25" height="25" class="fill-amber-500 stroke-amber-500"/></svg>`,
+      // Opt D (None filled)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="15" y="15" width="70" height="70" class="stroke-gray-600"/><line x1="50" y1="15" x2="50" y2="85" stroke-dasharray="3 3" class="stroke-gray-600"/><line x1="15" y1="50" x2="85" y2="50" stroke-dasharray="3 3" class="stroke-gray-600"/></svg>`,
+      // Opt E (Diagonal filled)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="15" y="15" width="70" height="70" class="stroke-gray-600"/><line x1="50" y1="15" x2="50" y2="85" stroke-dasharray="3 3" class="stroke-gray-600"/><line x1="15" y1="50" x2="85" y2="50" stroke-dasharray="3 3" class="stroke-gray-600"/><rect x="20" y="20" width="25" height="25" class="fill-amber-500 stroke-amber-500"/><rect x="55" y="55" width="25" height="25" class="fill-amber-500 stroke-amber-500"/></svg>`
+    ]
+  },
+
+  // Pattern Series 5: Growing Concentric Circles (1 -> 2 -> 3 -> 4)
+  series5: {
+    q1: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="10" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+    q2: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="10" class="fill-amber-500/10 stroke-amber-500"/><circle cx="50" cy="50" r="20" class="stroke-white"/></svg>`,
+    q3: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="10" class="fill-amber-500/10 stroke-amber-500"/><circle cx="50" cy="50" r="20" class="stroke-white"/><circle cx="50" cy="50" r="30" class="stroke-white"/></svg>`,
+    opts: [
+      // Opt A (Correct: 4 concentric circles)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="10" class="fill-amber-500/10 stroke-amber-500"/><circle cx="50" cy="50" r="20" class="stroke-white"/><circle cx="50" cy="50" r="30" class="stroke-white"/><circle cx="50" cy="50" r="40" class="stroke-white"/></svg>`,
+      // Opt B (3 concentric circles - same as q3)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="10" class="fill-amber-500/10 stroke-amber-500"/><circle cx="50" cy="50" r="20" class="stroke-white"/><circle cx="50" cy="50" r="30" class="stroke-white"/></svg>`,
+      // Opt C (Circle with a cross)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="20" class="fill-amber-500/10 stroke-amber-500"/><line x1="50" y1="20" x2="50" y2="80"/><line x1="20" y1="50" x2="80" y2="50"/></svg>`,
+      // Opt D (2 Concentric Circles)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="10" class="fill-amber-500/10 stroke-amber-500"/><circle cx="50" cy="50" r="20" class="stroke-white"/></svg>`,
+      // Opt E (Circle with radiating spokes)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="20" class="fill-amber-500/10 stroke-amber-500"/><line x1="50" y1="20" x2="50" y2="80"/><line x1="20" y1="50" x2="80" y2="50"/><line x1="29" y1="29" x2="71" y2="71"/><line x1="71" y1="29" x2="29" y2="71"/></svg>`
+    ]
+  },
+
   // Analogy 1: Circle inside Square is to Square inside Circle, as Triangle inside Circle is to... (Circle inside Triangle)
   analogy1: {
     q1: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="20" y="20" width="60" height="60"/><circle cx="50" cy="50" r="20" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
@@ -61,19 +118,79 @@ export const figuralPatterns = {
     ]
   },
 
-  // Odd One Out 1: Rotations of an L-shape with a dot. One is mirrored. (Opt C is mirrored)
-  odd1: {
+  // Analogy 2: Solid Shape is to Empty Shape, as Solid Square is to... (Empty Square)
+  analogy2: {
+    q1: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="30" class="fill-amber-500 stroke-amber-500"/></svg>`,
+    q2: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="30" class="stroke-white"/></svg>`,
+    q3: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="20" y="20" width="60" height="60" class="fill-amber-500 stroke-amber-500"/></svg>`,
     opts: [
-      // Opt A (0 deg)
-      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><path d="M30,20 L30,70 L70,70" stroke-width="4"/><circle cx="50" cy="50" r="5" class="fill-amber-500 stroke-amber-500"/></svg>`,
-      // Opt B (90 deg CW)
-      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><g transform="rotate(90 50 50)"><path d="M30,20 L30,70 L70,70" stroke-width="4"/><circle cx="50" cy="50" r="5" class="fill-amber-500 stroke-amber-500"/></g></svg>`,
-      // Opt C (Correct: Mirrored / Odd one out)
-      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><g transform="scale(-1 1) translate(-100 0)"><path d="M30,20 L30,70 L70,70" stroke-width="4"/><circle cx="50" cy="50" r="5" class="fill-amber-500 stroke-amber-500"/></g></svg>`,
-      // Opt D (180 deg CW)
-      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><g transform="rotate(180 50 50)"><path d="M30,20 L30,70 L70,70" stroke-width="4"/><circle cx="50" cy="50" r="5" class="fill-amber-500 stroke-amber-500"/></g></svg>`,
-      // Opt E (270 deg CW)
-      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><g transform="rotate(270 50 50)"><path d="M30,20 L30,70 L70,70" stroke-width="4"/><circle cx="50" cy="50" r="5" class="fill-amber-500 stroke-amber-500"/></g></svg>`
+      // Opt A (Empty Circle)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="30" class="stroke-white"/></svg>`,
+      // Opt B (Correct: Empty Square)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="20" y="20" width="60" height="60" class="stroke-white"/></svg>`,
+      // Opt C (Solid Triangle)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,20 80,80 20,80" class="fill-amber-500 stroke-amber-500"/></svg>`,
+      // Opt D (Empty Triangle)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,20 80,80 20,80" class="stroke-white"/></svg>`,
+      // Opt E (Solid Circle)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="30" class="fill-amber-500 stroke-amber-500"/></svg>`
+    ]
+  },
+
+  // Analogy 3: Shape Vertical Flip (Triangle Up to Triangle Down, as Arc Convex Up to Arc Convex Down)
+  analogy3: {
+    q1: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,20 80,70 20,70" class="fill-amber-500/10 stroke-amber-500"/><circle cx="50" cy="40" r="4" class="fill-white stroke-none"/></svg>`,
+    q2: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,80 80,30 20,30" class="fill-amber-500/10 stroke-amber-500"/><circle cx="50" cy="60" r="4" class="fill-white stroke-none"/></svg>`,
+    q3: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><path d="M20,70 Q50,20 80,70" class="fill-amber-500/10 stroke-amber-500"/><circle cx="50" cy="45" r="4" class="fill-white stroke-none"/></svg>`,
+    opts: [
+      // Opt A (Arc Convex Up - same as q3)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><path d="M20,70 Q50,20 80,70" class="fill-amber-500/10 stroke-amber-500"/><circle cx="50" cy="45" r="4" class="fill-white stroke-none"/></svg>`,
+      // Opt B (Correct: Arc Convex Down)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><path d="M20,30 Q50,80 80,30" class="fill-amber-500/10 stroke-amber-500"/><circle cx="50" cy="55" r="4" class="fill-white stroke-none"/></svg>`,
+      // Opt C (Flat line with circle)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><line x1="20" y1="50" x2="80" y2="50" class="stroke-white"/><circle cx="50" cy="50" r="4" class="fill-white stroke-none"/></svg>`,
+      // Opt D (Triangle pointing up)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,20 80,70 20,70" class="fill-amber-500/10 stroke-amber-500"/><circle cx="50" cy="40" r="4" class="fill-white stroke-none"/></svg>`,
+      // Opt E (Triangle pointing down)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,80 80,30 20,30" class="fill-amber-500/10 stroke-amber-500"/><circle cx="50" cy="60" r="4" class="fill-white stroke-none"/></svg>`
+    ]
+  },
+
+  // Analogy 4: Shape Sides Increase (Triangle [3] to Square [4], as Pentagon [5] to Hexagon [6])
+  analogy4: {
+    q1: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,25 75,70 25,70" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+    q2: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="25" y="25" width="50" height="50" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+    q3: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,20 78,40 68,75 32,75 22,40" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+    opts: [
+      // Opt A (Pentagon - same as q3)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,20 78,40 68,75 32,75 22,40" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+      // Opt B (Correct: Hexagon)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,20 75,35 75,65 50,80 25,65 25,35" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+      // Opt C (Octagon)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="40,20 60,20 75,35 75,65 60,80 40,80 25,65 25,35" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+      // Opt D (Triangle)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><polygon points="50,25 75,70 25,70" class="fill-amber-500/10 stroke-amber-500"/></svg>`,
+      // Opt E (Circle)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="25" class="fill-amber-500/10 stroke-amber-500"/></svg>`
+    ]
+  },
+
+  // Analogy 5: Divided Shape (Square divided in 2 to 4, as Circle divided in 2 to 4)
+  analogy5: {
+    q1: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="20" y="20" width="60" height="60"/><line x1="20" y1="20" x2="80" y2="80" class="stroke-amber-500"/></svg>`,
+    q2: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="20" y="20" width="60" height="60"/><line x1="20" y1="20" x2="80" y2="80" class="stroke-amber-500"/><line x1="80" y1="20" x2="20" y2="80" class="stroke-amber-500"/></svg>`,
+    q3: `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="30"/><line x1="20" y1="50" x2="80" y2="50" class="stroke-amber-500"/></svg>`,
+    opts: [
+      // Opt A (Circle divided in 2 - same as q3)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="30"/><line x1="20" y1="50" x2="80" y2="50" class="stroke-amber-500"/></svg>`,
+      // Opt B (Correct: Circle divided in 4)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="30"/><line x1="20" y1="50" x2="80" y2="50" class="stroke-amber-500"/><line x1="50" y1="20" x2="50" y2="80" class="stroke-amber-500"/></svg>`,
+      // Opt C (Square divided in 4)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><rect x="20" y="20" width="60" height="60"/><line x1="20" y1="20" x2="80" y2="80" class="stroke-amber-500"/><line x1="80" y1="20" x2="20" y2="80" class="stroke-amber-500"/></svg>`,
+      // Opt D (Circle divided in 3)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="30"/><line x1="50" y1="20" x2="50" y2="80"/><line x1="50" y1="50" x2="76" y2="65"/><line x1="50" y1="50" x2="24" y2="65"/></svg>`,
+      // Opt E (Circle undivided)
+      `<svg viewBox="0 0 100 100" class="w-full h-full stroke-white fill-none stroke-2"><circle cx="50" cy="50" r="30"/></svg>`
     ]
   }
 };

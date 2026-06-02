@@ -324,7 +324,7 @@ export default function Quiz() {
                   <QuizOption
                     key={idx}
                     index={idx}
-                    text={option}
+                    text={currentQuestion.figural ? currentQuestion.figural.options[idx] : option}
                     isSelected={isSelected}
                     isCorrect={null}
                     isFigural={!!currentQuestion.figural}
