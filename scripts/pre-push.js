@@ -168,8 +168,8 @@ try {
   console.log(`[Version Hook] Version commit created. Pushing to ${remoteName}/${branchName}...`);
   execSync(`git push ${remoteName} ${branchName} --no-verify`, { stdio: 'inherit' });
   
-  // Abort the original push since we replaced it with the new push
-  process.exit(1);
+  // Exit with 0 to allow the original push command to complete successfully (since we already pushed the commits)
+  process.exit(0);
 } catch (e) {
   console.error('[Version Hook] Error during version bump commit or push:', e.message);
   process.exit(1);
