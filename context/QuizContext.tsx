@@ -125,6 +125,25 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     }
   }, [settings.theme]);
 
+  // Validate restored active session to prevent corrupt redirection crash loops
+  useEffect(() => {
+    if (session) {
+      const isValid = 
+        session &&
+        typeof session === 'object' &&
+        Array.isArray(session.questions) &&
+        session.questions.length > 0 &&
+        typeof session.currentIndex === 'number' &&
+        Array.isArray(session.answers) &&
+        session.answers.length === session.questions.length;
+      
+      if (!isValid) {
+        console.warn('Deteksi data sesi kuis korup atau tidak valid. Melakukan auto-reset sesi.');
+        setSession(null);
+      }
+    }
+  }, [session, setSession]);
+
   // ─── Pre-Generate cache helpers ───
   const preGenerateQuestions = async (
     testType: TestType,

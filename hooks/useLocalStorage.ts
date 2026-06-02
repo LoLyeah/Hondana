@@ -12,10 +12,25 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
     try {
       const item = window.localStorage.getItem(key);
       if (item) {
-        setStoredValue(JSON.parse(item));
+        const parsed = JSON.parse(item);
+        if (parsed === null || parsed === undefined) {
+          setStoredValue(initialValue);
+        } else if (typeof initialValue === 'object' && typeof parsed === 'object') {
+          if (Array.isArray(initialValue) && Array.isArray(parsed)) {
+            setStoredValue(parsed as unknown as T);
+          } else if (!Array.isArray(initialValue) && !Array.isArray(parsed)) {
+            // Merge settings/stats schemas to prevent missing properties crash
+            setStoredValue({ ...initialValue, ...parsed });
+          } else {
+            setStoredValue(parsed);
+          }
+        } else {
+          setStoredValue(parsed);
+        }
       }
     } catch (error) {
       console.warn(`Error reading localStorage key "${key}":`, error);
+      setStoredValue(initialValue);
     }
   }, [key]);
 
