@@ -272,10 +272,24 @@ export default function StatistikDetail() {
           ) : (
             <div className="flex flex-col gap-4">
               {/* Responsive layout chart */}
-              <div className="h-72 border-b border-l border-white/5 flex items-end justify-between px-2 pt-24 gap-1 md:gap-3 overflow-x-auto select-none sm:scrollbar-thin">
-                {attemptedCategories.map((cat) => {
+              <div className="h-64 border-b border-l border-white/5 flex items-end justify-between px-2 pt-6 gap-1 md:gap-3 overflow-x-auto select-none sm:scrollbar-thin">
+                {attemptedCategories.map((cat, idx) => {
                   const isHovered = hoveredBar === cat.key;
                   const value = cat.total > 0 ? cat.accuracy : 0;
+                  
+                  const isFirst = idx === 0;
+                  const isLast = idx === attemptedCategories.length - 1;
+
+                  let tooltipAlignClass = "left-1/2 -translate-x-1/2";
+                  let arrowAlignClass = "left-1/2 -translate-x-1/2";
+
+                  if (isFirst) {
+                    tooltipAlignClass = "left-0";
+                    arrowAlignClass = "left-3.5";
+                  } else if (isLast) {
+                    tooltipAlignClass = "right-0";
+                    arrowAlignClass = "right-3.5";
+                  }
                   
                   return (
                     <div
@@ -292,7 +306,7 @@ export default function StatistikDetail() {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 5 }}
                             transition={{ duration: 0.15 }}
-                            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 bg-bg-surface border border-white/10 p-2.5 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.4)] z-30 flex flex-col gap-1 w-44"
+                            className={`absolute top-2 ${tooltipAlignClass} bg-bg-surface border border-white/10 p-2.5 rounded-xl shadow-[0_10px_30px_rgba(0,0,0,0.4)] z-30 flex flex-col gap-1 w-44`}
                           >
                             <span className="text-[10px] font-black text-text-primary leading-tight uppercase border-b border-white/5 pb-1">
                               {cat.label}
@@ -307,7 +321,7 @@ export default function StatistikDetail() {
                               <span>Skor Soal:</span>
                               <span className="text-text-primary">{cat.correct} / {cat.total}</span>
                             </div>
-                            <div className="w-1.5 h-1.5 bg-bg-surface border-r border-b border-white/10 rotate-45 absolute top-[98%] left-1/2 -translate-x-1/2" />
+                            <div className={`w-1.5 h-1.5 bg-bg-surface border-r border-b border-white/10 rotate-45 absolute top-[98%] ${arrowAlignClass}`} />
                           </motion.div>
                         )}
                       </AnimatePresence>
