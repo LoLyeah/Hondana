@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   TestType,
   TPACategory,
@@ -14,18 +14,11 @@ import {
   SessionMode,
   SavedSession
 } from '../lib/types';
-import { getTPAQuestions } from '../data/tpa-questions';
-import { getTBIQuestions } from '../data/tbi-questions';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 
-interface QuizContextValue {
+interface SessionContextValue {
   session: QuizSession | null;
-  stats: UserStats;
-  settings: AppSettings;
   loading: boolean;
-  history: SavedSession[];
-  preGeneratedCache: Record<string, Question[]>;
-  
   startSimulasi: (testType: TestType, useAI: boolean) => Promise<void>;
   startLatihan: (testType: TestType, category: string, count: number, useAI: boolean) => Promise<void>;
   submitAnswer: (answerIndex: number | null, timeSpent?: number) => void;
@@ -35,15 +28,31 @@ interface QuizContextValue {
   jumpToQuestion: (index: number) => void;
   endQuiz: () => SessionResult;
   quitQuiz: () => void;
-  updateSettings: (settings: Partial<AppSettings>) => void;
-  resetStats: () => void;
   loadSavedSession: (saved: SavedSession) => void;
+}
+
+interface SettingsContextValue {
+  settings: AppSettings;
+  updateSettings: (settings: Partial<AppSettings>) => void;
+}
+
+interface StatsContextValue {
+  stats: UserStats;
+  resetStats: () => void;
+}
+
+interface HistoryContextValue {
+  history: SavedSession[];
+  preGeneratedCache: Record<string, Question[]>;
   deleteSavedSession: (id: string) => void;
   preGenerateQuestions: (testType: TestType, category: string, count: number) => Promise<void>;
   clearPreGenerated: (key?: string) => void;
 }
 
-const QuizContext = createContext<QuizContextValue | undefined>(undefined);
+const SessionContext = createContext<SessionContextValue | undefined>(undefined);
+const SettingsContext = createContext<SettingsContextValue | undefined>(undefined);
+const StatsContext = createContext<StatsContextValue | undefined>(undefined);
+const HistoryContext = createContext<HistoryContextValue | undefined>(undefined);
 
 const initialStats: UserStats = {
   totalCorrect: 0,
@@ -99,17 +108,37 @@ function shuffleArray<T>(array: T[]): T[] {
 export function QuizProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useLocalStorage<QuizSession | null>('hondana_active_session', null);
   
-  // sessionRef maintains an up-to-date reference to prevent React stale closure issues in async callbacks
-  const sessionRef = React.useRef(session);
+  // Ref for session state to prevent stale closures in async/callback functions
+  const sessionRef = useRef(session);
   useEffect(() => {
     sessionRef.current = session;
   }, [session]);
 
   const [stats, setStats] = useLocalStorage<UserStats>('hondana_user_stats', initialStats);
+  const statsRef = useRef(stats);
+  useEffect(() => {
+    statsRef.current = stats;
+  }, [stats]);
+
   const [settings, setSettings] = useLocalStorage<AppSettings>('hondana_settings', initialSettings);
+  const settingsRef = useRef(settings);
+  useEffect(() => {
+    settingsRef.current = settings;
+  }, [settings]);
+
   const [loading, setLoading] = useState(false);
+
   const [history, setHistory] = useLocalStorage<SavedSession[]>('hondana_session_history', []);
+  const historyRef = useRef(history);
+  useEffect(() => {
+    historyRef.current = history;
+  }, [history]);
+
   const [preGeneratedCache, setPreGeneratedCache] = useLocalStorage<Record<string, Question[]>>('hondana_pregen_cache', {});
+  const preGeneratedCacheRef = useRef(preGeneratedCache);
+  useEffect(() => {
+    preGeneratedCacheRef.current = preGeneratedCache;
+  }, [preGeneratedCache]);
 
   // Sync Theme preference with Document root
   useEffect(() => {
@@ -142,15 +171,16 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         setSession(null);
       }
     }
-  }, [session, setSession]);
+  }, [session]);
 
   // ─── Pre-Generate cache helpers ───
-  const preGenerateQuestions = async (
+  const preGenerateQuestions = useCallback(async (
     testType: TestType,
     category: string,
     count: number
   ): Promise<void> => {
     const cacheKey = `${testType}:${category}`;
+    const currentSettings = settingsRef.current;
     const res = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -159,9 +189,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         category,
         difficulty: 'seimbang',
         count,
-        aiProvider: settings.aiProvider,
-        customApiKey: settings.customApiKey,
-        aiModel: settings.aiModel
+        aiProvider: currentSettings.aiProvider,
+        customApiKey: currentSettings.customApiKey,
+        aiModel: currentSettings.aiModel
       })
     });
     if (!res.ok) throw new Error('Gagal generate soal AI');
@@ -171,9 +201,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       ...prev,
       [cacheKey]: [...(prev[cacheKey] || []), ...newQuestions]
     }));
-  };
+  }, []);
 
-  const clearPreGenerated = (key?: string) => {
+  const clearPreGenerated = useCallback((key?: string) => {
     if (key) {
       setPreGeneratedCache((prev) => {
         const next = { ...prev };
@@ -183,18 +213,17 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     } else {
       setPreGeneratedCache({});
     }
-  };
+  }, []);
 
-  // Helper to fetch offline questions (drains pre-gen cache first)
-  const fetchOfflineQuestions = (
+  // Helper to fetch offline questions (drains pre-gen cache first) - dynamically imports banks
+  const fetchOfflineQuestions = useCallback(async (
     testType: TestType,
     category: string | 'all',
     count: number
-  ): Question[] => {
-    // For latihan sessions, try to drain the pre-generated AI cache first
+  ): Promise<Question[]> => {
     if (category !== 'all') {
       const cacheKey = `${testType}:${category}`;
-      const cached = preGeneratedCache[cacheKey] || [];
+      const cached = preGeneratedCacheRef.current[cacheKey] || [];
       if (cached.length >= count) {
         const taken = cached.slice(0, count);
         const remaining = cached.slice(count);
@@ -204,8 +233,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     }
 
     if (testType === 'TPA') {
+      const { getTPAQuestions } = await import('../data/tpa-questions');
       const allTpa = getTPAQuestions();
-      // If Simulasi, pick 5 random per each of 12 categories (balanced difficulty: 2 mudah, 1 sedang, 2 sulit)
+      
       if (category === 'all') {
         const categories: TPACategory[] = [
           'verbal-sinonim', 'verbal-antonim', 'verbal-analogi', 'verbal-bacaan',
@@ -231,9 +261,8 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
           }
           chosen = [...chosen, ...catChosen];
         });
-        return shuffleArray(chosen); // Final shuffle of balanced exam
+        return shuffleArray(chosen);
       } else {
-        // Latihan mode: pick count from single category with balanced mix (40% mudah, 20% sedang, 40% sulit)
         const matching = allTpa.filter((q) => q.category === category);
         const mudah = matching.filter(q => q.difficulty === 'mudah');
         const sedang = matching.filter(q => q.difficulty === 'sedang');
@@ -256,8 +285,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         return shuffleArray(chosen);
       }
     } else {
+      const { getTBIQuestions } = await import('../data/tbi-questions');
       const allTbi = getTBIQuestions();
-      // If Simulasi, pick all 40 structure questions and 10 reading questions to form the 50-question exam
+      
       if (category === 'all') {
         const spec: { sub: TBICategory; qty: number; targetMudah: number; targetSedang: number; targetSulit: number }[] = [
           { sub: 'structure-completion', qty: 40, targetMudah: 16, targetSedang: 8, targetSulit: 16 },
@@ -284,7 +314,6 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         });
         return shuffleArray(chosen);
       } else {
-        // Latihan mode: pick count from specific section with balanced mix (40% mudah, 20% sedang, 40% sulit)
         const matching = allTbi.filter((q) => q.category === category);
         const mudah = matching.filter(q => q.difficulty === 'mudah');
         const sedang = matching.filter(q => q.difficulty === 'sedang');
@@ -307,16 +336,16 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         return shuffleArray(chosen);
       }
     }
-  };
+  }, []);
 
-  const startSimulasi = async (testType: TestType, useAI: boolean) => {
+  const startSimulasi = useCallback(async (testType: TestType, useAI: boolean) => {
     setLoading(true);
     const count = testType === 'TPA' ? 60 : 50;
     
     try {
       let questions: Question[] = [];
       if (useAI) {
-        // AI Call via internal route
+        const currentSettings = settingsRef.current;
         const res = await fetch('/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -325,9 +354,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
             category: 'all',
             difficulty: 'seimbang',
             count,
-            aiProvider: settings.aiProvider,
-            customApiKey: settings.customApiKey,
-            aiModel: settings.aiModel
+            aiProvider: currentSettings.aiProvider,
+            customApiKey: currentSettings.customApiKey,
+            aiModel: currentSettings.aiModel
           })
         });
         
@@ -338,7 +367,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
           throw new Error('AI Generation failed, falling back to local bank');
         }
       } else {
-        questions = fetchOfflineQuestions(testType, 'all', count);
+        questions = await fetchOfflineQuestions(testType, 'all', count);
       }
       
       setSession({
@@ -356,8 +385,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       });
     } catch (e) {
       console.warn(e);
-      // Fallback
-      const questions = fetchOfflineQuestions(testType, 'all', count);
+      const questions = await fetchOfflineQuestions(testType, 'all', count);
       setSession({
         testType,
         mode: 'simulasi',
@@ -374,9 +402,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [fetchOfflineQuestions]);
 
-  const startLatihan = async (
+  const startLatihan = useCallback(async (
     testType: TestType,
     category: string,
     count: number,
@@ -386,6 +414,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     try {
       let questions: Question[] = [];
       if (useAI) {
+        const currentSettings = settingsRef.current;
         const res = await fetch('/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -394,9 +423,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
             category,
             difficulty: 'seimbang',
             count,
-            aiProvider: settings.aiProvider,
-            customApiKey: settings.customApiKey,
-            aiModel: settings.aiModel
+            aiProvider: currentSettings.aiProvider,
+            customApiKey: currentSettings.customApiKey,
+            aiModel: currentSettings.aiModel
           })
         });
         if (res.ok) {
@@ -406,7 +435,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
           throw new Error('AI Generation failed, falling back to local bank');
         }
       } else {
-        questions = fetchOfflineQuestions(testType, category, count);
+        questions = await fetchOfflineQuestions(testType, category, count);
       }
       
       setSession({
@@ -424,7 +453,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       });
     } catch (e) {
       console.warn(e);
-      const questions = fetchOfflineQuestions(testType, category, count);
+      const questions = await fetchOfflineQuestions(testType, category, count);
       setSession({
         testType,
         mode: 'latihan',
@@ -441,39 +470,42 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [fetchOfflineQuestions]);
 
-  const submitAnswer = (answerIndex: number | null, timeSpent?: number) => {
-    if (!session || session.isComplete) return;
+  const submitAnswer = useCallback((answerIndex: number | null, timeSpent?: number) => {
+    const currentSession = sessionRef.current;
+    if (!currentSession || currentSession.isComplete) return;
 
-    const currentIndex = session.currentIndex;
-    const currentQuestion = session.questions[currentIndex];
+    const currentIndex = currentSession.currentIndex;
+    const currentQuestion = currentSession.questions[currentIndex];
     const isCorrect = answerIndex === currentQuestion.correctAnswer;
 
-    const prevAnswer = session.answers[currentIndex];
+    const prevAnswer = currentSession.answers[currentIndex];
     const hasBeenAnswered = prevAnswer !== null;
     const wasCorrect = prevAnswer === currentQuestion.correctAnswer;
 
     // 1. Update the session state immutably
-    const nextAnswers = [...session.answers];
-    nextAnswers[currentIndex] = answerIndex;
+    setSession((prevSession) => {
+      if (!prevSession) return null;
+      const nextAnswers = [...prevSession.answers];
+      nextAnswers[currentIndex] = answerIndex;
 
-    const nextTimePerQuestion = [...session.timePerQuestion];
-    if (typeof timeSpent === 'number') {
-      nextTimePerQuestion[currentIndex] = timeSpent;
-    }
+      const nextTimePerQuestion = [...prevSession.timePerQuestion];
+      if (typeof timeSpent === 'number') {
+        nextTimePerQuestion[currentIndex] = timeSpent;
+      }
 
-    setSession({
-      ...session,
-      answers: nextAnswers,
-      timePerQuestion: nextTimePerQuestion
+      return {
+        ...prevSession,
+        answers: nextAnswers,
+        timePerQuestion: nextTimePerQuestion
+      };
     });
 
-    // 2. Update user stats outside session state updater
+    // 2. Update user stats
     setStats((prev) => {
       const currentStats = prev || initialStats;
 
-      // Update category-specific stats safely
       const tpaStats = { ...initialStats.tpaStats, ...currentStats.tpaStats };
       const tbiStats = { ...initialStats.tbiStats, ...currentStats.tbiStats };
 
@@ -481,13 +513,11 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       let answeredDiff = 0;
 
       if (!hasBeenAnswered) {
-        // First time answering this question in the session
         answeredDiff = 1;
         if (isCorrect) {
           correctDiff = 1;
         }
       } else {
-        // Recorrecting an already answered question
         if (wasCorrect && !isCorrect) {
           correctDiff = -1;
         } else if (!wasCorrect && isCorrect) {
@@ -495,7 +525,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         }
       }
 
-      if (session.testType === 'TPA') {
+      if (currentSession.testType === 'TPA') {
         const cat = currentQuestion.category as TPACategory;
         if (tpaStats[cat]) {
           tpaStats[cat] = {
@@ -521,13 +551,13 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         tbiStats
       };
     });
-  };
+  }, []);
 
-  const skipQuestion = () => {
+  const skipQuestion = useCallback(() => {
     submitAnswer(null);
-  };
+  }, [submitAnswer]);
 
-  const nextQuestion = () => {
+  const nextQuestion = useCallback(() => {
     setSession((prevSession) => {
       if (!prevSession) return null;
       const nextIndex = prevSession.currentIndex + 1;
@@ -539,9 +569,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         currentIndex: nextIndex
       };
     });
-  };
+  }, []);
 
-  const toggleFlagQuestion = (index: number) => {
+  const toggleFlagQuestion = useCallback((index: number) => {
     setSession((prevSession) => {
       if (!prevSession) return null;
       const nextFlagged = prevSession.flagged ? [...prevSession.flagged] : Array(prevSession.questions.length).fill(false);
@@ -551,9 +581,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         flagged: nextFlagged
       };
     });
-  };
+  }, []);
 
-  const jumpToQuestion = (index: number) => {
+  const jumpToQuestion = useCallback((index: number) => {
     setSession((prevSession) => {
       if (!prevSession) return null;
       if (index < 0 || index >= prevSession.questions.length) return prevSession;
@@ -562,9 +592,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         currentIndex: index
       };
     });
-  };
+  }, []);
 
-  const endQuiz = (): SessionResult => {
+  const endQuiz = useCallback((): SessionResult => {
     const currentSession = sessionRef.current;
     if (!currentSession) {
       return { correct: 0, wrong: 0, skipped: 0, total: 0, score: 0, accuracy: 0, totalTime: 0, avgTimePerQuestion: 0 };
@@ -585,12 +615,11 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     });
 
     const total = currentSession.questions.length;
-    const score = correct; // No penalty scoring per BAPPENAS
+    const score = correct;
     const accuracy = total > 0 ? (correct / total) * 100 : 0;
     const totalTime = Math.floor((Date.now() - currentSession.startTime) / 1000);
     const avgTimePerQuestion = total > 0 ? totalTime / total : 0;
     
-    // Save to history and update stats only if this is a newly completed session (not loaded from history)
     if (!currentSession.isComplete) {
       setStats((prev) => {
         return {
@@ -616,7 +645,8 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         accuracy: accuracy
       };
 
-      setHistory((prev) => [newSavedSession, ...prev]);
+      // Keep only the last 20 sessions in history
+      setHistory((prev) => [newSavedSession, ...prev].slice(0, 20));
     }
 
     setSession({
@@ -635,9 +665,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       totalTime,
       avgTimePerQuestion
     };
-  };
+  }, []);
 
-  const loadSavedSession = (saved: SavedSession) => {
+  const loadSavedSession = useCallback((saved: SavedSession) => {
     setSession({
       testType: saved.testType,
       mode: saved.mode,
@@ -648,63 +678,120 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       answers: saved.answers,
       timePerQuestion: saved.timePerQuestion,
       flagged: saved.flagged || Array(saved.questions.length).fill(false),
-      startTime: Date.now() - (saved.duration * 1000), // mock starting time based on saved duration
+      startTime: Date.now() - (saved.duration * 1000),
       isComplete: true,
       duration: saved.duration
     });
-  };
+  }, []);
 
-  const deleteSavedSession = (id: string) => {
+  const deleteSavedSession = useCallback((id: string) => {
     setHistory((prev) => prev.filter((s) => s.id !== id));
-  };
+  }, []);
 
-  const quitQuiz = () => {
+  const quitQuiz = useCallback(() => {
     setSession(null);
-  };
+  }, []);
 
-  const updateSettings = (newSettings: Partial<AppSettings>) => {
+  const updateSettings = useCallback((newSettings: Partial<AppSettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
-  };
+  }, []);
 
-  const resetStats = () => {
+  const resetStats = useCallback(() => {
     setStats(initialStats);
-  };
+  }, []);
+
+  const sessionValue = useMemo(() => ({
+    session,
+    loading,
+    startSimulasi,
+    startLatihan,
+    submitAnswer,
+    skipQuestion,
+    nextQuestion,
+    toggleFlagQuestion,
+    jumpToQuestion,
+    endQuiz,
+    quitQuiz,
+    loadSavedSession
+  }), [session, loading, startSimulasi, startLatihan, submitAnswer, skipQuestion, nextQuestion, toggleFlagQuestion, jumpToQuestion, endQuiz, quitQuiz, loadSavedSession]);
+
+  const settingsValue = useMemo(() => ({
+    settings,
+    updateSettings
+  }), [settings, updateSettings]);
+
+  const statsValue = useMemo(() => ({
+    stats,
+    resetStats
+  }), [stats, resetStats]);
+
+  const historyValue = useMemo(() => ({
+    history,
+    preGeneratedCache,
+    deleteSavedSession,
+    preGenerateQuestions,
+    clearPreGenerated
+  }), [history, preGeneratedCache, deleteSavedSession, preGenerateQuestions, clearPreGenerated]);
 
   return (
-    <QuizContext.Provider
-      value={{
-        session,
-        stats,
-        settings,
-        loading,
-        history,
-        preGeneratedCache,
-        startSimulasi,
-        startLatihan,
-        submitAnswer,
-        skipQuestion,
-        nextQuestion,
-        toggleFlagQuestion,
-        jumpToQuestion,
-        endQuiz,
-        quitQuiz,
-        updateSettings,
-        resetStats,
-        loadSavedSession,
-        deleteSavedSession,
-        preGenerateQuestions,
-        clearPreGenerated
-      }}
-    >
-      {children}
-    </QuizContext.Provider>
+    <SettingsContext.Provider value={settingsValue}>
+      <StatsContext.Provider value={statsValue}>
+        <HistoryContext.Provider value={historyValue}>
+          <SessionContext.Provider value={sessionValue}>
+            {children}
+          </SessionContext.Provider>
+        </HistoryContext.Provider>
+      </StatsContext.Provider>
+    </SettingsContext.Provider>
   );
 }
 
-export function useQuiz() {
-  const context = useContext(QuizContext);
+export function useSession() {
+  const context = useContext(SessionContext);
   if (context === undefined) {
-    throw new Error('useQuiz must be used within a QuizProvider');
+    throw new Error('useSession must be used within a QuizProvider');
   }
   return context;
+}
+
+export function useSettings() {
+  const context = useContext(SettingsContext);
+  if (context === undefined) {
+    throw new Error('useSettings must be used within a QuizProvider');
+  }
+  return context;
+}
+
+export function useStats() {
+  const context = useContext(StatsContext);
+  if (context === undefined) {
+    throw new Error('useStats must be used within a QuizProvider');
+  }
+  return context;
+}
+
+export function useHistory() {
+  const context = useContext(HistoryContext);
+  if (context === undefined) {
+    throw new Error('useHistory must be used within a QuizProvider');
+  }
+  return context;
+}
+
+export function useQuiz() {
+  const session = useContext(SessionContext);
+  const settings = useContext(SettingsContext);
+  const stats = useContext(StatsContext);
+  const history = useContext(HistoryContext);
+
+  if (!session || !settings || !stats || !history) {
+    throw new Error('useQuiz must be used within a QuizProvider');
+  }
+
+  return {
+    ...session,
+    ...settings,
+    ...stats,
+    ...history
+  };
 }

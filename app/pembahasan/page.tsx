@@ -9,13 +9,14 @@ import QuizOption from '../../components/QuizOption';
 import FiguralDisplay from '../../components/FiguralDisplay';
 import TranscriptCard from '../../components/TranscriptCard';
 import PassageCard from '../../components/PassageCard';
-import { useQuiz } from '../../context/QuizContext';
+import { useSession, useSettings } from '../../context/QuizContext';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { sfx } from '../../lib/audio';
 
 export default function Pembahasan() {
   const router = useRouter();
-  const { session, settings } = useQuiz();
+  const { session } = useSession();
+  const { settings } = useSettings();
   const [reviewIndex, setReviewIndex] = useState(0);
   const [showGrid, setShowGrid] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);

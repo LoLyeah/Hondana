@@ -1,6 +1,12 @@
 import { Question, TPACategory, Difficulty } from '../lib/types';
 import { figuralPatterns } from './figural-patterns';
 
+const TPA_PASSAGES = {
+  p1: 'Indonesia merupakan produsen nikel terbesar di dunia. Pada tahun 2023, produksi nikel olahan Indonesia mencapai 1,8 juta metrik ton, atau sekitar 50% dari total pasokan dunia. Peningkatan ini didorong oleh masifnya investasi fasilitas pengolahan (smelter) nikel semenjak larangan ekspor bijih nikel mentah diberlakukan pada tahun 2020. Meskipun meningkatkan devisa negara secara signifikan, industri pengolahan nikel ini menuai tantangan lingkungan berupa pembuangan limbah tambang dan emisi karbon tinggi dari smelter bertenaga batubara captive.',
+  p2: 'Perkembangan kecerdasan buatan (AI) di sektor pendidikan telah membawa transformasi yang signifikan dalam metode pembelajaran. Melalui platform adaptif berbasis AI, kurikulum dapat dipersonalisasi sesuai dengan kecepatan belajar masing-masing siswa. Sistem dapat mendeteksi kelemahan pemahaman konsep dan memberikan rekomendasi materi pengayaan secara otomatis. Namun, integrasi teknologi ini memicu perdebatan mengenai peran guru manusia. Pengamat menekankan bahwa AI tidak akan pernah bisa menggantikan empati, bimbingan moral, dan ikatan emosional yang diberikan oleh pendidik. Kekhawatiran lain meliputi kesenjangan digital di daerah terpencil yang belum terjangkau akses internet memadai serta potensi penurunan kemampuan berpikir kritis jika siswa terlalu bergantung pada jawaban instan dari asisten AI.',
+  p3: 'Transisi menuju energi hijau menjadi agenda krusial global guna menekan laju krisis iklim. Target utama transisi ini adalah menghentikan operasional pembangkit listrik berbahan bakar fosil, khususnya batubara, dan menggantikannya dengan sumber energi terbarukan seperti tenaga surya, angin, dan panas bumi. Hambatan terbesar proses ini adalah tingginya investasi awal infrastruktur energi bersih serta kestabilan pasokan listrik intermiten (tidak konsisten) dari panel surya and kincir angin. Untuk mengatasinya, teknologi penyimpanan baterai skala besar mulai dikembangkan. Di samping itu, negara berkembang memerlukan bantuan pendanaan iklim dari negara-negara maju yang secara historis merupakan penyumbang emisi karbon terbesar di bumi agar transisi berjalan secara adil.',
+};
+
 const verbalBase = {
   sinonim: [
     { q: 'PROYEKSI', opts: ['Perkiraan', 'Bantahan', 'Pencapaian', 'Keputusan', 'Kerjasama'], ans: 0, exp: 'Sinonim PROYEKSI adalah Perkiraan atau ramalan (misal proyeksi anggaran).' },
@@ -101,70 +107,70 @@ const verbalBase = {
   bacaan: [
     // Passage 1: Nikel (0-9)
     {
-      p: 'Indonesia merupakan produsen nikel terbesar di dunia. Pada tahun 2023, produksi nikel olahan Indonesia mencapai 1,8 juta metrik ton, atau sekitar 50% dari total pasokan dunia. Peningkatan ini didorong oleh masifnya investasi fasilitas pengolahan (smelter) nikel semenjak larangan ekspor bijih nikel mentah diberlakukan pada tahun 2020. Meskipun meningkatkan devisa negara secara signifikan, industri pengolahan nikel ini menuai tantangan lingkungan berupa pembuangan limbah tambang dan emisi karbon tinggi dari smelter bertenaga batubara captive.',
+      p: TPA_PASSAGES.p1,
       q: 'Apa faktor utama pendorong peningkatan pesat produksi nikel olahan di Indonesia pada tahun 2023?',
       opts: ['Peningkatan drastis harga nikel global', 'Investasi masif smelter pasca larangan ekspor bijih mentah', 'Dukungan penuh dari negara pembeli nikel terbesar', 'Peralihan industri otomotif global ke kendaraan listrik', 'Penemuan ladang tambang nikel baru di Sulawesi'],
       ans: 1,
       exp: 'Paragraf menyebutkan: "Peningkatan ini didorong oleh masifnya investasi fasilitas pengolahan (smelter) nikel semenjak larangan ekspor bijih nikel..."'
     },
     {
-      p: 'Indonesia merupakan produsen nikel terbesar di dunia. Pada tahun 2023, produksi nikel olahan Indonesia mencapai 1,8 juta metrik ton, atau sekitar 50% dari total pasokan dunia. Peningkatan ini didorong oleh masifnya investasi fasilitas pengolahan (smelter) nikel semenjak larangan ekspor bijih nikel mentah diberlakukan pada tahun 2020. Meskipun meningkatkan devisa negara secara signifikan, industri pengolahan nikel ini menuai tantangan lingkungan berupa pembuangan limbah tambang dan emisi karbon tinggi dari smelter bertenaga batubara captive.',
+      p: TPA_PASSAGES.p1,
       q: 'Berapakah kontribusi persentase produksi nikel olahan Indonesia terhadap pasokan dunia pada tahun 2023?',
       opts: ['Sekitar 20%', 'Sekitar 35%', 'Sekitar 50%', 'Sekitar 65%', 'Sekitar 80%'],
       ans: 2,
       exp: 'Paragraf menyebutkan: "...atau sekitar 50% dari total pasokan dunia."'
     },
     {
-      p: 'Indonesia merupakan produsen nikel terbesar di dunia. Pada tahun 2023, produksi nikel olahan Indonesia mencapai 1,8 juta metrik ton, atau sekitar 50% dari total pasokan dunia. Peningkatan ini didorong oleh masifnya investasi fasilitas pengolahan (smelter) nikel semenjak larangan ekspor bijih nikel mentah diberlakukan pada tahun 2020. Meskipun meningkatkan devisa negara secara signifikan, industri pengolahan nikel ini menuai tantangan lingkungan berupa pembuangan limbah tambang dan emisi karbon tinggi dari smelter bertenaga batubara captive.',
+      p: TPA_PASSAGES.p1,
       q: 'Kapan pemerintah Indonesia mulai memberlakukan larangan ekspor bijih nikel mentah?',
       opts: ['Tahun 2018', 'Tahun 2019', 'Tahun 2020', 'Tahun 2021', 'Tahun 2022'],
       ans: 2,
       exp: 'Paragraf menyebutkan: "...semenjak larangan ekspor bijih nikel mentah diberlakukan pada tahun 2020."'
     },
     {
-      p: 'Indonesia merupakan produsen nikel terbesar di dunia. Pada tahun 2023, produksi nikel olahan Indonesia mencapai 1,8 juta metrik ton, atau sekitar 50% dari total pasokan dunia. Peningkatan ini didorong oleh masifnya investasi fasilitas pengolahan (smelter) nikel semenjak larangan ekspor bijih nikel mentah diberlakukan pada tahun 2020. Meskipun meningkatkan devisa negara secara signifikan, industri pengolahan nikel ini menuai tantangan lingkungan berupa pembuangan limbah tambang dan emisi karbon tinggi dari smelter bertenaga batubara captive.',
+      p: TPA_PASSAGES.p1,
       q: 'Apa tantangan lingkungan utama yang dihadapi oleh industri pengolahan nikel di Indonesia?',
       opts: ['Pencemaran suara di sekitar smelter', 'Limbah tambang dan emisi karbon tinggi dari pembangkit batubara', 'Penggunaan air tanah yang berlebihan secara ilegal', 'Kerusakan terumbu karang akibat kapal pengangkut', 'Kebisingan wilayah pemukiman di sekitar kawasan industri'],
       ans: 1,
       exp: 'Paragraf menyebutkan: "...industri pengolahan nikel ini menuai tantangan lingkungan berupa pembuangan limbah tambang dan emisi karbon tinggi dari smelter bertenaga batubara captive."'
     },
     {
-      p: 'Indonesia merupakan produsen nikel terbesar di dunia. Pada tahun 2023, produksi nikel olahan Indonesia mencapai 1,8 juta metrik ton, atau sekitar 50% dari total pasokan dunia. Peningkatan ini didorong oleh masifnya investasi fasilitas pengolahan (smelter) nikel semenjak larangan ekspor bijih nikel mentah diberlakukan pada tahun 2020. Meskipun meningkatkan devisa negara secara signifikan, industri pengolahan nikel ini menuai tantangan lingkungan berupa pembuangan limbah tambang dan emisi karbon tinggi dari smelter bertenaga batubara captive.',
+      p: TPA_PASSAGES.p1,
       q: 'Berdasarkan wacana, pembangkit listrik jenis apa yang digunakan untuk mengoperasikan smelter nikel captive tersebut?',
       opts: ['Pembangkit Listrik Tenaga Air (PLTA)', 'Pembangkit Listrik Tenaga Batubara (PLTU)', 'Pembangkit Listrik Tenaga Surya (PLTS)', 'Pembangkit Listrik Tenaga Gas (PLTG)', 'Pembangkit Listrik Tenaga Panas Bumi (PLTB)'],
       ans: 1,
       exp: 'Paragraf menyebutkan: "...emisi karbon tinggi dari smelter bertenaga batubara captive."'
     },
     {
-      p: 'Indonesia merupakan produsen nikel terbesar di dunia. Pada tahun 2023, produksi nikel olahan Indonesia mencapai 1,8 juta metrik ton, atau sekitar 50% dari total pasokan dunia. Peningkatan ini didorong oleh masifnya investasi fasilitas pengolahan (smelter) nikel semenjak larangan ekspor bijih nikel mentah diberlakukan pada tahun 2020. Meskipun meningkatkan devisa negara secara signifikan, industri pengolahan nikel ini menuai tantangan lingkungan berupa pembuangan limbah tambang dan emisi karbon tinggi dari smelter bertenaga batubara captive.',
+      p: TPA_PASSAGES.p1,
       q: 'Apa dampak positif ekonomi dari industri nikel olahan yang disebutkan dalam teks?',
       opts: ['Penyediaan lapangan kerja lokal', 'Peningkatan devisa negara secara signifikan', 'Subsidi energi bagi masyarakat sekitar', 'Pertumbuhan ekspor sektor otomotif', 'Kemandirian energi terbarukan daerah'],
       ans: 1,
       exp: 'Wacana menyebutkan secara eksplisit: "Meskipun meningkatkan devisa negara secara signifikan..."'
     },
     {
-      p: 'Indonesia merupakan produsen nikel terbesar di dunia. Pada tahun 2023, produksi nikel olahan Indonesia mencapai 1,8 juta metrik ton, atau sekitar 50% dari total pasokan dunia. Peningkatan ini didorong oleh masifnya investasi fasilitas pengolahan (smelter) nikel semenjak larangan ekspor bijih nikel mentah diberlakukan pada tahun 2020. Meskipun meningkatkan devisa negara secara signifikan, industri pengolahan nikel ini menuai tantangan lingkungan berupa pembuangan limbah tambang dan emisi karbon tinggi dari smelter bertenaga batubara captive.',
+      p: TPA_PASSAGES.p1,
       q: 'Apa makna istilah "smelter captive" berdasarkan konteks bacaan di atas?',
       opts: ['Smelter yang menyewa pasokan listrik PLN', 'Smelter yang memiliki pembangkit listrik khusus sendiri', 'Smelter yang mengolah nikel menjadi barang jadi elektronik', 'Smelter milik pemerintah daerah setempat', 'Smelter dengan emisi karbon terendah secara nasional'],
       ans: 1,
       exp: 'Captive power plant pada smelter merujuk pada pembangkit listrik mandiri yang dikhususkan melayani kebutuhan smelter tersebut.'
     },
     {
-      p: 'Indonesia merupakan produsen nikel terbesar di dunia. Pada tahun 2023, produksi nikel olahan Indonesia mencapai 1,8 juta metrik ton, atau sekitar 50% dari total pasokan dunia. Peningkatan ini didorong oleh masifnya investasi fasilitas pengolahan (smelter) nikel semenjak larangan ekspor bijih nikel mentah diberlakukan pada tahun 2020. Meskipun meningkatkan devisa negara secara signifikan, industri pengolahan nikel ini menuai tantangan lingkungan berupa pembuangan limbah tambang dan emisi karbon tinggi dari smelter bertenaga batubara captive.',
+      p: TPA_PASSAGES.p1,
       q: 'Berapa volume produksi nikel olahan Indonesia pada tahun 2023?',
       opts: ['1,0 juta metrik ton', '1,5 juta metrik ton', '1,8 juta metrik ton', '2,0 juta metrik ton', '2,5 juta metrik ton'],
       ans: 2,
       exp: 'Sesuai wacana: "...produksi nikel olahan Indonesia mencapai 1,8 juta metrik ton..."'
     },
     {
-      p: 'Indonesia merupakan produsen nikel terbesar di dunia. Pada tahun 2023, produksi nikel olahan Indonesia mencapai 1,8 juta metrik ton, atau sekitar 50% dari total pasokan dunia. Peningkatan ini didorong oleh masifnya investasi fasilitas pengolahan (smelter) nikel semenjak larangan ekspor bijih nikel mentah diberlakukan pada tahun 2020. Meskipun meningkatkan devisa negara secara signifikan, industri pengolahan nikel ini menuai tantangan lingkungan berupa pembuangan limbah tambang dan emisi karbon tinggi dari smelter bertenaga batubara captive.',
+      p: TPA_PASSAGES.p1,
       q: 'Bagaimana kontribusi produksi nikel mentah sebelum diolah pada tahun 2020 menurut teks?',
       opts: ['Hanya boleh diekspor dalam bentuk mentah', 'Mulai dilarang diekspor dalam bentuk mentah', 'Mengalami penurunan harga investasi smelter', 'Menggunakan energi bersih ramah lingkungan', 'Bebas pajak ekspor untuk pasar global'],
       ans: 1,
       exp: 'Teks menyebutkan larangan ekspor bijih nikel mentah diberlakukan mulai tahun 2020.'
     },
     {
-      p: 'Indonesia merupakan produsen nikel terbesar di dunia. Pada tahun 2023, produksi nikel olahan Indonesia mencapai 1,8 juta metrik ton, atau sekitar 50% dari total pasokan dunia. Peningkatan ini didorong oleh masifnya investasi fasilitas pengolahan (smelter) nikel semenjak larangan ekspor bijih nikel mentah diberlakukan pada tahun 2020. Meskipun meningkatkan devisa negara secara signifikan, industri pengolahan nikel ini menuai tantangan lingkungan berupa pembuangan limbah tambang dan emisi karbon tinggi dari smelter bertenaga batubara captive.',
+      p: TPA_PASSAGES.p1,
       q: 'Pernyataan mana yang TIDAK sesuai dengan isi paragraf tersebut?',
       opts: ['Larangan ekspor bijih nikel mentah dimulai tahun 2020.', 'Investasi smelter meningkat tajam setelah larangan ekspor.', 'Indonesia menguasai 100% pasokan nikel olahan dunia pada 2023.', 'Limbah tambang menjadi tantangan pengelolaan lingkungan.', 'Sebagian smelter nikel masih mengandalkan pembangkit batubara.'],
       ans: 2,
@@ -173,70 +179,70 @@ const verbalBase = {
 
     // Passage 2: AI (10-19)
     {
-      p: 'Perkembangan kecerdasan buatan (AI) di sektor pendidikan telah membawa transformasi yang signifikan dalam metode pembelajaran. Melalui platform adaptif berbasis AI, kurikulum dapat dipersonalisasi sesuai dengan kecepatan belajar masing-masing siswa. Sistem dapat mendeteksi kelemahan pemahaman konsep dan memberikan rekomendasi materi pengayaan secara otomatis. Namun, integrasi teknologi ini memicu perdebatan mengenai peran guru manusia. Pengamat menekankan bahwa AI tidak akan pernah bisa menggantikan empati, bimbingan moral, dan ikatan emosional yang diberikan oleh pendidik. Kekhawatiran lain meliputi kesenjangan digital di daerah terpencil yang belum terjangkau akses internet memadai serta potensi penurunan kemampuan berpikir kritis jika siswa terlalu bergantung pada jawaban instan dari asisten AI.',
+      p: TPA_PASSAGES.p2,
       q: 'Apa keuntungan utama penggunaan platform adaptif berbasis AI menurut wacana di atas?',
       opts: ['Mengurangi beban kerja administratif sekolah secara total', 'Personalisasi kurikulum sesuai kecepatan belajar siswa', 'Menghilangkan kebutuhan akan ujian konvensional di kelas', 'Menjamin kelulusan semua siswa tanpa pengecualian', 'Mempercepat waktu sekolah menjadi lebih singkat'],
       ans: 1,
       exp: 'Wacana menyebutkan: "...kurikulum dapat dipersonalisasi sesuai dengan kecepatan belajar masing-masing siswa."'
     },
     {
-      p: 'Perkembangan kecerdasan buatan (AI) di sektor pendidikan telah membawa transformasi yang signifikan dalam metode pembelajaran. Melalui platform adaptif berbasis AI, kurikulum dapat dipersonalisasi sesuai dengan kecepatan belajar masing-masing siswa. Sistem dapat mendeteksi kelemahan pemahaman konsep dan memberikan rekomendasi materi pengayaan secara otomatis. Namun, integrasi teknologi ini memicu perdebatan mengenai peran guru manusia. Pengamat menekankan bahwa AI tidak akan pernah bisa menggantikan empati, bimbingan moral, dan ikatan emosional yang diberikan oleh pendidik. Kekhawatiran lain meliputi kesenjangan digital di daerah terpencil yang belum terjangkau akses internet memadai serta potensi penurunan kemampuan berpikir kritis jika siswa terlalu bergantung pada jawaban instan dari asisten AI.',
+      p: TPA_PASSAGES.p2,
       q: 'Aspek apa dari pendidik manusia yang menurut pengamat tidak dapat digantikan oleh teknologi AI?',
       opts: ['Kecepatan transfer informasi ke siswa', 'Penyusunan modul soal ujian secara otomatis', 'Empati, bimbingan moral, dan ikatan emosional', 'Kemampuan mengevaluasi nilai rapor siswa', 'Penyediaan referensi buku-buku ilmiah terbaru'],
       ans: 2,
       exp: 'Teks menyebutkan: "...AI tidak akan pernah bisa menggantikan empati, bimbingan moral, dan ikatan emosional yang diberikan oleh pendidik."'
     },
     {
-      p: 'Perkembangan kecerdasan buatan (AI) di sektor pendidikan telah membawa transformasi yang signifikan dalam metode pembelajaran. Melalui platform adaptif berbasis AI, kurikulum dapat dipersonalisasi sesuai dengan kecepatan belajar masing-masing siswa. Sistem dapat mendeteksi kelemahan pemahaman konsep dan memberikan rekomendasi materi pengayaan secara otomatis. Namun, integrasi teknologi ini memicu perdebatan mengenai peran guru manusia. Pengamat menekankan bahwa AI tidak akan pernah bisa menggantikan empati, bimbingan moral, dan ikatan emosional yang diberikan oleh pendidik. Kekhawatiran lain meliputi kesenjangan digital di daerah terpencil yang belum terjangkau akses internet memadai serta potensi penurunan kemampuan berpikir kritis jika siswa terlalu bergantung pada jawaban instan dari asisten AI.',
+      p: TPA_PASSAGES.p2,
       q: 'Kekhawatiran apa saja yang timbul akibat integrasi AI di sekolah menurut bacaan?',
       opts: ['Kesenjangan digital dan potensi penurunan berpikir kritis', 'Tingginya biaya listrik operasional komputer', 'Hilangnya mata pelajaran olahraga dan seni', 'Meningkatnya angka putus sekolah di perkotaan', 'Penurunan gaji guru secara nasional'],
       ans: 0,
       exp: 'Teks menyebutkan kekhawatiran meliputi kesenjangan digital di daerah terpencil dan potensi penurunan kemampuan berpikir kritis akibat bergantung pada jawaban instan.'
     },
     {
-      p: 'Perkembangan kecerdasan buatan (AI) di sektor pendidikan telah membawa transformasi yang signifikan dalam metode pembelajaran. Melalui platform adaptif berbasis AI, kurikulum dapat dipersonalisasi sesuai dengan kecepatan belajar masing-masing siswa. Sistem dapat mendeteksi kelemahan pemahaman konsep dan memberikan rekomendasi materi pengayaan secara otomatis. Namun, integrasi teknologi ini memicu perdebatan mengenai peran guru manusia. Pengamat menekankan bahwa AI tidak akan pernah bisa menggantikan empati, bimbingan moral, dan ikatan emosional yang diberikan oleh pendidik. Kekhawatiran lain meliputi kesenjangan digital di daerah terpencil yang belum terjangkau akses internet memadai serta potensi penurunan kemampuan berpikir kritis jika siswa terlalu bergantung pada jawaban instan dari asisten AI.',
+      p: TPA_PASSAGES.p2,
       q: 'Bagaimana sistem AI membantu mendeteksi masalah belajar siswa berdasarkan teks?',
       opts: ['Dengan memantau kehadiran siswa di kelas secara fisik', 'Mendeteksi kelemahan konsep dan merekomendasikan materi pengayaan', 'Melaporkan nilai buruk siswa secara langsung ke orang tua', 'Memaksa siswa belajar di luar jam sekolah tanpa henti', 'Mengganti mata pelajaran yang dianggap terlalu sulit'],
       ans: 1,
       exp: 'Teks menyebutkan: "Sistem dapat mendeteksi kelemahan pemahaman konsep dan memberikan rekomendasi materi pengayaan secara otomatis."'
     },
     {
-      p: 'Perkembangan kecerdasan buatan (AI) di sektor pendidikan telah membawa transformasi yang signifikan dalam metode pembelajaran. Melalui platform adaptif berbasis AI, kurikulum dapat dipersonalisasi sesuai dengan kecepatan belajar masing-masing siswa. Sistem dapat mendeteksi kelemahan pemahaman konsep dan memberikan rekomendasi materi pengayaan secara otomatis. Namun, integrasi teknologi ini memicu perdebatan mengenai peran guru manusia. Pengamat menekankan bahwa AI tidak akan pernah bisa menggantikan empati, bimbingan moral, dan ikatan emosional yang diberikan oleh pendidik. Kekhawatiran lain meliputi kesenjangan digital di daerah terpencil yang belum terjangkau akses internet memadai serta potensi penurunan kemampuan berpikir kritis jika siswa terlalu bergantung pada jawaban instan dari asisten AI.',
+      p: TPA_PASSAGES.p2,
       q: 'Mengapa daerah terpencil menjadi hambatan bagi integrasi AI dalam pendidikan?',
       opts: ['Kurangnya minat belajar dari siswa setempat', 'Ketiadaan komputer berspesifikasi sangat tinggi', 'Kesenjangan digital akibat ketiadaan akses internet memadai', 'Kurangnya jumlah tenaga pengajar terlatih', 'Penolakan dari pemerintah daerah terhadap teknologi'],
       ans: 2,
       exp: 'Teks menyebutkan: "...kesenjangan digital di daerah terpencil yang belum terjangkau akses internet memadai..."'
     },
     {
-      p: 'Perkembangan kecerdasan buatan (AI) di sektor pendidikan telah membawa transformasi yang signifikan dalam metode pembelajaran. Melalui platform adaptif berbasis AI, kurikulum dapat dipersonalisasi sesuai dengan kecepatan belajar masing-masing siswa. Sistem dapat mendeteksi kelemahan pemahaman konsep dan memberikan rekomendasi materi pengayaan secara otomatis. Namun, integrasi teknologi ini memicu perdebatan mengenai peran guru manusia. Pengamat menekankan bahwa AI tidak akan pernah bisa menggantikan empati, bimbingan moral, dan ikatan emosional yang diberikan oleh pendidik. Kekhawatiran lain meliputi kesenjangan digital di daerah terpencil yang belum terjangkau akses internet memadai serta potensi penurunan kemampuan berpikir kritis jika siswa terlalu bergantung pada jawaban instan dari asisten AI.',
+      p: TPA_PASSAGES.p2,
       q: 'Apa akibat negatif bagi siswa jika terlalu bergantung pada asisten AI?',
       opts: ['Kesehatan mata menurun secara signifikan', 'Kehilangan teman-teman bersosialisasi di kelas', 'Potensi penurunan kemampuan berpikir kritis', 'Ketidakmampuan menggunakan komputer dasar', 'Nilai ujian sekolah yang selalu turun drastis'],
       ans: 2,
       exp: 'Teks menyebutkan: "...potensi penurunan kemampuan berpikir kritis jika siswa terlalu bergantung pada jawaban instan..."'
     },
     {
-      p: 'Perkembangan kecerdasan buatan (AI) di sektor pendidikan telah membawa transformasi yang signifikan dalam metode pembelajaran. Melalui platform adaptif berbasis AI, kurikulum dapat dipersonalisasi sesuai dengan kecepatan belajar masing-masing siswa. Sistem dapat mendeteksi kelemahan pemahaman konsep dan memberikan rekomendasi materi pengayaan secara otomatis. Namun, integrasi teknologi ini memicu perdebatan mengenai peran guru manusia. Pengamat menekankan bahwa AI tidak akan pernah bisa menggantikan empati, bimbingan moral, dan ikatan emosional yang diberikan oleh pendidik. Kekhawatiran lain meliputi kesenjangan digital di daerah terpencil yang belum terjangkau akses internet memadai serta potensi penurunan kemampuan berpikir kritis jika siswa terlalu bergantung pada jawaban instan dari asisten AI.',
+      p: TPA_PASSAGES.p2,
       q: 'Apa tema besar wacana AI dalam sektor pendidikan di atas?',
       opts: ['Kelebihan dan tantangan dari penerapan AI dalam pembelajaran sekolah', 'Cara membuat aplikasi AI khusus untuk ujian nasional', 'Kurangnya kualitas guru manusia akibat munculnya asisten AI', 'Pentingnya jaringan internet serat optik di sekolah pedesaan', 'Perubahan drastis materi kurikulum nasional demi teknologi'],
       ans: 0,
       exp: 'Wacana membahas manfaat personalisasi AI sekaligus tantangan berupa kesenjangan digital, berkurangnya berpikir kritis, dan pentingnya peran guru.'
     },
     {
-      p: 'Perkembangan kecerdasan buatan (AI) di sektor pendidikan telah membawa transformasi yang signifikan dalam metode pembelajaran. Melalui platform adaptif berbasis AI, kurikulum dapat dipersonalisasi sesuai dengan kecepatan belajar masing-masing siswa. Sistem dapat mendeteksi kelemahan pemahaman konsep dan memberikan rekomendasi materi pengayaan secara otomatis. Namun, integrasi teknologi ini memicu perdebatan mengenai peran guru manusia. Pengamat menekankan bahwa AI tidak akan pernah bisa menggantikan empati, bimbingan moral, dan ikatan emosional yang diberikan oleh pendidik. Kekhawatiran lain meliputi kesenjangan digital di daerah terpencil yang belum terjangkau akses internet memadai serta potensi penurunan kemampuan berpikir kritis jika siswa terlalu bergantung pada jawaban instan dari asisten AI.',
+      p: TPA_PASSAGES.p2,
       q: 'Pernyataan mana yang SESUAI dengan isi wacana tersebut?',
       opts: ['Sistem AI dapat memberikan rekomendasi materi pengayaan secara otomatis.', 'Guru manusia sudah tidak diperlukan lagi di sekolah modern.', 'Semua sekolah di Indonesia telah terhubung internet kecepatan tinggi.', 'Siswa menjadi lebih kreatif setelah menggunakan platform asisten AI.', 'AI menggantikan guru dalam membangun emosi moral siswa.'],
       ans: 0,
       exp: 'Teks menyebutkan: "Sistem dapat mendeteksi kelemahan... dan memberikan rekomendasi materi pengayaan secara otomatis." (Pernyataan A sesuai).'
     },
     {
-      p: 'Perkembangan kecerdasan buatan (AI) di sektor pendidikan telah membawa transformasi yang signifikan dalam metode pembelajaran. Melalui platform adaptif berbasis AI, kurikulum dapat dipersonalisasi sesuai dengan kecepatan belajar masing-masing siswa. Sistem dapat mendeteksi kelemahan pemahaman konsep dan memberikan rekomendasi materi pengayaan secara otomatis. Namun, integrasi teknologi ini memicu perdebatan mengenai peran guru manusia. Pengamat menekankan bahwa AI tidak akan pernah bisa menggantikan empati, bimbingan moral, dan ikatan emosional yang diberikan oleh pendidik. Kekhawatiran lain meliputi kesenjangan digital di daerah terpencil yang belum terjangkau akses internet memadai serta potensi penurunan kemampuan berpikir kritis jika siswa terlalu bergantung pada jawaban instan dari asisten AI.',
+      p: TPA_PASSAGES.p2,
       q: 'Apa yang dimaksud dengan "personalisasi kurikulum" dalam bacaan?',
       opts: ['Siswa menyusun mata pelajaran mereka sendiri tanpa guru', 'Kurikulum disesuaikan dengan kecepatan belajar masing-masing siswa', 'Ujian dibuat secara acak untuk menghindari contek-menontek', 'Setiap siswa mendapatkan perangkat komputer baru secara gratis', 'Sekolah membedakan kurikulum siswa kaya dan siswa miskin'],
       ans: 1,
       exp: 'Teks menyebutkan: "...kurikulum dapat dipersonalisasi sesuai dengan kecepatan belajar masing-masing siswa."'
     },
     {
-      p: 'Perkembangan kecerdasan buatan (AI) di sektor pendidikan telah membawa transformasi yang signifikan dalam metode pembelajaran. Melalui platform adaptif berbasis AI, kurikulum dapat dipersonalisasi sesuai dengan kecepatan belajar masing-masing siswa. Sistem dapat mendeteksi kelemahan pemahaman konsep dan memberikan rekomendasi materi pengayaan secara otomatis. Namun, integrasi teknologi ini memicu perdebatan mengenai peran guru manusia. Pengamat menekankan bahwa AI tidak akan pernah bisa menggantikan empati, bimbingan moral, dan ikatan emosional yang diberikan oleh pendidik. Kekhawatiran lain meliputi kesenjangan digital di daerah terpencil yang belum terjangkau akses internet memadai serta potensi penurunan kemampuan berpikir kritis jika siswa terlalu bergantung pada jawaban instan dari asisten AI.',
+      p: TPA_PASSAGES.p2,
       q: 'Pernyataan mana yang TIDAK sesuai dengan isi wacana di atas?',
       opts: ['Kecerdasan buatan mendukung pembelajaran adaptif.', 'Guru memberikan empati yang tidak dimiliki AI.', 'AI memicu penurunan minat baca buku teks.', 'Daerah terpencil masih terkendala akses internet.', 'AI memicu kekhawatiran tentang berpikir kritis.'],
       ans: 2,
@@ -252,63 +258,63 @@ const verbalBase = {
       exp: 'Teks menyebutkan: "Target utama transisi ini adalah menghentikan operasional pembangkit listrik berbahan bakar fosil... menggantikannya dengan sumber energi terbarukan."'
     },
     {
-      p: 'Transisi menuju energi hijau menjadi agenda krusial global guna menekan laju krisis iklim. Target utama transisi ini adalah menghentikan operasional pembangkit listrik berbahan bakar fosil, khususnya batubara, dan menggantikannya dengan sumber energi terbarukan seperti tenaga surya, angin, dan panas bumi. Hambatan terbesar proses ini adalah tingginya investasi awal infrastruktur energi bersih serta kestabilan pasokan listrik intermiten (tidak konsisten) dari panel surya and kincir angin. Untuk mengatasinya, teknologi penyimpanan baterai skala besar mulai dikembangkan. Di samping itu, negara berkembang memerlukan bantuan pendanaan iklim dari negara-negara maju yang secara historis merupakan penyumbang emisi karbon terbesar di bumi agar transisi berjalan secara adil.',
+      p: TPA_PASSAGES.p3,
       q: 'Apa yang dimaksud dengan sifat "intermiten" dari energi surya dan angin berdasarkan bacaan?',
       opts: ['Tingginya polusi yang dihasilkan', 'Pasokan listrik yang tidak konsisten/tidak stabil', 'Mahalnya biaya pembuatan alat penangkap energi', 'Ketidakmampuan menghasilkan daya listrik besar', 'Sulitnya melakukan perawatan suku cadang generator'],
       ans: 1,
       exp: 'Teks menyebutkan: "...pasokan listrik intermiten (tidak konsisten) dari panel surya dan kincir angin."'
     },
     {
-      p: 'Transisi menuju energi hijau menjadi agenda krusial global guna menekan laju krisis iklim. Target utama transisi ini adalah menghentikan operasional pembangkit listrik berbahan bakar fosil, khususnya batubara, dan menggantikannya dengan sumber energi terbarukan seperti tenaga surya, angin, dan panas bumi. Hambatan terbesar proses ini adalah tingginya investasi awal infrastruktur energi bersih serta kestabilan pasokan listrik intermiten (tidak konsisten) dari panel surya and kincir angin. Untuk mengatasinya, teknologi penyimpanan baterai skala besar mulai dikembangkan. Di samping itu, negara berkembang memerlukan bantuan pendanaan iklim dari negara-negara maju yang secara historis merupakan penyumbang emisi karbon terbesar di bumi agar transisi berjalan secara adil.',
+      p: TPA_PASSAGES.p3,
       q: 'Teknologi apa yang mulai dikembangkan untuk mengatasi ketidakstabilan pasokan energi bersih?',
       opts: ['Pembangkit batubara cadangan darurat', 'Teknologi penyimpanan baterai skala besar', 'Kabel transmisi listrik bawah laut internasional', 'Generator diesel hemat energi', 'Pemasangan kincir angin berukuran raksasa'],
       ans: 1,
       exp: 'Teks menyebutkan: "Untuk mengatasinya, teknologi penyimpanan baterai skala besar mulai dikembangkan."'
     },
     {
-      p: 'Transisi menuju energi hijau menjadi agenda krusial global guna menekan laju krisis iklim. Target utama transisi ini adalah menghentikan operasional pembangkit listrik berbahan bakar fosil, khususnya batubara, dan menggantikannya dengan sumber energi terbarukan seperti tenaga surya, angin, dan panas bumi. Hambatan terbesar proses ini adalah tingginya investasi awal infrastruktur energi bersih serta kestabilan pasokan listrik intermiten (tidak konsisten) dari panel surya and kincir angin. Untuk mengatasinya, teknologi penyimpanan baterai skala besar mulai dikembangkan. Di samping itu, negara berkembang memerlukan bantuan pendanaan iklim dari negara-negara maju yang secara historis merupakan penyumbang emisi karbon terbesar di bumi agar transisi berjalan secara adil.',
+      p: TPA_PASSAGES.p3,
       q: 'Mengapa negara maju berkewajiban memberikan bantuan pendanaan iklim menurut wacana?',
       opts: ['Karena memiliki cadangan batubara melimpah', 'Secara historis merupakan penyumbang emisi terbesar', 'Untuk menjual produk panel surya buatan mereka', 'Negara maju memiliki teknologi baterai terlengkap', 'Untuk memonitor penggunaan energi negara berkembang'],
       ans: 1,
       exp: 'Teks menyebutkan: "...negara-negara maju yang secara historis merupakan penyumbang emisi karbon terbesar di bumi..."'
     },
     {
-      p: 'Transisi menuju energi hijau menjadi agenda krusial global guna menekan laju krisis iklim. Target utama transisi ini adalah menghentikan operasional pembangkit listrik berbahan bakar fosil, khususnya batubara, dan menggantikannya dengan sumber energi terbarukan seperti tenaga surya, angin, dan panas bumi. Hambatan terbesar proses ini adalah tingginya investasi awal infrastruktur energi bersih serta kestabilan pasokan listrik intermiten (tidak konsisten) dari panel surya and kincir angin. Untuk mengatasinya, teknologi penyimpanan baterai skala besar mulai dikembangkan. Di samping itu, negara berkembang memerlukan bantuan pendanaan iklim dari negara-negara maju yang secara historis merupakan penyumbang emisi karbon terbesar di bumi agar transisi berjalan secara adil.',
+      p: TPA_PASSAGES.p3,
       q: 'Sumber energi terbarukan apa saja yang disebutkan secara spesifik dalam paragraf tersebut?',
       opts: ['Nuklir, batu bara, dan minyak bumi', 'Gas alam, biogas, dan energi surya', 'Tenaga surya, angin, dan panas bumi', 'Energi ombak, hidrogen, dan biomassa', 'Listrik dinamo, batubara, dan geothermal'],
       ans: 2,
       exp: 'Teks menyebutkan: "...sumber energi terbarukan seperti tenaga surya, angin, dan panas bumi."'
     },
     {
-      p: 'Transisi menuju energi hijau menjadi agenda krusial global guna menekan laju krisis iklim. Target utama transisi ini adalah menghentikan operasional pembangkit listrik berbahan bakar fosil, khususnya batubara, dan menggantikannya dengan sumber energi terbarukan seperti tenaga surya, angin, dan panas bumi. Hambatan terbesar proses ini adalah tingginya investasi awal infrastruktur energi bersih serta kestabilan pasokan listrik intermiten (tidak konsisten) dari panel surya and kincir angin. Untuk mengatasinya, teknologi penyimpanan baterai skala besar mulai dikembangkan. Di samping itu, negara berkembang memerlukan bantuan pendanaan iklim dari negara-negara maju yang secara historis merupakan penyumbang emisi karbon terbesar di bumi agar transisi berjalan secara adil.',
+      p: TPA_PASSAGES.p3,
       q: 'Apa hambatan terbesar dalam transisi energi hijau yang dialami oleh negara berkembang?',
       opts: ['Tingginya harga batubara internasional', 'Tingginya investasi awal infrastruktur energi bersih', 'Kurangnya minat masyarakat menggunakan listrik bersih', 'Ketiadaan lahan untuk membangun kincir angin', 'Penolakan dari industri otomotif lokal'],
       ans: 1,
       exp: 'Teks menyebutkan: "Hambatan terbesar proses ini adalah tingginya investasi awal infrastruktur energi bersih..."'
     },
     {
-      p: 'Transisi menuju energi hijau menjadi agenda krusial global guna menekan laju krisis iklim. Target utama transisi ini adalah menghentikan operasional pembangkit listrik berbahan bakar fosil, khususnya batubara, dan menggantikannya dengan sumber energi terbarukan seperti tenaga surya, angin, dan panas bumi. Hambatan terbesar proses ini adalah tingginya investasi awal infrastruktur energi bersih serta kestabilan pasokan listrik intermiten (tidak konsisten) dari panel surya and kincir angin. Untuk mengatasinya, teknologi penyimpanan baterai skala besar mulai dikembangkan. Di samping itu, negara berkembang memerlukan bantuan pendanaan iklim dari negara-negara maju yang secara historis merupakan penyumbang emisi karbon terbesar di bumi agar transisi berjalan secara adil.',
+      p: TPA_PASSAGES.p3,
       q: 'Apa tujuan utama dilaksanakannya transisi energi hijau dalam konteks global?',
       opts: ['Menurunkan tarif listrik domestik secara drastis', 'Menekan laju krisis iklim global', 'Mengurangi ketergantungan impor pangan', 'Mempermudah ekspor energi ke negara tetangga', 'Meningkatkan efisiensi pembangkit fosil'],
       ans: 1,
       exp: 'Teks menyebutkan: "...transisi menuju energi hijau menjadi agenda krusial global guna menekan laju krisis iklim."'
     },
     {
-      p: 'Transisi menuju energi hijau menjadi agenda krusial global guna menekan laju krisis iklim. Target utama transisi ini adalah menghentikan operasional pembangkit listrik berbahan bakar fosil, khususnya batubara, dan menggantikannya dengan sumber energi terbarukan seperti tenaga surya, angin, dan panas bumi. Hambatan terbesar proses ini adalah tingginya investasi awal infrastruktur energi bersih serta kestabilan pasokan listrik intermiten (tidak konsisten) dari panel surya and kincir angin. Untuk mengatasinya, teknologi penyimpanan baterai skala besar mulai dikembangkan. Di samping itu, negara berkembang memerlukan bantuan pendanaan iklim dari negara-negara maju yang secara historis merupakan penyumbang emisi karbon terbesar di bumi agar transisi berjalan secara adil.',
+      p: TPA_PASSAGES.p3,
       q: 'Berdasarkan teks, bagaimana perbandingan peran negara maju dan berkembang dalam emisi karbon secara historis?',
       opts: ['Negara berkembang adalah penyumbang emisi terbesar', 'Negara maju secara historis merupakan penyumbang emisi terbesar', 'Emisi karbon kedua kelompok negara bernilai sama', 'Emisi karbon negara maju telah mencapai nol bersih', 'Negara berkembang tidak menyumbang emisi karbon sama sekali'],
       ans: 1,
       exp: 'Teks menyatakan: "...negara-negara maju yang secara historis merupakan penyumbang emisi karbon terbesar..."'
     },
     {
-      p: 'Transisi menuju energi hijau menjadi agenda krusial global guna menekan laju krisis iklim. Target utama transisi ini adalah menghentikan operasional pembangkit listrik berbahan bakar fosil, khususnya batubara, dan menggantikannya dengan sumber energi terbarukan seperti tenaga surya, angin, dan panas bumi. Hambatan terbesar proses ini adalah tingginya investasi awal infrastruktur energi bersih serta kestabilan pasokan listrik intermiten (tidak konsisten) dari panel surya and kincir angin. Untuk mengatasinya, teknologi penyimpanan baterai skala besar mulai dikembangkan. Di samping itu, negara berkembang memerlukan bantuan pendanaan iklim dari negara-negara maju yang secara historis merupakan penyumbang emisi karbon terbesar di bumi agar transisi berjalan secara adil.',
+      p: TPA_PASSAGES.p3,
       q: 'Apa prasyarat agar transisi energi hijau di tingkat global dapat berjalan secara "adil"?',
       opts: ['Negara berkembang memberikan subsidi ke negara maju', 'Pemberian pendanaan iklim dari negara maju ke negara berkembang', 'Negara berkembang menghentikan industri manufaktur mereka', 'Pemberian batubara murah ke negara miskin', 'Seluruh dunia harus menggunakan panel surya merek yang sama'],
       ans: 1,
       exp: 'Teks menyatakan: "...negara berkembang memerlukan bantuan pendanaan iklim dari negara-negara maju... agar transisi berjalan secara adil."'
     },
     {
-      p: 'Transisi menuju energi hijau menjadi agenda krusial global guna menekan laju krisis iklim. Target utama transisi ini adalah menghentikan operasional pembangkit listrik berbahan bakar fosil, khususnya batubara, dan menggantikannya dengan sumber energi terbarukan seperti tenaga surya, angin, dan panas bumi. Hambatan terbesar proses ini adalah tingginya investasi awal infrastruktur energi bersih serta kestabilan pasokan listrik intermiten (tidak konsisten) dari panel surya and kincir angin. Untuk mengatasinya, teknologi penyimpanan baterai skala besar mulai dikembangkan. Di samping itu, negara berkembang memerlukan bantuan pendanaan iklim dari negara-negara maju yang secara historis merupakan penyumbang emisi karbon terbesar di bumi agar transisi berjalan secara adil.',
+      p: TPA_PASSAGES.p3,
       q: 'Manakah pernyataan yang TIDAK sesuai dengan bacaan di atas?',
       opts: ['Penyimpanan baterai skala besar mengatasi intermitensi.', 'Pembangkit batu bara adalah target utama penghentian.', 'Panas bumi dikategorikan sebagai energi terbarukan.', 'Investasi awal infrastruktur energi bersih tergolong rendah.', 'Negara berkembang memerlukan dana iklim dari negara maju.'],
       ans: 3,

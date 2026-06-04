@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val: T) => T)) => void] {
   // State to store our value
-  // Pass initial state function to useState so logic is only executed once
   const [storedValue, setStoredValue] = useState<T>(initialValue);
+  const isInitialized = useRef(false);
 
   // Initialize value from localStorage on client side mount
   useEffect(() => {
@@ -31,23 +31,38 @@ export function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T 
     } catch (error) {
       console.warn(`Error reading localStorage key "${key}":`, error);
       setStoredValue(initialValue);
+    } finally {
+      isInitialized.current = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
-  // Return a wrapped version of useState's setter function that persists the new value to localStorage.
-  const setValue = (value: T | ((val: T) => T)) => {
+  // Sync to localStorage with debounce
+  useEffect(() => {
+    if (!isInitialized.current) return;
+
+    const handler = setTimeout(() => {
+      try {
+        window.localStorage.setItem(key, JSON.stringify(storedValue));
+      } catch (error) {
+        console.warn(`Error setting localStorage key "${key}":`, error);
+      }
+    }, 300);
+
+    return () => clearTimeout(handler);
+  }, [key, storedValue]);
+
+  // Return a wrapped version of useState's setter function that triggers state update.
+  const setValue = useCallback((value: T | ((val: T) => T)) => {
     try {
       setStoredValue((prevVal) => {
         const valueToStore = value instanceof Function ? value(prevVal) : value;
-        if (typeof window !== 'undefined') {
-          window.localStorage.setItem(key, JSON.stringify(valueToStore));
-        }
         return valueToStore;
       });
     } catch (error) {
       console.warn(`Error setting localStorage key "${key}":`, error);
     }
-  };
+  }, [key]);
 
   return [storedValue, setValue];
 }

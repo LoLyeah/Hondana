@@ -7,7 +7,7 @@ import Header from '../../components/Header';
 import BottomNav from '../../components/BottomNav';
 import StatsCard from '../../components/StatsCard';
 import ResultBar from '../../components/ResultBar';
-import { useQuiz } from '../../context/QuizContext';
+import { useSession, useStats, useHistory, useSettings } from '../../context/QuizContext';
 import { sfx } from '../../lib/audio';
 import { SessionResult, SavedSession } from '../../lib/types';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -32,7 +32,10 @@ const itemVariants = {
 
 export default function Hasil() {
   const router = useRouter();
-  const { session, stats, history, endQuiz, quitQuiz, loadSavedSession, deleteSavedSession, settings } = useQuiz();
+  const { session, endQuiz, quitQuiz, loadSavedSession } = useSession();
+  const { stats } = useStats();
+  const { history, deleteSavedSession } = useHistory();
+  const { settings } = useSettings();
   const [result, setResult] = useState<SessionResult | null>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -223,7 +226,7 @@ export default function Hasil() {
                 </button>
               </div>
             ) : (
-              <div className="flex flex-col gap-3.5">
+              <div className="flex flex-col gap-3.5 optim-scroll">
                 <AnimatePresence>
                   {history.map((item, idx) => {
                     const isItemTPA = item.testType === 'TPA';

@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 
 interface PassageCardProps {
   passage: string;
 }
 
-export default function PassageCard({ passage }: PassageCardProps) {
+export default memo(function PassageCard({ passage }: PassageCardProps) {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
@@ -60,4 +60,4 @@ export default function PassageCard({ passage }: PassageCardProps) {
       </div>
     </div>
   );
-}
+});

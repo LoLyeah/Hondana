@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProgressBar from '../../components/ProgressBar';
@@ -9,7 +9,7 @@ import QuizOption from '../../components/QuizOption';
 import FiguralDisplay from '../../components/FiguralDisplay';
 import TranscriptCard from '../../components/TranscriptCard';
 import PassageCard from '../../components/PassageCard';
-import { useQuiz } from '../../context/QuizContext';
+import { useSession, useSettings } from '../../context/QuizContext';
 import { useTimer } from '../../hooks/useTimer';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { useFullscreen } from '../../hooks/useFullscreen';
@@ -24,13 +24,14 @@ export default function Quiz() {
     toggleFlagQuestion,
     jumpToQuestion,
     endQuiz,
-    quitQuiz,
-    settings
-  } = useQuiz();
+    quitQuiz
+  } = useSession();
+
+  const { settings } = useSettings();
 
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
-  const [timeUsed, setTimeUsed] = useState(0);
+  const timeUsedRef = React.useRef(0);
   const [showGrid, setShowGrid] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -57,7 +58,7 @@ export default function Quiz() {
   const totalDurationSeconds = session?.testType === 'TPA' ? 3600 : 3000;
 
   // Callback when timer expires
-  const handleTimeUp = () => {
+  const handleTimeUp = useCallback(() => {
     if (advanceTimeoutRef.current) {
       clearTimeout(advanceTimeoutRef.current);
       advanceTimeoutRef.current = null;
@@ -65,7 +66,7 @@ export default function Quiz() {
     alert('Waktu ujian Anda telah habis! Sesi kuis akan diselesaikan secara otomatis.');
     endQuiz();
     router.push('/hasil');
-  };
+  }, [endQuiz, router]);
 
   // Timer Hook integration (session-level stable countdown)
   const { timeLeft } = useTimer({
@@ -75,11 +76,12 @@ export default function Quiz() {
     isActive: session !== null && !session.isComplete && settings.timerEnabled
   });
 
-  // Track time used per question
+  // Track time used per question using Ref to avoid unnecessary re-renders
   useEffect(() => {
     if (isAnswered) return;
+    timeUsedRef.current = 0;
     const interval = setInterval(() => {
-      setTimeUsed((prev) => prev + 1);
+      timeUsedRef.current += 1;
     }, 1000);
     return () => clearInterval(interval);
   }, [isAnswered, session?.currentIndex]);
@@ -90,7 +92,7 @@ export default function Quiz() {
       const answeredIdx = session.answers[session.currentIndex];
       setSelectedOption(answeredIdx !== null ? answeredIdx : null);
       setIsAnswered(answeredIdx !== null);
-      setTimeUsed(0);
+      timeUsedRef.current = 0;
 
       // Clear any pending transition timeout from the previous question
       if (advanceTimeoutRef.current) {
@@ -100,13 +102,24 @@ export default function Quiz() {
     }
   }, [session?.currentIndex, currentQuestion]);
 
-  const handleAnswerSubmit = (optionIndex: number | null) => {
+  const handleNext = useCallback(() => {
+    if (!session) return;
+    const isLast = session.currentIndex + 1 >= session.questions.length;
+    if (isLast) {
+      endQuiz();
+      router.push('/hasil');
+    } else {
+      nextQuestion();
+    }
+  }, [session, endQuiz, router, nextQuestion]);
+
+  const handleAnswerSubmit = useCallback((optionIndex: number | null) => {
     if (!session || !currentQuestion) return;
     setSelectedOption(optionIndex);
     setIsAnswered(true);
 
     // Save answer in context immutably (including time spent)
-    submitAnswer(optionIndex, timeUsed);
+    submitAnswer(optionIndex, timeUsedRef.current);
 
     // Neutral select sound effect so as not to reveal correctness
     if (settings.soundEnabled) {
@@ -123,27 +136,16 @@ export default function Quiz() {
       handleNext();
       advanceTimeoutRef.current = null;
     }, 800);
-  };
+  }, [session, currentQuestion, submitAnswer, settings.soundEnabled, handleNext]);
 
-  const handleNext = () => {
-    if (!session) return;
-    const isLast = session.currentIndex + 1 >= session.questions.length;
-    if (isLast) {
-      endQuiz();
-      router.push('/hasil');
-    } else {
-      nextQuestion();
-    }
-  };
-
-  const handleQuit = () => {
+  const handleQuit = useCallback(() => {
     if (window.confirm('Apakah Anda yakin ingin mengakhiri sesi kuis ini? Progress latihan ini tidak akan disimpan.')) {
       quitQuiz();
       router.push('/');
     }
-  };
+  }, [quitQuiz, router]);
 
-  const handleCompleteQuiz = () => {
+  const handleCompleteQuiz = useCallback(() => {
     if (window.confirm('Apakah Anda yakin ingin menyelesaikan sesi kuis ini dan melihat hasil?')) {
       if (advanceTimeoutRef.current) {
         clearTimeout(advanceTimeoutRef.current);
@@ -152,7 +154,7 @@ export default function Quiz() {
       endQuiz();
       router.push('/hasil');
     }
-  };
+  }, [endQuiz, router]);
 
   // Active when drawer is CLOSED
   useKeyboardShortcuts({

@@ -4,7 +4,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Header from '../../components/Header';
 import BottomNav from '../../components/BottomNav';
-import { useQuiz } from '../../context/QuizContext';
+import { useSettings, useStats, useHistory } from '../../context/QuizContext';
 import { usePWAInstall } from '../../hooks/usePWAInstall';
 import { sfx } from '../../lib/audio';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -29,7 +29,9 @@ const itemVariants = {
 };
 
 export default function Pengaturan() {
-  const { settings, updateSettings, stats, resetStats, preGeneratedCache, preGenerateQuestions, clearPreGenerated } = useQuiz();
+  const { settings, updateSettings } = useSettings();
+  const { stats, resetStats } = useStats();
+  const { preGeneratedCache, preGenerateQuestions, clearPreGenerated } = useHistory();
   const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
   const [installStatus, setInstallStatus] = React.useState<'idle' | 'accepted' | 'dismissed'>('idle');
   const [mounted, setMounted] = React.useState(false);

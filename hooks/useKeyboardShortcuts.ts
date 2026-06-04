@@ -1,8 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 type ShortcutMap = Record<string, (e: KeyboardEvent) => void>;
 
 export function useKeyboardShortcuts(shortcuts: ShortcutMap, enabled = true) {
+  const shortcutsRef = useRef<ShortcutMap>(shortcuts);
+  
+  // Keep the ref updated with the latest shortcut handlers
+  shortcutsRef.current = shortcuts;
+
   useEffect(() => {
     if (!enabled) return;
 
@@ -14,7 +19,8 @@ export function useKeyboardShortcuts(shortcuts: ShortcutMap, enabled = true) {
       // Skip if modifier keys held (e.g. Ctrl+R = reload)
       if (e.ctrlKey || e.metaKey || e.altKey) return;
 
-      const fn = shortcuts[e.key] || shortcuts[e.key.toLowerCase()];
+      const currentShortcuts = shortcutsRef.current;
+      const fn = currentShortcuts[e.key] || currentShortcuts[e.key.toLowerCase()];
       if (fn) {
         e.preventDefault();
         fn(e);
@@ -23,5 +29,6 @@ export function useKeyboardShortcuts(shortcuts: ShortcutMap, enabled = true) {
 
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [shortcuts, enabled]);
+  }, [enabled]);
 }
+

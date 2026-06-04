@@ -20,7 +20,8 @@ export async function POST(request: Request) {
       aiProvider,
       customApiKey,
       aiModel,
-      aiBaseUrl
+      aiBaseUrl,
+      request.signal
     );
     
     return NextResponse.json({ questions });

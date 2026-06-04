@@ -45,7 +45,7 @@ export function useTimer({ startTime, totalDurationSeconds, onTimeUp, isActive }
       if (isDone) {
         clearInterval(interval);
       }
-    }, 200);
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [isActive, startTime, totalDurationSeconds]);

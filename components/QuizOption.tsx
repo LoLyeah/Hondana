@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 interface QuizOptionProps {
   text: string;
@@ -12,7 +12,7 @@ interface QuizOptionProps {
   isFigural?: boolean; // TPA figural question option uses SVG
 }
 
-export default function QuizOption({
+export default memo(function QuizOption({
   text,
   index,
   isSelected,
@@ -62,4 +62,4 @@ export default function QuizOption({
       </div>
     </button>
   );
-}
+});

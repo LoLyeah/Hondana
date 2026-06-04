@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
@@ -83,7 +83,7 @@ export function usePWAInstall(): UsePWAInstall {
     };
   }, []);
 
-  const install = async (): Promise<'accepted' | 'dismissed' | 'unavailable'> => {
+  const install = useCallback(async (): Promise<'accepted' | 'dismissed' | 'unavailable'> => {
     if (!deferredPrompt) return 'unavailable';
 
     await deferredPrompt.prompt();
@@ -95,7 +95,7 @@ export function usePWAInstall(): UsePWAInstall {
     }
 
     return outcome;
-  };
+  }, [deferredPrompt]);
 
   return {
     isInstallable: !!deferredPrompt,

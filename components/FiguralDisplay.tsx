@@ -1,12 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 interface FiguralDisplayProps {
   figures: string[];
 }
 
-export default function FiguralDisplay({ figures }: FiguralDisplayProps) {
+export default memo(function FiguralDisplay({ figures }: FiguralDisplayProps) {
   return (
     <div className="w-full glass border border-white/8 p-5 flex flex-col items-center justify-center gap-4 bg-white/2 rounded-2xl">
       <div className="w-full flex items-center justify-center gap-3 md:gap-4">
@@ -50,4 +50,4 @@ export default function FiguralDisplay({ figures }: FiguralDisplayProps) {
       </div>
     </div>
   );
-}
+});

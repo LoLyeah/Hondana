@@ -1,12 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 interface TranscriptCardProps {
   transcript: string;
 }
 
-export default function TranscriptCard({ transcript }: TranscriptCardProps) {
+export default memo(function TranscriptCard({ transcript }: TranscriptCardProps) {
   // Parse dialogue lines into structured objects
   const lines = transcript.split('\n').map((line, idx) => {
     const colonIdx = line.indexOf(':');
@@ -67,4 +67,4 @@ export default function TranscriptCard({ transcript }: TranscriptCardProps) {
       </div>
     </div>
   );
-}
+});

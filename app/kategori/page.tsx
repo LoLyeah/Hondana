@@ -7,10 +7,8 @@ import Header from '../../components/Header';
 import BottomNav from '../../components/BottomNav';
 import CategoryCard from '../../components/CategoryCard';
 import QuestionExhaustionModal from '../../components/QuestionExhaustionModal';
-import { useQuiz } from '../../context/QuizContext';
+import { useSession, useStats, useSettings } from '../../context/QuizContext';
 import { TestType } from '../../lib/types';
-import { getTPAQuestions } from '../../data/tpa-questions';
-import { getTBIQuestions } from '../../data/tbi-questions';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
 import { sfx } from '../../lib/audio';
@@ -44,7 +42,9 @@ function KategoriContent() {
   const rawType = searchParams.get('type') || 'TPA';
   const type = rawType === 'TBI' ? 'TBI' : 'TPA';
 
-  const { stats, settings, updateSettings, startSimulasi, startLatihan, loading } = useQuiz();
+  const { stats } = useStats();
+  const { settings, updateSettings } = useSettings();
+  const { startSimulasi, startLatihan, loading } = useSession();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [mounted, setMounted] = React.useState(false);
 
@@ -132,26 +132,27 @@ function KategoriContent() {
     router.push('/quiz');
   };
 
-  // Returns how many unique offline questions exist for a category
-  const getAvailableOfflineCount = (catKey: string): number => {
-    if (type === 'TPA') {
-      return getTPAQuestions().filter((q) => q.category === catKey).length;
-    }
-    return getTBIQuestions().filter((q) => q.category === catKey).length;
-  };
-
   const doStartLatihan = async (catKey: string) => {
     await startLatihan(type, catKey, latihanCount, useAI);
     router.push('/quiz');
   };
 
-  const handleStartLatihan = (catKey: string) => {
+  const handleStartLatihan = async (catKey: string) => {
     // If AI is on, no need to check exhaustion
     if (useAI) {
       doStartLatihan(catKey);
       return;
     }
-    const available = getAvailableOfflineCount(catKey);
+    
+    let available = 0;
+    if (type === 'TPA') {
+      const { getTPAQuestions } = await import('../../data/tpa-questions');
+      available = getTPAQuestions().filter((q) => q.category === catKey).length;
+    } else {
+      const { getTBIQuestions } = await import('../../data/tbi-questions');
+      available = getTBIQuestions().filter((q) => q.category === catKey).length;
+    }
+
     if (available < latihanCount) {
       const catEntry = activeCategories.find((c) => c.key === catKey);
       setExhaustionModal({
@@ -351,7 +352,7 @@ function KategoriContent() {
           </div>
 
           {/* Category grids grouped */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 optim-scroll">
             {groups.map((groupName) => (
               <div key={groupName} className="flex flex-col gap-3">
                 <h4 className="text-xs font-black uppercase tracking-widest text-accent border-l-2 border-accent pl-2 leading-none">

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 interface ProgressBarProps {
   currentIndex: number;
@@ -8,7 +8,7 @@ interface ProgressBarProps {
   answers: (number | null)[];
 }
 
-export default function ProgressBar({ currentIndex, total, answers }: ProgressBarProps) {
+export default memo(function ProgressBar({ currentIndex, total, answers }: ProgressBarProps) {
   const percentage = ((currentIndex) / total) * 100;
 
   // For small quizzes (<= 15 questions), render individual segmented dots
@@ -51,4 +51,4 @@ export default function ProgressBar({ currentIndex, total, answers }: ProgressBa
       )}
     </div>
   );
-}
+});

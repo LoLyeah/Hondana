@@ -1,13 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 interface TimerRingProps {
   timeLeft: number;
   timeLimit: number;
 }
 
-export default function TimerRing({ timeLeft, timeLimit }: TimerRingProps) {
+export default memo(function TimerRing({ timeLeft, timeLimit }: TimerRingProps) {
   const progress = timeLeft / timeLimit;
   const radius = 18;
   const circumference = 2 * Math.PI * radius;
@@ -63,4 +63,4 @@ export default function TimerRing({ timeLeft, timeLimit }: TimerRingProps) {
       </span>
     </div>
   );
-}
+});

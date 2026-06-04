@@ -7,7 +7,7 @@ import Header from '../components/Header';
 import BottomNav from '../components/BottomNav';
 import StatsCard from '../components/StatsCard';
 import TestTypeCard from '../components/TestTypeCard';
-import { useQuiz } from '../context/QuizContext';
+import { useStats } from '../context/QuizContext';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 
 const containerVariants = {
@@ -35,7 +35,7 @@ const itemVariants = {
 
 export default function Home() {
   const router = useRouter();
-  const { stats } = useQuiz();
+  const { stats } = useStats();
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {

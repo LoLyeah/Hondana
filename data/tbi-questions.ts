@@ -1,5 +1,20 @@
 import { Question } from '../lib/types';
 
+const TBI_PASSAGES = {
+  p1: 'The study of ancestral dietary habits has attracted significant academic interest. Proponents of evolutionary nutrition often argue that early hominids consumed primarily animal protein with very few plant-based carbohydrates. According to this view, modern human physiology is optimized for such animal-heavy nutritional regimes. However, recent anthropological research suggests a different story. Investigations into ancient food residues and dental wear indicate that prehistoric populations possessed remarkably diverse eating habits, highly dependent on local ecosystems, seasonal cycles, and regional climates. Anthropologists studying modern foraging communities in tropical and subtropical regions have found that their seasonal intake of tubers, honey, and wild plants is surprisingly substantial, challenging the popular assumption that ancient survival relied solely on hunting large game.',
+  p2: 'Global healthcare approaches vary widely due to regional disparities in economic development, cultural traditions, and scientific infrastructure. While industrialized nations rely heavily on advanced clinical protocols, many communities in developing regions depend on traditional healing systems, which frequently lack standardized training and empirical validation. Nevertheless, even in highly developed healthcare environments, evidence-based guidelines are not universally applied. A substantial number of clinical decisions are made without robust clinical trials to confirm their safety or efficacy. In daily practice, a practitioner\'s encounter with a patient begins with a systematic review of symptoms and medical history, followed by a clinical interview and physical examination using diagnostic instruments. The practitioner then formulates a differential diagnosis to exclude unlikely conditions. Every detail of this medical consultation is recorded in the patient\'s clinical file, which serves as a legally binding document in most legal systems.',
+  p3: 'Cultural customs in different countries can often surprise foreign observers, who are accustomed to different daily practices. For instance, international visitors are frequently startled by the transient nature of modern urban life in some societies, where citizens think nothing of renting fully furnished apartments, down to the kitchen utensils, on extremely short notice. This emphasis on convenience is paired with a restless level of spatial mobility. In vast geographic nations, residents regularly drive a hundred miles just to spend an evening dining with acquaintances or attending a theatrical performance. Similarly, teenagers often choose universities thousands of miles away from their hometowns simply to experience a new regional environment, moving across the country in large numbers.',
+  p4: 'The scientific journey of modern pain relief began in 1758 when a researcher named Edward Stone investigated the therapeutic qualities of willow bark. Stone noticed that the bark had a highly bitter taste, which reminded him of "cinchona bark," a substance utilized since the 1640s to reduce high fevers and treat infections. Intrigued, Stone crushed the willow bark and conducted clinical trials, demonstrating its power to lower body temperatures and alleviate physical discomfort. He presented his scientific findings to the British Royal Society in 1763. Decades later, chemists Brugnatelli and Fontana isolated the active compound responsible for these therapeutic properties, naming it salicin. This discovery eventually led to the synthesis of acetylsalicylic acid, which was commercialized under the trade name "aspirin" in the late 1890s, with commercial sales starting in 1899.',
+  p5: 'Sustainable Waste Management (SWM) focuses on handling refuse in ecologically sound ways to mitigate risks to human well-being and ecosystems. In developing regions, medical waste surged by nearly a third during recent global health events, intensifying ecological and social anxieties. This dramatic increase was compounded by poor compliance with international standards, outdated treatment equipment, and lenient regulatory oversight. A significant portion of this refuse consisted of synthetic materials from disposable protective gear, which was frequently dumped in open landfills or burned without regard for safety. Typically, SWM success is evaluated using the triple bottom line (TBL) framework—assessing environmental, social, and economic impacts. While cost-containment is crucial, environmental impacts are mitigated through stricter controls and assessments at treatment facilities. Modern waste management must also integrate technological performance and occupational safety, especially since healthcare waste contains highly infectious agents that put sanitation workers at risk.',
+  p6: 'Elves in contemporary popular culture are typically depicted as slender, graceful beings with pointed ears, magical wisdom, and peaceful lives. They are often positive figures, such as the wood elves in modern fantasy novels, who use their magic to protect forests and guide lost travelers. This current perception is heavily shaped by 19th-century fantasy literature and folklore collections. However, the origin of elves is much older and far more complex. Similar mythological beings appeared in Germanic and Norse sagas, where they were viewed as minor gods of nature and light. Some scholars believe these spirits were closely tied to pre-Christian elemental worship, but their status gradually declined as new monotheistic religions spread across Europe. Another theory posits that stories of elves were inspired by memories of indigenous tribes who retreated into deep woodlands and subterranean caverns during historical invasions. Because these groups lived in isolation outside the mainstream society, they were often feared by agricultural villagers, who blamed them for mysterious occurrences such as ruined crops or missing livestock. Over time, these rural fears evolved into myths about elusive magical groups playing tricks on humans.',
+  p7: 'Contrary to the beliefs of many educators and parents, mandatory daily homework does not seem to improve young students\' academic performance or class attendance, according to a recent national analysis. The study scrutinized data from over 5,000 primary school children. Supporters of daily homework have argued that it instills discipline and fosters a stronger work ethic, which subsequently leads to higher test scores. To examine these assertions, researchers utilized data from a long-term developmental study that tracked a representative group of 5,200 students from first through sixth grade. Each year, teachers graded students\' study habits, classroom attention, and emotional health, while school offices logged their absences. Ultimately, mandatory daily homework showed no statistical impact on any dimension of learning or attendance at any grade level, even after adjusting for a variety of socioeconomic variables. The research did reveal that underprivileged students in schools with mandatory homework had a marginal increase in test scores, but the difference was negligible, amounting to less than a one percent improvement.',
+  p8: 'In the eighteenth and nineteenth centuries, coal was by far the most vital energetic export of Great Britain, preferred by the European manufacturing sector because it was more efficient and generated far more heat than firewood. Mechanization of steam engines allowed factories to grow rapidly, and demand for coal increased dramatically. British mine operators met this massive demand largely due to Humphrey Davy’s invention of the safety lamp in 1815. Coal could be found widely across the country, but extracting it from deep shafts was extremely dangerous due to explosive gases. Early shallow mines were safer but ran out of fuel quickly. Deeper mines, which had more resources, were difficult to work manually because miners could not see in the dark without sparking explosions. Davy’s lamp, a oil-fueled light enclosed by wire gauze, allowed miners to work safely in gas-filled chambers, multiplying productivity. This development led to a surge in coal mining, making coal the dominant British export. In 1820, coal represented 12 percent of British exports by value, rising to 35 percent by 1835, and 58 percent by 1860. In comparison, wool represented only 5 percent of exports in 1860. Clearly, coal became the cornerstone of British trade during the Industrial Revolution, driving unprecedented urban growth in the midlands.',
+  p9: 'Memory plays a pivotal role in shaping our intellectual abilities, influencing our decisions, and determining our professional success. These mental processes, whether short-term or long-term, are deeply integrated systems that our brain executes almost seamlessly. Understanding the mechanics behind memory can pave the way for better learning strategies. At its core, memory retention comprises an encoding stage, a storage phase, and a retrieval cue, acting as a sequence for the brain to consolidate information. The encoding stage is the initial processing itself, whether it is reading a page, listening to a lecture, or observing an event. Finally, retrieval is the recall of information when triggered by a cue. This cycle becomes a reinforced neural pathway over time. Enhancing memory requires identifying the optimal retrieval cues and modifying the encoding routine. For instance, if the cue for remembering vocabulary is visual association, finding alternative sensory associations might strengthen the cognitive loop.',
+  p10: 'Kyoto is a famous and historical city. It is the cultural capital of Japan. The city is highly popular for international tourism because Kyoto is home to some of the oldest-standing temples and palaces in East Asia. Sarah and Emily recently traveled to Kyoto. They were extremely excited about their trip because this was their first journey overseas from the United States. Among the popular sights that Sarah and Emily visited are the Kinkaku-ji temple, Nijo Castle, and the Kyoto Tower. The Kinkaku-ji (Golden Pavilion) is one of Kyoto\'s most famous monuments. It is a beautiful zen temple covered in gold leaf. Unfortunately, Sarah and Emily were only able to view the pavilion from across the pond. The women learned that the temple\'s interior is undergoing restoration until next year. Fortunately, the Kyoto Tower, the city\'s famous observation deck, was open to the public. Kyoto Tower is situated near the central station, standing 131 meters high. It is one of Kyoto\'s most well-known spots for gaining panoramic views of the city. When their elevator reached the observation deck, the women took spectacular photographs of the beautiful cityscape below. The last place they visited was Nijo Castle, the historical residence of the shogun. The castle\'s incredible wooden architecture and historical significance awed the women. They had an amazing time visiting Kyoto and felt inspired to seek more travel destinations.',
+  p11: 'The development of the printing press by Johannes Gutenberg in 1440 transformed European society by accelerating the dissemination of knowledge. Before this invention, books had been painstakingly hand-copied by scribes, rendering them extremely rare and expensive. Gutenberg\'s machine, utilizing movable metal type and a modified wooden press, permitted rapid mass production of texts. This technological leap not only democratized literacy but also paved the way for the Scientific Revolution. By the end of the fifteenth century, printing presses had been established in over two hundred cities across Europe, which allowed millions of pages to circulate. Despite facing initial skepticism from traditional institutions, the printed word quickly became the cornerstone of modern intellectual exchange.',
+  p12: 'Forest ecosystems rely heavily on a microscopic network beneath the soil, where mycorrhizal fungi form symbiotic relationships with tree roots. This subterranean network, which researchers have termed the "Wood Wide Web," facilitates the exchange of nutrients and vital biochemical signals between plants. Tree roots, struggling to absorb sufficient phosphorus and nitrogen on their own, depend on the extensive fungal threads to access these deep resources. In return, the trees supply the fungi with carbon-rich sugars produced through photosynthesis. Besides facilitating nutrient transfer, the fungal network serves as an early-warning system. By transmitting defense signals, it warns neighboring plants of active pest infestations, allowing them to prepare their own chemical defenses in advance.',
+};
+
 const baseQuestions: Question[] = [
   // ─── OLD SET (1 TO 50) ───
   // 1. Structure (easy)
@@ -728,7 +743,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'mudah',
-    passage: 'The study of ancestral dietary habits has attracted significant academic interest. Proponents of evolutionary nutrition often argue that early hominids consumed primarily animal protein with very few plant-based carbohydrates. According to this view, modern human physiology is optimized for such animal-heavy nutritional regimes. However, recent anthropological research suggests a different story. Investigations into ancient food residues and dental wear indicate that prehistoric populations possessed remarkably diverse eating habits, highly dependent on local ecosystems, seasonal cycles, and regional climates. Anthropologists studying modern foraging communities in tropical and subtropical regions have found that their seasonal intake of tubers, honey, and wild plants is surprisingly substantial, challenging the popular assumption that ancient survival relied solely on hunting large game.',
+    passage: TBI_PASSAGES.p1,
     question: 'What is the main idea of the passage?',
     options: [
       'Modern evolutionary nutrition is the only scientifically backed diet.',
@@ -747,7 +762,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'mudah',
-    passage: 'The study of ancestral dietary habits has attracted significant academic interest. Proponents of evolutionary nutrition often argue that early hominids consumed primarily animal protein with very few plant-based carbohydrates. According to this view, modern human physiology is optimized for such animal-heavy nutritional regimes. However, recent anthropological research suggests a different story. Investigations into ancient food residues and dental wear indicate that prehistoric populations possessed remarkably diverse eating habits, highly dependent on local ecosystems, seasonal cycles, and regional climates. Anthropologists studying modern foraging communities in tropical and subtropical regions have found that their seasonal intake of tubers, honey, and wild plants is surprisingly substantial, challenging the popular assumption that ancient survival relied solely on hunting large game.',
+    passage: TBI_PASSAGES.p1,
     question: 'What is the author’s primary purpose in writing the passage?',
     options: [
       'To advocate for the widespread adoption of evolutionary diets.',
@@ -766,7 +781,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'mudah',
-    passage: 'Global healthcare approaches vary widely due to regional disparities in economic development, cultural traditions, and scientific infrastructure. While industrialized nations rely heavily on advanced clinical protocols, many communities in developing regions depend on traditional healing systems, which frequently lack standardized training and empirical validation. Nevertheless, even in highly developed healthcare environments, evidence-based guidelines are not universally applied. A substantial number of clinical decisions are made without robust clinical trials to confirm their safety or efficacy. In daily practice, a practitioner\'s encounter with a patient begins with a systematic review of symptoms and medical history, followed by a clinical interview and physical examination using diagnostic instruments. The practitioner then formulates a differential diagnosis to exclude unlikely conditions. Every detail of this medical consultation is recorded in the patient\'s clinical file, which serves as a legally binding document in most legal systems.',
+    passage: TBI_PASSAGES.p2,
     question: 'In the passage, what does the phrase “a legally binding document” refer to?',
     options: [
       'The patient’s clinical history',
@@ -785,7 +800,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'mudah',
-    passage: 'Global healthcare approaches vary widely due to regional disparities in economic development, cultural traditions, and scientific infrastructure. While industrialized nations rely heavily on advanced clinical protocols, many communities in developing regions depend on traditional healing systems, which frequently lack standardized training and empirical validation. Nevertheless, even in highly developed healthcare environments, evidence-based guidelines are not universally applied. A substantial number of clinical decisions are made without robust clinical trials to confirm their safety or efficacy. In daily practice, a practitioner\'s encounter with a patient begins with a systematic review of symptoms and medical history, followed by a clinical interview and physical examination using diagnostic instruments. The practitioner then formulates a differential diagnosis to exclude unlikely conditions. Every detail of this medical consultation is recorded in the patient\'s clinical file, which serves as a legally binding document in most legal systems.',
+    passage: TBI_PASSAGES.p2,
     question: 'Which of the following is NOT mentioned as part of the practitioner-patient encounter in the passage?',
     options: [
       'Reviewing symptoms and medical history',
@@ -804,7 +819,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sedang',
-    passage: 'Cultural customs in different countries can often surprise foreign observers, who are accustomed to different daily practices. For instance, international visitors are frequently startled by the transient nature of modern urban life in some societies, where citizens think nothing of renting fully furnished apartments, down to the kitchen utensils, on extremely short notice. This emphasis on convenience is paired with a restless level of spatial mobility. In vast geographic nations, residents regularly drive a hundred miles just to spend an evening dining with acquaintances or attending a theatrical performance. Similarly, teenagers often choose universities thousands of miles away from their hometowns simply to experience a new regional environment, moving across the country in large numbers.',
+    passage: TBI_PASSAGES.p3,
     question: 'In the passage, the word “startled” is closest in meaning to ___________',
     options: [
       'Excited',
@@ -823,7 +838,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sedang',
-    passage: 'Cultural customs in different countries can often surprise foreign observers, who are accustomed to different daily practices. For instance, international visitors are frequently startled by the transient nature of modern urban life in some societies, where citizens think nothing of renting fully furnished apartments, down to the kitchen utensils, on extremely short notice. This emphasis on convenience is paired with a restless level of spatial mobility. In vast geographic nations, residents regularly drive a hundred miles just to spend an evening dining with acquaintances or attending a theatrical performance. Similarly, teenagers often choose universities thousands of miles away from their hometowns simply to experience a new regional environment, moving across the country in large numbers.',
+    passage: TBI_PASSAGES.p3,
     question: 'What can be inferred about the society described in the passage?',
     options: [
       'Residents dislike traveling long distances.',
@@ -842,7 +857,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sulit',
-    passage: 'The scientific journey of modern pain relief began in 1758 when a researcher named Edward Stone investigated the therapeutic qualities of willow bark. Stone noticed that the bark had a highly bitter taste, which reminded him of "cinchona bark," a substance utilized since the 1640s to reduce high fevers and treat infections. Intrigued, Stone crushed the willow bark and conducted clinical trials, demonstrating its power to lower body temperatures and alleviate physical discomfort. He presented his scientific findings to the British Royal Society in 1763. Decades later, chemists Brugnatelli and Fontana isolated the active compound responsible for these therapeutic properties, naming it salicin. This discovery eventually led to the synthesis of acetylsalicylic acid, which was commercialized under the trade name "aspirin" in the late 1890s, with commercial sales starting in 1899.',
+    passage: TBI_PASSAGES.p4,
     question: 'According to the passage, in what year did Edward Stone present his findings on willow bark to the British Royal Society?',
     options: [
       '1640',
@@ -861,7 +876,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sulit',
-    passage: 'The scientific journey of modern pain relief began in 1758 when a researcher named Edward Stone investigated the therapeutic qualities of willow bark. Stone noticed that the bark had a highly bitter taste, which reminded him of "cinchona bark," a substance utilized since the 1640s to reduce high fevers and treat infections. Intrigued, Stone crushed the willow bark and conducted clinical trials, demonstrating its power to lower body temperatures and alleviate physical discomfort. He presented his scientific findings to the British Royal Society in 1763. Decades later, chemists Brugnatelli and Fontana isolated the active compound responsible for these therapeutic properties, naming it salicin. This discovery eventually led to the synthesis of acetylsalicylic acid, which was commercialized under the trade name "aspirin" in the late 1890s, with commercial sales starting in 1899.',
+    passage: TBI_PASSAGES.p4,
     question: 'Which of the following statements is TRUE according to the passage?',
     options: [
       'Edward Stone discovered the compound salicin in 1758.',
@@ -880,7 +895,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sulit',
-    passage: 'Sustainable Waste Management (SWM) focuses on handling refuse in ecologically sound ways to mitigate risks to human well-being and ecosystems. In developing regions, medical waste surged by nearly a third during recent global health events, intensifying ecological and social anxieties. This dramatic increase was compounded by poor compliance with international standards, outdated treatment equipment, and lenient regulatory oversight. A significant portion of this refuse consisted of synthetic materials from disposable protective gear, which was frequently dumped in open landfills or burned without regard for safety. Typically, SWM success is evaluated using the triple bottom line (TBL) framework—assessing environmental, social, and economic impacts. While cost-containment is crucial, environmental impacts are mitigated through stricter controls and assessments at treatment facilities. Modern waste management must also integrate technological performance and occupational safety, especially since healthcare waste contains highly infectious agents that put sanitation workers at risk.',
+    passage: TBI_PASSAGES.p5,
     question: 'In the passage, the word “intensifying” is closest in meaning to __________',
     options: [
       'Weakening',
@@ -899,7 +914,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sulit',
-    passage: 'Sustainable Waste Management (SWM) focuses on handling refuse in ecologically sound ways to mitigate risks to human well-being and ecosystems. In developing regions, medical waste surged by nearly a third during recent global health events, intensifying ecological and social anxieties. This dramatic increase was compounded by poor compliance with international standards, outdated treatment equipment, and lenient regulatory oversight. A significant portion of this refuse consisted of synthetic materials from disposable protective gear, which was frequently dumped in open landfills or burned without regard for safety. Typically, SWM success is evaluated using the triple bottom line (TBL) framework—assessing environmental, social, and economic impacts. While cost-containment is crucial, environmental impacts are mitigated through stricter controls and assessments at treatment facilities. Modern waste management must also integrate technological performance and occupational safety, especially since healthcare waste contains highly infectious agents that put sanitation workers at risk.',
+    passage: TBI_PASSAGES.p5,
     question: 'In the passage, the word “mitigated” is closest in meaning to ___________',
     options: [
       'Worsened',
@@ -1640,7 +1655,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'mudah',
-    passage: 'Elves in contemporary popular culture are typically depicted as slender, graceful beings with pointed ears, magical wisdom, and peaceful lives. They are often positive figures, such as the wood elves in modern fantasy novels, who use their magic to protect forests and guide lost travelers. This current perception is heavily shaped by 19th-century fantasy literature and folklore collections. However, the origin of elves is much older and far more complex. Similar mythological beings appeared in Germanic and Norse sagas, where they were viewed as minor gods of nature and light. Some scholars believe these spirits were closely tied to pre-Christian elemental worship, but their status gradually declined as new monotheistic religions spread across Europe. Another theory posits that stories of elves were inspired by memories of indigenous tribes who retreated into deep woodlands and subterranean caverns during historical invasions. Because these groups lived in isolation outside the mainstream society, they were often feared by agricultural villagers, who blamed them for mysterious occurrences such as ruined crops or missing livestock. Over time, these rural fears evolved into myths about elusive magical groups playing tricks on humans.',
+    passage: TBI_PASSAGES.p6,
     question: 'What is the main idea of the passage?',
     options: [
       'Elves were originally invented by 19th-century authors.',
@@ -1659,7 +1674,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'mudah',
-    passage: 'Elves in contemporary popular culture are typically depicted as slender, graceful beings with pointed ears, magical wisdom, and peaceful lives. They are often positive figures, such as the wood elves in modern fantasy novels, who use their magic to protect forests and guide lost travelers. This current perception is heavily shaped by 19th-century fantasy literature and folklore collections. However, the origin of elves is much older and far more complex. Similar mythological beings appeared in Germanic and Norse sagas, where they were viewed as minor gods of nature and light. Some scholars believe these spirits were closely tied to pre-Christian elemental worship, but their status gradually declined as new monotheistic religions spread across Europe. Another theory posits that stories of elves were inspired by memories of indigenous tribes who retreated into deep woodlands and subterranean caverns during historical invasions. Because these groups lived in isolation outside the mainstream society, they were often feared by agricultural villagers, who blamed them for mysterious occurrences such as ruined crops or missing livestock. Over time, these rural fears evolved into myths about elusive magical groups playing tricks on humans.',
+    passage: TBI_PASSAGES.p6,
     question: 'What is the main purpose of the passage?',
     options: [
       'To tell an entertaining story about wood elves.',
@@ -1678,7 +1693,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'mudah',
-    passage: 'Contrary to the beliefs of many educators and parents, mandatory daily homework does not seem to improve young students\' academic performance or class attendance, according to a recent national analysis. The study scrutinized data from over 5,000 primary school children. Supporters of daily homework have argued that it instills discipline and fosters a stronger work ethic, which subsequently leads to higher test scores. To examine these assertions, researchers utilized data from a long-term developmental study that tracked a representative group of 5,200 students from first through sixth grade. Each year, teachers graded students\' study habits, classroom attention, and emotional health, while school offices logged their absences. Ultimately, mandatory daily homework showed no statistical impact on any dimension of learning or attendance at any grade level, even after adjusting for a variety of socioeconomic variables. The research did reveal that underprivileged students in schools with mandatory homework had a marginal increase in test scores, but the difference was negligible, amounting to less than a one percent improvement.',
+    passage: TBI_PASSAGES.p7,
     question: 'The word “fosters” in the passage is closest in meaning to ___________',
     options: [
       'prevents',
@@ -1697,7 +1712,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'mudah',
-    passage: 'Contrary to the beliefs of many educators and parents, mandatory daily homework does not seem to improve young students\' academic performance or class attendance, according to a recent national analysis. The study scrutinized data from over 5,000 primary school children. Supporters of daily homework have argued that it instills discipline and fosters a stronger work ethic, which subsequently leads to higher test scores. To examine these assertions, researchers utilized data from a long-term developmental study that tracked a representative group of 5,200 students from first through sixth grade. Each year, teachers graded students\' study habits, classroom attention, and emotional health, while school offices logged their absences. Ultimately, mandatory daily homework showed no statistical impact on any dimension of learning or attendance at any grade level, even after adjusting for a variety of socioeconomic variables. The research did reveal that underprivileged students in schools with mandatory homework had a marginal increase in test scores, but the difference was negligible, amounting to less than a one percent improvement.',
+    passage: TBI_PASSAGES.p7,
     question: 'What can be inferred from the study about mandatory daily homework?',
     options: [
       'Homework significantly boosts student motivation and social skills.',
@@ -1716,7 +1731,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sedang',
-    passage: 'In the eighteenth and nineteenth centuries, coal was by far the most vital energetic export of Great Britain, preferred by the European manufacturing sector because it was more efficient and generated far more heat than firewood. Mechanization of steam engines allowed factories to grow rapidly, and demand for coal increased dramatically. British mine operators met this massive demand largely due to Humphrey Davy’s invention of the safety lamp in 1815. Coal could be found widely across the country, but extracting it from deep shafts was extremely dangerous due to explosive gases. Early shallow mines were safer but ran out of fuel quickly. Deeper mines, which had more resources, were difficult to work manually because miners could not see in the dark without sparking explosions. Davy’s lamp, a oil-fueled light enclosed by wire gauze, allowed miners to work safely in gas-filled chambers, multiplying productivity. This development led to a surge in coal mining, making coal the dominant British export. In 1820, coal represented 12 percent of British exports by value, rising to 35 percent by 1835, and 58 percent by 1860. In comparison, wool represented only 5 percent of exports in 1860. Clearly, coal became the cornerstone of British trade during the Industrial Revolution, driving unprecedented urban growth in the midlands.',
+    passage: TBI_PASSAGES.p8,
     question: 'What invention by Humphrey Davy in 1815 allowed British miners to meet the rising demand for coal?',
     options: [
       'Steam engine',
@@ -1735,7 +1750,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sedang',
-    passage: 'In the eighteenth and nineteenth centuries, coal was by far the most vital energetic export of Great Britain, preferred by the European manufacturing sector because it was more efficient and generated far more heat than firewood. Mechanization of steam engines allowed factories to grow rapidly, and demand for coal increased dramatically. British mine operators met this massive demand largely due to Humphrey Davy’s invention of the safety lamp in 1815. Coal could be found widely across the country, but extracting it from deep shafts was extremely dangerous due to explosive gases. Early shallow mines were safer but ran out of fuel quickly. Deeper mines, which had more resources, were difficult to work manually because miners could not see in the dark without sparking explosions. Davy’s lamp, a oil-fueled light enclosed by wire gauze, allowed miners to work safely in gas-filled chambers, multiplying productivity. This development led to a surge in coal mining, making coal the dominant British export. In 1820, coal represented 12 percent of British exports by value, rising to 35 percent by 1835, and 58 percent by 1860. In comparison, wool represented only 5 percent of exports in 1860. Clearly, coal became the cornerstone of British trade during the Industrial Revolution, driving unprecedented urban growth in the midlands.',
+    passage: TBI_PASSAGES.p8,
     question: 'By 1860, what percentage of the value of British exports was represented by coal?',
     options: [
       '12%',
@@ -1754,7 +1769,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sulit',
-    passage: 'Memory plays a pivotal role in shaping our intellectual abilities, influencing our decisions, and determining our professional success. These mental processes, whether short-term or long-term, are deeply integrated systems that our brain executes almost seamlessly. Understanding the mechanics behind memory can pave the way for better learning strategies. At its core, memory retention comprises an encoding stage, a storage phase, and a retrieval cue, acting as a sequence for the brain to consolidate information. The encoding stage is the initial processing itself, whether it is reading a page, listening to a lecture, or observing an event. Finally, retrieval is the recall of information when triggered by a cue. This cycle becomes a reinforced neural pathway over time. Enhancing memory requires identifying the optimal retrieval cues and modifying the encoding routine. For instance, if the cue for remembering vocabulary is visual association, finding alternative sensory associations might strengthen the cognitive loop.',
+    passage: TBI_PASSAGES.p9,
     question: 'According to the passage, which of the following is NOT part of the memory retention cycle?',
     options: [
       'Encoding',
@@ -1773,7 +1788,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sulit',
-    passage: 'Memory plays a pivotal role in shaping our intellectual abilities, influencing our decisions, and determining our professional success. These mental processes, whether short-term or long-term, are deeply integrated systems that our brain executes almost seamlessly. Understanding the mechanics behind memory can pave the way for better learning strategies. At its core, memory retention comprises an encoding stage, a storage phase, and a retrieval cue, acting as a sequence for the brain to consolidate information. The encoding stage is the initial processing itself, whether it is reading a page, listening to a lecture, or observing an event. Finally, retrieval is the recall of information when triggered by a cue. This cycle becomes a reinforced neural pathway over time. Enhancing memory requires identifying the optimal retrieval cues and modifying the encoding routine. For instance, if the cue for remembering vocabulary is visual association, finding alternative sensory associations might strengthen the cognitive loop.',
+    passage: TBI_PASSAGES.p9,
     question: 'Which of the following is NOT mentioned as an example of encoding in the passage?',
     options: [
       'Reading a page',
@@ -1792,7 +1807,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sulit',
-    passage: 'Kyoto is a famous and historical city. It is the cultural capital of Japan. The city is highly popular for international tourism because Kyoto is home to some of the oldest-standing temples and palaces in East Asia. Sarah and Emily recently traveled to Kyoto. They were extremely excited about their trip because this was their first journey overseas from the United States. Among the popular sights that Sarah and Emily visited are the Kinkaku-ji temple, Nijo Castle, and the Kyoto Tower. The Kinkaku-ji (Golden Pavilion) is one of Kyoto\'s most famous monuments. It is a beautiful zen temple covered in gold leaf. Unfortunately, Sarah and Emily were only able to view the pavilion from across the pond. The women learned that the temple\'s interior is undergoing restoration until next year. Fortunately, the Kyoto Tower, the city\'s famous observation deck, was open to the public. Kyoto Tower is situated near the central station, standing 131 meters high. It is one of Kyoto\'s most well-known spots for gaining panoramic views of the city. When their elevator reached the observation deck, the women took spectacular photographs of the beautiful cityscape below. The last place they visited was Nijo Castle, the historical residence of the shogun. The castle\'s incredible wooden architecture and historical significance awed the women. They had an amazing time visiting Kyoto and felt inspired to seek more travel destinations.',
+    passage: TBI_PASSAGES.p10,
     question: 'In the passage, the word “spectacular” in the sentence “the women took spectacular photographs” is closest in meaning to:',
     options: [
       'ordinary',
@@ -1811,7 +1826,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sulit',
-    passage: 'Kyoto is a famous and historical city. It is the cultural capital of Japan. The city is highly popular for international tourism because Kyoto is home to some of the oldest-standing temples and palaces in East Asia. Sarah and Emily recently traveled to Kyoto. They were extremely excited about their trip because this was their first journey overseas from the United States. Among the popular sights that Sarah and Emily visited are the Kinkaku-ji temple, Nijo Castle, and the Kyoto Tower. The Kinkaku-ji (Golden Pavilion) is one of Kyoto\'s most famous monuments. It is a beautiful zen temple covered in gold leaf. Unfortunately, Sarah and Emily were only able to view the pavilion from across the pond. The women learned that the temple\'s interior is undergoing restoration until next year. Fortunately, the Kyoto Tower, the city\'s famous observation deck, was open to the public. Kyoto Tower is situated near the central station, standing 131 meters high. It is one of Kyoto\'s most well-known spots for gaining panoramic views of the city. When their elevator reached the observation deck, the women took spectacular photographs of the beautiful cityscape below. The last place they visited was Nijo Castle, the historical residence of the shogun. The castle\'s incredible wooden architecture and historical significance awed the women. They had an amazing time visiting Kyoto and felt inspired to seek more travel destinations.',
+    passage: TBI_PASSAGES.p10,
     question: 'In the passage, the word “awed” in the sentence “the castle\'s incredible wooden architecture... awed the women” is closest in meaning to:',
     options: [
       'frightened',
@@ -2551,7 +2566,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'mudah',
-    passage: 'The development of the printing press by Johannes Gutenberg in 1440 transformed European society by accelerating the dissemination of knowledge. Before this invention, books had been painstakingly hand-copied by scribes, rendering them extremely rare and expensive. Gutenberg\'s machine, utilizing movable metal type and a modified wooden press, permitted rapid mass production of texts. This technological leap not only democratized literacy but also paved the way for the Scientific Revolution. By the end of the fifteenth century, printing presses had been established in over two hundred cities across Europe, which allowed millions of pages to circulate. Despite facing initial skepticism from traditional institutions, the printed word quickly became the cornerstone of modern intellectual exchange.',
+    passage: TBI_PASSAGES.p11,
     question: 'According to the passage, how were books produced before Gutenberg\'s invention?',
     options: [
       'They were hand-copied by scribes.',
@@ -2570,7 +2585,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'mudah',
-    passage: 'The development of the printing press by Johannes Gutenberg in 1440 transformed European society by accelerating the dissemination of knowledge. Before this invention, books had been painstakingly hand-copied by scribes, rendering them extremely rare and expensive. Gutenberg\'s machine, utilizing movable metal type and a modified wooden press, permitted rapid mass production of texts. This technological leap not only democratized literacy but also paved the way for the Scientific Revolution. By the end of the fifteenth century, printing presses had been established in over two hundred cities across Europe, which allowed millions of pages to circulate. Despite facing initial skepticism from traditional institutions, the printed word quickly became the cornerstone of modern intellectual exchange.',
+    passage: TBI_PASSAGES.p11,
     question: 'The word "paved" in the sentence "paved the way for the Scientific Revolution" is closest in meaning to ___________',
     options: [
       'prepared',
@@ -2589,7 +2604,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sedang',
-    passage: 'The development of the printing press by Johannes Gutenberg in 1440 transformed European society by accelerating the dissemination of knowledge. Before this invention, books had been painstakingly hand-copied by scribes, rendering them extremely rare and expensive. Gutenberg\'s machine, utilizing movable metal type and a modified wooden press, permitted rapid mass production of texts. This technological leap not only democratized literacy but also paved the way for the Scientific Revolution. By the end of the fifteenth century, printing presses had been established in over two hundred cities across Europe, which allowed millions of pages to circulate. Despite facing initial skepticism from traditional institutions, the printed word quickly became the cornerstone of modern intellectual exchange.',
+    passage: TBI_PASSAGES.p11,
     question: 'By the end of the fifteenth century, approximately how many European cities had printing presses?',
     options: [
       'Over two hundred',
@@ -2608,7 +2623,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sedang',
-    passage: 'The development of the printing press by Johannes Gutenberg in 1440 transformed European society by accelerating the dissemination of knowledge. Before this invention, books had been painstakingly hand-copied by scribes, rendering them extremely rare and expensive. Gutenberg\'s machine, utilizing movable metal type and a modified wooden press, permitted rapid mass production of texts. This technological leap not only democratized literacy but also paved the way for the Scientific Revolution. By the end of the fifteenth century, printing presses had been established in over two hundred cities across Europe, which allowed millions of pages to circulate. Despite facing initial skepticism from traditional institutions, the printed word quickly became the cornerstone of modern intellectual exchange.',
+    passage: TBI_PASSAGES.p11,
     question: 'It can be inferred from the passage that traditional institutions initially ___________',
     options: [
       'expressed doubt about the new technology',
@@ -2627,7 +2642,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sulit',
-    passage: 'The development of the printing press by Johannes Gutenberg in 1440 transformed European society by accelerating the dissemination of knowledge. Before this invention, books had been painstakingly hand-copied by scribes, rendering them extremely rare and expensive. Gutenberg\'s machine, utilizing movable metal type and a modified wooden press, permitted rapid mass production of texts. This technological leap not only democratized literacy but also paved the way for the Scientific Revolution. By the end of the fifteenth century, printing presses had been established in over two hundred cities across Europe, which allowed millions of pages to circulate. Despite facing initial skepticism from traditional institutions, the printed word quickly became the cornerstone of modern intellectual exchange.',
+    passage: TBI_PASSAGES.p11,
     question: 'In the sentence "Gutenberg\'s machine, utilizing movable metal type...", the word "utilizing" functions as ___________',
     options: [
       'a reduced adjective clause / active participle',
@@ -2646,7 +2661,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'mudah',
-    passage: 'Forest ecosystems rely heavily on a microscopic network beneath the soil, where mycorrhizal fungi form symbiotic relationships with tree roots. This subterranean network, which researchers have termed the "Wood Wide Web," facilitates the exchange of nutrients and vital biochemical signals between plants. Tree roots, struggling to absorb sufficient phosphorus and nitrogen on their own, depend on the extensive fungal threads to access these deep resources. In return, the trees supply the fungi with carbon-rich sugars produced through photosynthesis. Besides facilitating nutrient transfer, the fungal network serves as an early-warning system. By transmitting defense signals, it warns neighboring plants of active pest infestations, allowing them to prepare their own chemical defenses in advance.',
+    passage: TBI_PASSAGES.p12,
     question: 'What do trees receive from the mycorrhizal fungi network?',
     options: [
       'Phosphorus and nitrogen',
@@ -2665,7 +2680,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'mudah',
-    passage: 'Forest ecosystems rely heavily on a microscopic network beneath the soil, where mycorrhizal fungi form symbiotic relationships with tree roots. This subterranean network, which researchers have termed the "Wood Wide Web," facilitates the exchange of nutrients and vital biochemical signals between plants. Tree roots, struggling to absorb sufficient phosphorus and nitrogen on their own, depend on the extensive fungal threads to access these deep resources. In return, the trees supply the fungi with carbon-rich sugars produced through photosynthesis. Besides facilitating nutrient transfer, the fungal network serves as an early-warning system. By transmitting defense signals, it warns neighboring plants of active pest infestations, allowing them to prepare their own chemical defenses in advance.',
+    passage: TBI_PASSAGES.p12,
     question: 'The word "subterranean" in the passage is closest in meaning to ___________',
     options: [
       'underground',
@@ -2684,7 +2699,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sedang',
-    passage: 'Forest ecosystems rely heavily on a microscopic network beneath the soil, where mycorrhizal fungi form symbiotic relationships with tree roots. This subterranean network, which researchers have termed the "Wood Wide Web," facilitates the exchange of nutrients and vital biochemical signals between plants. Tree roots, struggling to absorb sufficient phosphorus and nitrogen on their own, depend on the extensive fungal threads to access these deep resources. In return, the trees supply the fungi with carbon-rich sugars produced through photosynthesis. Besides facilitating nutrient transfer, the fungal network serves as an early-warning system. By transmitting defense signals, it warns neighboring plants of active pest infestations, allowing them to prepare their own chemical defenses in advance.',
+    passage: TBI_PASSAGES.p12,
     question: 'How do neighboring trees prepare chemical defenses against pests before being infested?',
     options: [
       'By receiving warning signals through the fungal threads',
@@ -2703,7 +2718,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sulit',
-    passage: 'Forest ecosystems rely heavily on a microscopic network beneath the soil, where mycorrhizal fungi form symbiotic relationships with tree roots. This subterranean network, which researchers have termed the "Wood Wide Web," facilitates the exchange of nutrients and vital biochemical signals between plants. Tree roots, struggling to absorb sufficient phosphorus and nitrogen on their own, depend on the extensive fungal threads to access these deep resources. In return, the trees supply the fungi with carbon-rich sugars produced through photosynthesis. Besides facilitating nutrient transfer, the fungal network serves as an early-warning system. By transmitting defense signals, it warns neighboring plants of active pest infestations, allowing them to prepare their own chemical defenses in advance.',
+    passage: TBI_PASSAGES.p12,
     question: 'In the phrase "Tree roots, struggling to absorb...", the word "struggling" represents ___________',
     options: [
       'a participial phrase modifying tree roots',
@@ -2722,7 +2737,7 @@ const baseQuestions: Question[] = [
     testType: 'TBI',
     category: 'reading-comprehension',
     difficulty: 'sulit',
-    passage: 'Forest ecosystems rely heavily on a microscopic network beneath the soil, where mycorrhizal fungi form symbiotic relationships with tree roots. This subterranean network, which researchers have termed the "Wood Wide Web," facilitates the exchange of nutrients and vital biochemical signals between plants. Tree roots, struggling to absorb sufficient phosphorus and nitrogen on their own, depend on the extensive fungal threads to access these deep resources. In return, the trees supply the fungi with carbon-rich sugars produced through photosynthesis. Besides facilitating nutrient transfer, the fungal network serves as an early-warning system. By transmitting defense signals, it warns neighboring plants of active pest infestations, allowing them to prepare their own chemical defenses in advance.',
+    passage: TBI_PASSAGES.p12,
     question: 'What is the primary purpose of the passage?',
     options: [
       'To explain the symbiotic functions of mycorrhizal soil networks.',

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 interface CategoryCardProps {
   title: string;
@@ -10,7 +10,7 @@ interface CategoryCardProps {
   onClick: () => void;
 }
 
-export default function CategoryCard({
+export default memo(function CategoryCard({
   title,
   type,
   correct,
@@ -74,4 +74,4 @@ export default function CategoryCard({
       </div>
     </button>
   );
-}
+});

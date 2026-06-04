@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 interface ResultBarProps {
   label: string;
@@ -9,7 +9,7 @@ interface ResultBarProps {
   type: 'TPA' | 'TBI';
 }
 
-export default function ResultBar({ label, correct, total, type }: ResultBarProps) {
+export default memo(function ResultBar({ label, correct, total, type }: ResultBarProps) {
   const isTPA = type === 'TPA';
   const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
   
@@ -36,4 +36,4 @@ export default function ResultBar({ label, correct, total, type }: ResultBarProp
       </div>
     </div>
   );
-}
+});

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 interface TestTypeCardProps {
   type: 'TPA' | 'TBI';
@@ -10,7 +10,7 @@ interface TestTypeCardProps {
   onClick: () => void;
 }
 
-export default function TestTypeCard({
+export default memo(function TestTypeCard({
   type,
   title,
   description,
@@ -72,4 +72,4 @@ export default function TestTypeCard({
       </div>
     </button>
   );
-}
+});

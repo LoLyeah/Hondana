@@ -65,6 +65,14 @@ Standard JSON structure:
   ]
 }`;
 
+interface CacheEntry {
+  questions: Question[];
+  timestamp: number;
+}
+
+const responseCache = new Map<string, CacheEntry>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes cache
+
 export async function generateQuestions(
   testType: TestType,
   category: string,
@@ -73,8 +81,30 @@ export async function generateQuestions(
   aiProvider: string = 'built-in',
   customApiKey?: string,
   aiModel?: string,
-  aiBaseUrl?: string
+  aiBaseUrl?: string,
+  signal?: AbortSignal
 ): Promise<Question[]> {
+  const cacheKey = [
+    testType,
+    category,
+    difficulty,
+    count,
+    aiProvider,
+    aiModel || '',
+    aiBaseUrl || '',
+    customApiKey ? 'custom' : 'built-in'
+  ].join('|');
+
+  // Check cache and respect TTL
+  const cached = responseCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.questions;
+  }
+
+  if (signal?.aborted) {
+    throw new Error('Request aborted');
+  }
+
   const systemPrompt = testType === 'TPA' ? TPA_SYSTEM : TBI_SYSTEM;
   
   let prompt = '';
@@ -122,7 +152,7 @@ export async function generateQuestions(
       ],
       response_format: { type: 'json_object' },
       temperature: 0.7
-    });
+    }, { signal });
     responseText = completion.choices[0]?.message?.content || '';
   } 
   
@@ -142,7 +172,7 @@ export async function generateQuestions(
       ],
       response_format: { type: 'json_object' },
       temperature: 0.7
-    });
+    }, { signal });
     responseText = completion.choices[0]?.message?.content || '';
   }
 
@@ -169,7 +199,8 @@ export async function generateQuestions(
         ],
         response_format: { type: 'json_object' },
         temperature: 0.7
-      })
+      }),
+      signal
     });
 
     if (!res.ok) {
@@ -207,7 +238,8 @@ export async function generateQuestions(
           responseMimeType: 'application/json',
           temperature: 0.7
         }
-      })
+      }),
+      signal
     });
 
     if (!res.ok) {
@@ -234,7 +266,7 @@ export async function generateQuestions(
     }
 
     // Map and sanitize the generated questions
-    return data.questions.map((q: any, idx: number) => ({
+    const mappedQuestions = data.questions.map((q: any, idx: number) => ({
       id: q.id || `ai-${testType.toLowerCase()}-${category}-${difficulty}-${Date.now()}-${idx}`,
       testType: testType,
       category: q.category || category,
@@ -248,6 +280,14 @@ export async function generateQuestions(
       listening: q.listening,
       passage: q.passage
     }));
+
+    // Cache the result
+    responseCache.set(cacheKey, {
+      questions: mappedQuestions,
+      timestamp: Date.now()
+    });
+
+    return mappedQuestions;
   } catch (error: any) {
     console.error('AI Response Parsing Error:', error);
     throw new Error(`Gagal memproses respons AI: ${error.message || 'JSON tidak valid'}`);

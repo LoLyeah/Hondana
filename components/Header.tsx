@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 
-import { useQuiz } from '../context/QuizContext';
+import { useSettings } from '../context/QuizContext';
 import { useFullscreen } from '../hooks/useFullscreen';
 
 interface HeaderProps {
@@ -16,7 +16,7 @@ interface HeaderProps {
 
 export default function Header({ title, showBack = false, onBack, noSidebar = false, rightElement }: HeaderProps) {
   const router = useRouter();
-  const { settings, updateSettings } = useQuiz();
+  const { settings, updateSettings } = useSettings();
   const { isFullscreen, toggleFullscreen } = useFullscreen();
 
   const handleBack = () => {

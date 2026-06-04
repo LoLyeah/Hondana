@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 
 interface StatsCardProps {
   title: string;
@@ -10,7 +10,7 @@ interface StatsCardProps {
   accent?: 'default' | 'tpa' | 'tbi';
 }
 
-export default function StatsCard({
+export default memo(function StatsCard({
   title,
   value,
   icon,
@@ -55,4 +55,4 @@ export default function StatsCard({
       )}
     </div>
   );
-}
+});
