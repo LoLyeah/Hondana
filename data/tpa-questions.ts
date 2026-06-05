@@ -722,7 +722,7 @@ export function getTPAQuestions(): Question[] {
           };
 
           const detail = patternDetails[patternKey];
-          questionText = `Perhatikan deret pola/diagram di bawah ini. Pilih gambar selanjutnya yang logis untuk melengkapi deret gambar tersebut (Tipe ${globalIdx + 1}).`;
+          questionText = `Perhatikan deret pola/diagram di bawah ini. Pilih gambar selanjutnya yang logis untuk melengkapi deret gambar tersebut.`;
           options = ['A', 'B', 'C', 'D', 'E'];
           correctAnswer = detail.ans;
           explanation = detail.exp;
