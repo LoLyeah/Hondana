@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { flushSync } from 'react-dom';
 
 import { useSettings } from '../context/QuizContext';
 import { useFullscreen } from '../hooks/useFullscreen';
@@ -52,7 +53,6 @@ export default function Header({ title, showBack = false, onBack, noSidebar = fa
 
     const transition = (document as any).startViewTransition(() => {
       // Force React to render the state change synchronously for View Transitions to capture it
-      const { flushSync } = require('react-dom');
       flushSync(() => {
         updateSettings({ theme: nextTheme });
       });

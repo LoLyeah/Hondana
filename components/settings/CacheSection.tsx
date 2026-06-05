@@ -50,7 +50,7 @@ export default function CacheSection() {
         return;
       }
       
-      let failedCategories: string[] = [];
+      const failedCategories: string[] = [];
       for (const cat of selectedTPACategories) {
         setPregenLoading(cat);
         try {

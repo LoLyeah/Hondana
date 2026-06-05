@@ -53,13 +53,13 @@ export default function PwaInstallSection() {
                 <div className="flex items-start gap-2.5">
                   <span className="w-5 h-5 rounded-full bg-accent/20 text-accent text-[9px] font-black flex items-center justify-center shrink-0 mt-0.5">2</span>
                   <span className="text-[11px] font-semibold text-text-primary leading-relaxed">
-                    Gulir ke bawah dan pilih <span className="font-black">"Tambahkan ke Layar Utama"</span>
+                    Gulir ke bawah dan pilih <span className="font-black">&quot;Tambahkan ke Layar Utama&quot;</span>
                   </span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="w-5 h-5 rounded-full bg-accent/20 text-accent text-[9px] font-black flex items-center justify-center shrink-0 mt-0.5">3</span>
                   <span className="text-[11px] font-semibold text-text-primary leading-relaxed">
-                    Ketuk <span className="font-black">"Tambahkan"</span> di pojok kanan atas
+                    Ketuk <span className="font-black">&quot;Tambahkan&quot;</span> di pojok kanan atas
                   </span>
                 </div>
               </div>

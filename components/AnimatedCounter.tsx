@@ -9,8 +9,6 @@ interface AnimatedCounterProps {
 
 export default function AnimatedCounter({ value, duration = 800 }: AnimatedCounterProps) {
   const [count, setCount] = useState(0);
-  const countRef = useRef(count);
-  countRef.current = count;
 
   useEffect(() => {
     let startTimestamp: number | null = null;

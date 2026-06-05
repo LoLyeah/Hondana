@@ -5,8 +5,10 @@ type ShortcutMap = Record<string, (e: KeyboardEvent) => void>;
 export function useKeyboardShortcuts(shortcuts: ShortcutMap, enabled = true) {
   const shortcutsRef = useRef<ShortcutMap>(shortcuts);
   
-  // Keep the ref updated with the latest shortcut handlers
-  shortcutsRef.current = shortcuts;
+  // Keep the ref updated with the latest shortcut handlers safely in useEffect
+  useEffect(() => {
+    shortcutsRef.current = shortcuts;
+  });
 
   useEffect(() => {
     if (!enabled) return;
