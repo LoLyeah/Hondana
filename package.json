@@ -2,7 +2,7 @@
   "name": "hondana",
   "version": "1.1.6",
   "private": true,
-  "description": "Hondana - A gamified, AI-powered interactive preparation web application for TPA (Tes Potensi Akademik) and TBI (Tes Bahasa Inggris) examinations, integrated with the Groq API for dynamic question generation and explanations.",
+  "description": "Hondana - AI-powered interactive preparation web application for TPA (Tes Potensi Akademik) and TBI (Tes Bahasa Inggris) examinations, integrated with the Groq API for dynamic question generation and explanations.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
