@@ -48,6 +48,8 @@ interface HistoryContextValue {
   deleteSavedSession: (id: string) => void;
   preGenerateQuestions: (testType: TestType, category: string, count: number) => Promise<void>;
   clearPreGenerated: (key?: string) => void;
+  seenQuestionIds: string[];
+  resetSeenQuestions: () => void;
 }
 
 const SessionContext = createContext<SessionContextValue | undefined>(undefined);
@@ -142,6 +144,12 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     preGeneratedCacheRef.current = preGeneratedCache;
   }, [preGeneratedCache]);
 
+  const [seenQuestionIds, setSeenQuestionIds] = useLocalStorage<string[]>('hondana_seen_question_ids', []);
+  const seenQuestionIdsRef = useRef(seenQuestionIds);
+  useEffect(() => {
+    seenQuestionIdsRef.current = seenQuestionIds;
+  }, [seenQuestionIds]);
+
   // Sync Theme preference with Document root
   useEffect(() => {
     const root = window.document.documentElement;
@@ -223,6 +231,18 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     category: string | 'all',
     count: number
   ): Promise<Question[]> => {
+    const getCategorized = (pool: Question[], targetCount: number) => {
+      const unseen = pool.filter(q => !seenQuestionIdsRef.current.includes(q.id));
+      const seen = pool.filter(q => seenQuestionIdsRef.current.includes(q.id));
+      
+      let chosen = shuffleArray(unseen).slice(0, targetCount);
+      if (chosen.length < targetCount) {
+        const needed = targetCount - chosen.length;
+        chosen = [...chosen, ...shuffleArray(seen).slice(0, needed)];
+      }
+      return chosen;
+    };
+
     if (category !== 'all') {
       const cacheKey = `${testType}:${category}`;
       const cached = preGeneratedCacheRef.current[cacheKey] || [];
@@ -252,9 +272,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
           const sulit = matching.filter(q => q.difficulty === 'sulit');
           
           let catChosen = [
-            ...shuffleArray(mudah).slice(0, 2),
-            ...shuffleArray(sedang).slice(0, 1),
-            ...shuffleArray(sulit).slice(0, 2)
+            ...getCategorized(mudah, 2),
+            ...getCategorized(sedang, 1),
+            ...getCategorized(sulit, 2)
           ];
           
           if (catChosen.length < 5) {
@@ -275,9 +295,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         const targetSulit = count - targetMudah - targetSedang;
 
         let chosen = [
-          ...shuffleArray(mudah).slice(0, targetMudah),
-          ...shuffleArray(sedang).slice(0, targetSedang),
-          ...shuffleArray(sulit).slice(0, targetSulit)
+          ...getCategorized(mudah, targetMudah),
+          ...getCategorized(sedang, targetSedang),
+          ...getCategorized(sulit, targetSulit)
         ];
 
         if (chosen.length < count) {
@@ -303,9 +323,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
           const sulit = matching.filter(q => q.difficulty === 'sulit');
 
           let subChosen = [
-            ...shuffleArray(mudah).slice(0, targetMudah),
-            ...shuffleArray(sedang).slice(0, targetSedang),
-            ...shuffleArray(sulit).slice(0, targetSulit)
+            ...getCategorized(mudah, targetMudah),
+            ...getCategorized(sedang, targetSedang),
+            ...getCategorized(sulit, targetSulit)
           ];
 
           if (subChosen.length < qty) {
@@ -326,9 +346,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         const targetSulit = count - targetMudah - targetSedang;
 
         let chosen = [
-          ...shuffleArray(mudah).slice(0, targetMudah),
-          ...shuffleArray(sedang).slice(0, targetSedang),
-          ...shuffleArray(sulit).slice(0, targetSulit)
+          ...getCategorized(mudah, targetMudah),
+          ...getCategorized(sedang, targetSedang),
+          ...getCategorized(sulit, targetSulit)
         ];
 
         if (chosen.length < count) {
@@ -656,6 +676,14 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
 
       // Keep only the last 20 sessions in history
       setHistory((prev) => [newSavedSession, ...prev].slice(0, 20));
+
+      // Add questions to seen pool
+      setSeenQuestionIds((prev) => {
+        const addedIds = currentSession.questions.map((q) => q.id);
+        const uniqueNewIds = addedIds.filter((id) => !prev.includes(id));
+        if (uniqueNewIds.length === 0) return prev;
+        return [...prev, ...uniqueNewIds];
+      });
     }
 
     setSession({
@@ -735,13 +763,19 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     resetStats
   }), [stats, resetStats]);
 
+  const resetSeenQuestions = useCallback(() => {
+    setSeenQuestionIds([]);
+  }, []);
+
   const historyValue = useMemo(() => ({
     history,
     preGeneratedCache,
     deleteSavedSession,
     preGenerateQuestions,
-    clearPreGenerated
-  }), [history, preGeneratedCache, deleteSavedSession, preGenerateQuestions, clearPreGenerated]);
+    clearPreGenerated,
+    seenQuestionIds,
+    resetSeenQuestions
+  }), [history, preGeneratedCache, deleteSavedSession, preGenerateQuestions, clearPreGenerated, seenQuestionIds, resetSeenQuestions]);
 
   return (
     <SettingsContext.Provider value={settingsValue}>

@@ -8,7 +8,7 @@ import BottomNav from '../../components/BottomNav';
 import CategoryCard from '../../components/CategoryCard';
 import QuestionExhaustionModal from '../../components/QuestionExhaustionModal';
 import ToggleSwitch from '../../components/ToggleSwitch';
-import { useSession, useStats, useSettings } from '../../context/QuizContext';
+import { useSession, useStats, useSettings, useHistory } from '../../context/QuizContext';
 import { TestType } from '../../lib/types';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
@@ -46,6 +46,7 @@ function KategoriContent() {
   const { stats } = useStats();
   const { settings, updateSettings } = useSettings();
   const { startSimulasi, startLatihan, loading } = useSession();
+  const { seenQuestionIds } = useHistory();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [mounted, setMounted] = React.useState(false);
 
@@ -55,11 +56,62 @@ function KategoriContent() {
     catKey: string;
     catLabel: string;
     available: number;
-  }>({ isOpen: false, catKey: '', catLabel: '', available: 0 });
+    mode?: 'latihan' | 'simulasi';
+  }>({ isOpen: false, catKey: '', catLabel: '', available: 0, mode: 'latihan' });
+
+  const [bankStats, setBankStats] = useState<Record<string, { total: number; seen: number }>>({});
 
   React.useEffect(() => {
     setMounted(true);
   }, []);
+
+  React.useEffect(() => {
+    if (!mounted) return;
+
+    let active = true;
+    const loadStats = async () => {
+      const statsMap: Record<string, { total: number; seen: number }> = {};
+      
+      try {
+        if (type === 'TPA') {
+          const { getTPAQuestions } = await import('../../data/tpa-questions');
+          const tpaQs = getTPAQuestions();
+          tpaQs.forEach((q) => {
+            if (!statsMap[q.category]) {
+              statsMap[q.category] = { total: 0, seen: 0 };
+            }
+            statsMap[q.category].total++;
+            if (seenQuestionIds.includes(q.id)) {
+              statsMap[q.category].seen++;
+            }
+          });
+        } else {
+          const { getTBIQuestions } = await import('../../data/tbi-questions');
+          const tbiQs = getTBIQuestions();
+          tbiQs.forEach((q) => {
+            if (!statsMap[q.category]) {
+              statsMap[q.category] = { total: 0, seen: 0 };
+            }
+            statsMap[q.category].total++;
+            if (seenQuestionIds.includes(q.id)) {
+              statsMap[q.category].seen++;
+            }
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load bank stats:', err);
+      }
+
+      if (active) {
+        setBankStats(statsMap);
+      }
+    };
+
+    loadStats();
+    return () => {
+      active = false;
+    };
+  }, [mounted, type, seenQuestionIds]);
 
   if (!mounted) {
     return (
@@ -128,13 +180,44 @@ function KategoriContent() {
     }
   };
 
-  const handleStartSimulasi = async () => {
-    await startSimulasi(type, useAI);
+  const doStartSimulasi = async (overrideAI?: boolean) => {
+    const runAI = overrideAI !== undefined ? overrideAI : useAI;
+    await startSimulasi(type, runAI);
     router.push('/quiz');
   };
 
-  const doStartLatihan = async (catKey: string) => {
-    await startLatihan(type, catKey, latihanCount, useAI);
+  const handleStartSimulasi = async () => {
+    if (useAI) {
+      doStartSimulasi();
+      return;
+    }
+
+    const count = type === 'TPA' ? 60 : 50;
+    let unseenCount = 0;
+    if (type === 'TPA') {
+      const { getTPAQuestions } = await import('../../data/tpa-questions');
+      unseenCount = getTPAQuestions().filter(q => !seenQuestionIds.includes(q.id)).length;
+    } else {
+      const { getTBIQuestions } = await import('../../data/tbi-questions');
+      unseenCount = getTBIQuestions().filter(q => !seenQuestionIds.includes(q.id)).length;
+    }
+
+    if (unseenCount < count) {
+      setExhaustionModal({
+        isOpen: true,
+        catKey: 'all',
+        catLabel: 'Simulasi Ujian',
+        available: unseenCount,
+        mode: 'simulasi'
+      });
+    } else {
+      doStartSimulasi();
+    }
+  };
+
+  const doStartLatihan = async (catKey: string, overrideAI?: boolean) => {
+    const runAI = overrideAI !== undefined ? overrideAI : useAI;
+    await startLatihan(type, catKey, latihanCount, runAI);
     router.push('/quiz');
   };
 
@@ -145,22 +228,23 @@ function KategoriContent() {
       return;
     }
     
-    let available = 0;
+    let unseenCount = 0;
     if (type === 'TPA') {
       const { getTPAQuestions } = await import('../../data/tpa-questions');
-      available = getTPAQuestions().filter((q) => q.category === catKey).length;
+      unseenCount = getTPAQuestions().filter((q) => q.category === catKey && !seenQuestionIds.includes(q.id)).length;
     } else {
       const { getTBIQuestions } = await import('../../data/tbi-questions');
-      available = getTBIQuestions().filter((q) => q.category === catKey).length;
+      unseenCount = getTBIQuestions().filter((q) => q.category === catKey && !seenQuestionIds.includes(q.id)).length;
     }
 
-    if (available < latihanCount) {
+    if (unseenCount < latihanCount) {
       const catEntry = activeCategories.find((c) => c.key === catKey);
       setExhaustionModal({
         isOpen: true,
         catKey,
         catLabel: catEntry?.label || catKey,
-        available
+        available: unseenCount,
+        mode: 'latihan'
       });
     } else {
       doStartLatihan(catKey);
@@ -342,6 +426,8 @@ function KategoriContent() {
                         
                       const correct = stat ? stat.correct : 0;
                       const totalVal = stat ? stat.total : 0;
+                      const seenCount = bankStats[cat.key]?.seen || 0;
+                      const totalInBank = bankStats[cat.key]?.total || 0;
 
                       return (
                         <CategoryCard
@@ -350,6 +436,8 @@ function KategoriContent() {
                           type={type}
                           correct={correct}
                           total={totalVal}
+                          seenCount={seenCount}
+                          totalInBank={totalInBank}
                           onClick={() => handleStartLatihan(cat.key)}
                         />
                       );
@@ -368,15 +456,24 @@ function KategoriContent() {
         isOpen={exhaustionModal.isOpen}
         categoryLabel={exhaustionModal.catLabel}
         availableCount={exhaustionModal.available}
-        requestedCount={latihanCount}
+        requestedCount={exhaustionModal.mode === 'simulasi' ? (type === 'TPA' ? 60 : 50) : latihanCount}
+        mode={exhaustionModal.mode}
         onUseAI={() => {
           setExhaustionModal((prev) => ({ ...prev, isOpen: false }));
           updateSettings({ useAI: true });
-          doStartLatihan(exhaustionModal.catKey);
+          if (exhaustionModal.mode === 'simulasi') {
+            doStartSimulasi(true);
+          } else {
+            doStartLatihan(exhaustionModal.catKey, true);
+          }
         }}
         onContinueAnyway={() => {
           setExhaustionModal((prev) => ({ ...prev, isOpen: false }));
-          doStartLatihan(exhaustionModal.catKey);
+          if (exhaustionModal.mode === 'simulasi') {
+            doStartSimulasi(false);
+          } else {
+            doStartLatihan(exhaustionModal.catKey, false);
+          }
         }}
         onCancel={() => setExhaustionModal((prev) => ({ ...prev, isOpen: false }))}
       />

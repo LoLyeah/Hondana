@@ -10,6 +10,7 @@ interface QuestionExhaustionModalProps {
   categoryLabel: string;
   availableCount: number;
   requestedCount: number;
+  mode?: 'latihan' | 'simulasi';
   onUseAI: () => void;
   onContinueAnyway: () => void;
   onCancel: () => void;
@@ -20,6 +21,7 @@ export default function QuestionExhaustionModal({
   categoryLabel,
   availableCount,
   requestedCount,
+  mode = 'latihan',
   onUseAI,
   onContinueAnyway,
   onCancel
@@ -34,6 +36,8 @@ export default function QuestionExhaustionModal({
   useFocusTrap(modalRef, isOpen, onCancel);
 
   if (!mounted) return null;
+
+  const isSimulasi = mode === 'simulasi';
 
   return createPortal(
     <AnimatePresence>
@@ -66,24 +70,38 @@ export default function QuestionExhaustionModal({
                 </div>
                 <div className="flex flex-col gap-1">
                   <h2 className="text-base font-black tracking-tight leading-tight">
-                    Soal Offline Habis
+                    {isSimulasi ? 'Soal Offline Terbatas' : 'Soal Offline Habis'}
                   </h2>
                   <p className="text-[11px] font-semibold text-text-secondary leading-relaxed max-w-[240px]">
-                    Bank soal offline untuk kategori{' '}
-                    <span className="font-black text-amber-400">{categoryLabel}</span>{' '}
-                    hanya tersisa{' '}
-                    <span className="font-black text-text-primary">{availableCount}</span>
-                    {' '}soal, sementara kamu meminta{' '}
-                    <span className="font-black text-text-primary">{requestedCount}</span>.
+                    {isSimulasi ? (
+                      <>
+                        Kamu telah menjawab sebagian besar soal offline. Simulasi ini akan menyajikan beberapa soal yang <span className="font-black text-amber-400">sudah pernah kamu kerjakan sebelumnya</span>.
+                      </>
+                    ) : (
+                      <>
+                        Bank soal offline untuk kategori{' '}
+                        <span className="font-black text-amber-400">{categoryLabel}</span>{' '}
+                        hanya tersisa{' '}
+                        <span className="font-black text-text-primary">{availableCount}</span>
+                        {' '}soal baru (belum dikerjakan), sementara kamu meminta{' '}
+                        <span className="font-black text-text-primary">{requestedCount}</span>.
+                      </>
+                    )}
                   </p>
                 </div>
               </div>
 
               {/* Info box */}
               <div className="p-3.5 bg-amber-500/6 border border-amber-500/15 rounded-2xl flex flex-col gap-1.5">
-                <span className="text-[10px] font-black text-amber-400 uppercase tracking-wider">Mengapa ini terjadi?</span>
+                <span className="text-[10px] font-black text-amber-400 uppercase tracking-wider">
+                  {isSimulasi ? 'Rekomendasi Kami' : 'Mengapa ini terjadi?'}
+                </span>
                 <span className="text-[10px] font-semibold text-text-secondary leading-relaxed">
-                  Kamu sudah mempelajari semua variasi soal yang tersedia di bank lokal. Gunakan AI untuk menghasilkan soal-soal unik yang baru dan tidak berulang.
+                  {isSimulasi ? (
+                    'Aktifkan opsi "Gunakan Soal AI" agar model AI merancang paket soal simulasi baru secara dinamis untuk kamu.'
+                  ) : (
+                    'Kamu sudah mempelajari semua variasi soal lokal. Gunakan AI untuk menghasilkan soal baru, atau lanjutkan latihan dengan campuran soal lama.'
+                  )}
                 </span>
               </div>
 
@@ -106,7 +124,7 @@ export default function QuestionExhaustionModal({
                     onClick={onContinueAnyway}
                     className="py-2.5 bg-white/5 hover:bg-white/10 text-text-secondary hover:text-text-primary text-xs font-black rounded-xl border border-white/8 cursor-pointer transition-all active:scale-[0.98] outline-none"
                   >
-                    Lanjutkan Saja
+                    {isSimulasi ? 'Soal Offline' : 'Lanjutkan Saja'}
                   </button>
                   <button
                     id="exhaustion-cancel-btn"

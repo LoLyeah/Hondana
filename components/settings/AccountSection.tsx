@@ -2,19 +2,28 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useStats } from '../../context/QuizContext';
+import { useStats, useHistory } from '../../context/QuizContext';
 import ConfirmModal from '../ConfirmModal';
 
 export default function AccountSection() {
   const { stats, resetStats } = useStats();
+  const { seenQuestionIds, resetSeenQuestions } = useHistory();
   const [isResetProgressOpen, setIsResetProgressOpen] = useState(false);
   const [isFullResetOpen, setIsFullResetOpen] = useState(false);
   const [isResetSuccessOpen, setIsResetSuccessOpen] = useState(false);
+  const [isResetSeenOpen, setIsResetSeenOpen] = useState(false);
+  const [isResetSeenSuccessOpen, setIsResetSeenSuccessOpen] = useState(false);
 
   const handleResetConfirm = () => {
     setIsResetProgressOpen(false);
     resetStats();
     setIsResetSuccessOpen(true);
+  };
+
+  const handleResetSeenConfirm = () => {
+    setIsResetSeenOpen(false);
+    resetSeenQuestions();
+    setIsResetSeenSuccessOpen(true);
   };
 
   const handleFullResetConfirm = () => {
@@ -25,6 +34,7 @@ export default function AccountSection() {
       localStorage.removeItem('hondana_active_session');
       localStorage.removeItem('hondana_session_history');
       localStorage.removeItem('hondana_pregen_cache');
+      localStorage.removeItem('hondana_seen_question_ids');
       
       // Force complete page reload to reinitialize all React states cleanly
       window.location.href = '/';
@@ -66,6 +76,11 @@ export default function AccountSection() {
           <span className="text-accent font-black">{accuracy}%</span>
         </div>
 
+        <div className="flex justify-between items-center text-sm font-semibold">
+          <span className="text-text-secondary">Total Soal Unik Ditemui</span>
+          <span className="text-accent font-black">{seenQuestionIds?.length ?? 0} Soal</span>
+        </div>
+
         <div className="w-full h-px bg-[var(--border-badge)]" />
 
         {/* Reset Progress Button */}
@@ -81,6 +96,24 @@ export default function AccountSection() {
             className="w-full py-3 border border-error/20 bg-error/5 hover:bg-error/10 text-error text-xs font-black rounded-2xl cursor-pointer transition-all active:scale-[0.98] outline-none"
           >
             Reset Progress Latihan
+          </button>
+        </div>
+
+        <div className="w-full h-px bg-[var(--border-badge)]" />
+
+        {/* Reset Seen Questions Button */}
+        <div className="flex flex-col gap-3 mt-1">
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-bold text-error">Reset Riwayat Soal Unik</span>
+            <span className="text-[10px] font-bold text-text-secondary leading-normal">
+              Tindakan ini akan menghapus daftar soal yang sudah pernah Anda jawab dari memori filter, sehingga soal-soal offline akan diacak kembali dari awal tanpa prioritas soal baru.
+            </span>
+          </div>
+          <button
+            onClick={() => setIsResetSeenOpen(true)}
+            className="w-full py-3 border border-error/20 bg-error/5 hover:bg-error/10 text-error text-xs font-black rounded-2xl cursor-pointer transition-all active:scale-[0.98] outline-none"
+          >
+            Reset Riwayat Soal Unik
           </button>
         </div>
 
@@ -115,6 +148,17 @@ export default function AccountSection() {
       />
 
       <ConfirmModal
+        isOpen={isResetSeenOpen}
+        title="Reset Riwayat Soal"
+        message="Apakah Anda yakin ingin mereset riwayat soal unik Anda? Tindakan ini akan menghapus daftar soal yang sudah pernah dikerjakan dari filter, sehingga Anda dapat menemui soal-soal tersebut kembali."
+        confirmLabel="Reset Riwayat"
+        cancelLabel="Batal"
+        variant="danger"
+        onConfirm={handleResetSeenConfirm}
+        onCancel={() => setIsResetSeenOpen(false)}
+      />
+
+      <ConfirmModal
         isOpen={isFullResetOpen}
         title="Bersihkan & Reset Seluruh Data"
         message="APAKAH ANDA YAKIN? Tindakan ini akan menghapus SELURUH data aplikasi Hondana (statistik, riwayat, sesi aktif, cache soal AI, dan pengaturan) dari browser ini. Halaman akan dimuat ulang. Selesaikan jika Anda mengalami masalah/error."
@@ -126,12 +170,21 @@ export default function AccountSection() {
       />
 
       <ConfirmModal
-        isOpen={isResetSuccessOpen}
+        isOpen={isResetProgressOpen ? false : isResetSuccessOpen}
         title="Progress Direset"
         message="Progress latihan Anda telah berhasil direset."
         confirmLabel="Tutup"
         onConfirm={() => setIsResetSuccessOpen(false)}
         onCancel={() => setIsResetSuccessOpen(false)}
+      />
+
+      <ConfirmModal
+        isOpen={isResetSeenOpen ? false : isResetSeenSuccessOpen}
+        title="Riwayat Soal Direset"
+        message="Riwayat soal unik Anda telah berhasil direset."
+        confirmLabel="Tutup"
+        onConfirm={() => setIsResetSeenSuccessOpen(false)}
+        onCancel={() => setIsResetSeenSuccessOpen(false)}
       />
     </motion.section>
   );

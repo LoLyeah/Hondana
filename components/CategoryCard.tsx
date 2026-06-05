@@ -7,6 +7,8 @@ interface CategoryCardProps {
   type: 'TPA' | 'TBI';
   correct: number;
   total: number;
+  seenCount?: number;
+  totalInBank?: number;
   onClick: () => void;
 }
 
@@ -15,6 +17,8 @@ export default memo(function CategoryCard({
   type,
   correct,
   total,
+  seenCount = 0,
+  totalInBank = 0,
   onClick
 }: CategoryCardProps) {
   const isTPA = type === 'TPA';
@@ -44,6 +48,11 @@ export default memo(function CategoryCard({
         </h3>
         <span className="text-xs font-semibold text-text-secondary">
           {total > 0 ? `${correct} dari ${total} Benar` : 'Belum pernah dilatih'}
+          {totalInBank > 0 && (
+            <span className="text-[10px] text-text-secondary/50 block mt-0.5">
+              Progress: {seenCount}/{totalInBank} Soal ({Math.round((seenCount / totalInBank) * 100)}% Terjawab)
+            </span>
+          )}
         </span>
       </div>
 
