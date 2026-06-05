@@ -40,13 +40,13 @@ export function useFocusTrap(
     // Auto focus the first element or the modal container
     const focusables = getFocusableElements();
     const previouslyFocused = document.activeElement as HTMLElement;
+    let timerId: NodeJS.Timeout | null = null;
 
     if (focusables.length > 0) {
       // Small timeout to allow transition animations to finish
-      const timer = setTimeout(() => {
+      timerId = setTimeout(() => {
         focusables[0].focus();
       }, 50);
-      return () => clearTimeout(timer);
     } else {
       element.focus();
     }
@@ -107,6 +107,7 @@ export function useFocusTrap(
     }
 
     return () => {
+      if (timerId) clearTimeout(timerId);
       window.removeEventListener('keydown', handleKeyDown);
       
       // Restore attributes

@@ -167,11 +167,16 @@ export default function Quiz() {
 
   // Active when drawer is CLOSED
   useKeyboardShortcuts({
-    '1': () => { if (currentQuestion && !isAnswered && currentQuestion.options.length >= 1) handleAnswerSubmit(0); },
-    '2': () => { if (currentQuestion && !isAnswered && currentQuestion.options.length >= 2) handleAnswerSubmit(1); },
-    '3': () => { if (currentQuestion && !isAnswered && currentQuestion.options.length >= 3) handleAnswerSubmit(2); },
-    '4': () => { if (currentQuestion && !isAnswered && currentQuestion.options.length >= 4) handleAnswerSubmit(3); },
-    '5': () => { if (currentQuestion && !isAnswered && currentQuestion.options.length >= 5) handleAnswerSubmit(4); },
+    '1': () => { if (currentQuestion && currentQuestion.options.length >= 1) handleAnswerSubmit(0); },
+    'a': () => { if (currentQuestion && currentQuestion.options.length >= 1) handleAnswerSubmit(0); },
+    '2': () => { if (currentQuestion && currentQuestion.options.length >= 2) handleAnswerSubmit(1); },
+    'b': () => { if (currentQuestion && currentQuestion.options.length >= 2) handleAnswerSubmit(1); },
+    '3': () => { if (currentQuestion && currentQuestion.options.length >= 3) handleAnswerSubmit(2); },
+    'c': () => { if (currentQuestion && currentQuestion.options.length >= 3) handleAnswerSubmit(2); },
+    '4': () => { if (currentQuestion && currentQuestion.options.length >= 4) handleAnswerSubmit(3); },
+    'd': () => { if (currentQuestion && currentQuestion.options.length >= 4) handleAnswerSubmit(3); },
+    '5': () => { if (currentQuestion && currentQuestion.options.length >= 5) handleAnswerSubmit(4); },
+    'e': () => { if (currentQuestion && currentQuestion.options.length >= 5) handleAnswerSubmit(4); },
     'ArrowRight': () => {
       if (session && session.currentIndex + 1 < session.questions.length) {
         jumpToQuestion(session.currentIndex + 1);
@@ -586,13 +591,19 @@ export default function Quiz() {
 
                 <div className="flex flex-col gap-4 py-2">
                   <div className="grid grid-cols-12 items-center gap-2">
-                    <div className="col-span-7 flex flex-col">
+                    <div className="col-span-5 flex flex-col">
                       <span className="text-xs font-bold text-text-primary">Pilih Pilihan A - E</span>
                       <span className="text-[10px] text-text-secondary">Pilih jawaban pilihan ganda (no-op jika sudah dijawab)</span>
                     </div>
-                    <div className="col-span-5 flex justify-end gap-1">
+                    <div className="col-span-7 flex justify-end items-center gap-1.5 flex-wrap">
+                      {['A', 'B', 'C', 'D', 'E'].map((key) => (
+                        <kbd key={key} className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-accent shadow-sm">
+                          {key}
+                        </kbd>
+                      ))}
+                      <span className="text-text-secondary text-[10px] mx-0.5">atau</span>
                       {['1', '2', '3', '4', '5'].map((key) => (
-                        <kbd key={key} className="px-2 py-1 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-accent shadow-sm">
+                        <kbd key={key} className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary shadow-sm">
                           {key}
                         </kbd>
                       ))}

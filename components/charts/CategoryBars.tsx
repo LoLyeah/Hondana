@@ -16,52 +16,27 @@ export default function CategoryBars({ stats }: CategoryBarsProps) {
   }, []);
 
   if (!mounted) {
-    return <div className="w-full h-[220px]" />;
+    return <div className="w-full h-[140px]" />;
   }
 
-  // 1. Group statistics
-  let verbalCorrect = 0, verbalTotal = 0;
-  let numerikCorrect = 0, numerikTotal = 0;
-  let logikaCorrect = 0, logikaTotal = 0;
-  let figuralCorrect = 0, figuralTotal = 0;
-  let structCorrect = 0, structTotal = 0;
-  let readCorrect = 0, readTotal = 0;
+  let tpaCorrect = 0, tpaTotal = 0;
+  let tbiCorrect = 0, tbiTotal = 0;
 
   // Iterate TPA
-  Object.entries(stats.tpaStats || {}).forEach(([catKey, stat]) => {
-    if (catKey.startsWith('verbal-')) {
-      verbalTotal += stat.total;
-      verbalCorrect += stat.correct;
-    } else if (catKey.startsWith('numerik-')) {
-      numerikTotal += stat.total;
-      numerikCorrect += stat.correct;
-    } else if (catKey.startsWith('logika-') && catKey !== 'logika-diagram') {
-      logikaTotal += stat.total;
-      logikaCorrect += stat.correct;
-    } else if (catKey === 'logika-diagram') {
-      figuralTotal += stat.total;
-      figuralCorrect += stat.correct;
-    }
+  Object.values(stats.tpaStats || {}).forEach((stat) => {
+    tpaTotal += stat.total;
+    tpaCorrect += stat.correct;
   });
 
   // Iterate TBI
-  Object.entries(stats.tbiStats || {}).forEach(([catKey, stat]) => {
-    if (catKey.startsWith('structure-') || catKey.startsWith('listening-')) {
-      structTotal += stat.total;
-      structCorrect += stat.correct;
-    } else if (catKey.startsWith('reading-') || catKey === 'verbal-bacaan') {
-      readTotal += stat.total;
-      readCorrect += stat.correct;
-    }
+  Object.values(stats.tbiStats || {}).forEach((stat) => {
+    tbiTotal += stat.total;
+    tbiCorrect += stat.correct;
   });
 
   const data = [
-    { name: 'Verbal', accuracy: verbalTotal > 0 ? Math.round((verbalCorrect / verbalTotal) * 100) : 0, isTPA: true },
-    { name: 'Numerik', accuracy: numerikTotal > 0 ? Math.round((numerikCorrect / numerikTotal) * 100) : 0, isTPA: true },
-    { name: 'Logika', accuracy: logikaTotal > 0 ? Math.round((logikaCorrect / logikaTotal) * 100) : 0, isTPA: true },
-    { name: 'Figural', accuracy: figuralTotal > 0 ? Math.round((figuralCorrect / figuralTotal) * 100) : 0, isTPA: true },
-    { name: 'TBI Struct.', accuracy: structTotal > 0 ? Math.round((structCorrect / structTotal) * 100) : 0, isTPA: false },
-    { name: 'TBI Read.', accuracy: readTotal > 0 ? Math.round((readCorrect / readTotal) * 100) : 0, isTPA: false }
+    { name: 'TPA', accuracy: tpaTotal > 0 ? Math.round((tpaCorrect / tpaTotal) * 100) : 0, isTPA: true },
+    { name: 'TBI', accuracy: tbiTotal > 0 ? Math.round((tbiCorrect / tbiTotal) * 100) : 0, isTPA: false }
   ];
 
   // Custom colors for bars: Warm Amber/Orange for TPA, Cool Teal/Cyan for TBI
@@ -69,8 +44,8 @@ export default function CategoryBars({ stats }: CategoryBarsProps) {
   const tbiColor = 'oklch(0.72 0.12 195)';
 
   return (
-    <div className="w-full h-full min-h-[220px] select-none text-left">
-      <ResponsiveContainer width="100%" height={220}>
+    <div className="w-full h-full min-h-[140px] select-none text-left flex items-center">
+      <ResponsiveContainer width="100%" height={130}>
         <BarChart
           data={data}
           layout="vertical"
@@ -80,15 +55,15 @@ export default function CategoryBars({ stats }: CategoryBarsProps) {
             type="number"
             domain={[0, 100]}
             stroke="rgba(255, 255, 255, 0.2)"
-            tick={{ fill: 'oklch(0.65 0.01 55)', fontSize: 9, fontWeight: 700 }}
+            tick={{ fill: 'oklch(0.67 0.01 285)', fontSize: 10, fontWeight: 700 }}
             axisLine={false}
           />
           <YAxis
             type="category"
             dataKey="name"
             stroke="none"
-            tick={{ fill: 'var(--text-primary)', fontSize: 9, fontWeight: 700 }}
-            width={75}
+            tick={{ fill: 'var(--text-primary)', fontSize: 11, fontWeight: 900 }}
+            width={60}
           />
           <Tooltip
             content={({ active, payload }) => {
@@ -105,7 +80,7 @@ export default function CategoryBars({ stats }: CategoryBarsProps) {
           <Bar
             dataKey="accuracy"
             radius={[0, 6, 6, 0] as any}
-            barSize={12}
+            barSize={18}
             background={{ fill: 'rgba(255, 255, 255, 0.02)', radius: [0, 6, 6, 0] as any }}
           >
             {data.map((entry, index) => (

@@ -35,7 +35,7 @@ export default memo(function QuizOption({
     cardStyle = 'border-success/40 bg-success/15 text-success shadow-[0_0_15px_rgba(112,185,160,0.15)] animate-correct';
     badgeStyle = 'bg-success text-white';
   } else if (isSelected && isCorrect === false) {
-    cardStyle = 'border-error/40 bg-error/15 text-error shadow-[0_0_15px_rgba(255,87,87,0.15)] animate-wrong';
+    cardStyle = 'border-error/40 bg-error/15 text-error shadow-[0_0_15px_rgba(255,87,87,0.15)] animate-wrong animate-shake';
     badgeStyle = 'bg-error text-white';
   }
 
@@ -47,7 +47,6 @@ export default memo(function QuizOption({
     >
       {/* Option Key Badge */}
       <motion.span
-        layout
         animate={{
           scale: isSelected ? 1.1 : 1,
           rotate: isCorrect !== null ? 360 : 0

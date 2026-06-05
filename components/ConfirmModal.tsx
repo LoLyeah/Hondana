@@ -35,6 +35,21 @@ export default function ConfirmModal({
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isOpen && e.key === 'Enter') {
+        if (document.activeElement?.id !== 'confirm-cancel-btn') {
+          e.preventDefault();
+          onConfirm();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onConfirm]);
+
   useFocusTrap(modalRef, isOpen, onCancel);
   
   if (!mounted) return null;
@@ -73,8 +88,8 @@ export default function ConfirmModal({
               <div className="flex flex-col items-center gap-3 text-center pt-1">
                 <div className={`w-16 h-16 rounded-2xl ${
                   isDanger 
-                    ? 'bg-red-500/10 border border-red-500/25 shadow-red-500/10 text-red-500' 
-                    : 'bg-accent/10 border border-accent/25 shadow-accent/10 text-accent'
+                     ? 'bg-red-500/10 border border-red-500/25 shadow-red-500/10 text-red-500' 
+                     : 'bg-accent/10 border border-accent/25 shadow-accent/10 text-accent'
                 } flex items-center justify-center text-3xl shadow-lg`}>
                   {isDanger ? '⚠️' : '❓'}
                 </div>
@@ -89,15 +104,7 @@ export default function ConfirmModal({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex gap-3 mt-2">
-                {/* Secondary: Cancel */}
-                <button
-                  id="confirm-cancel-btn"
-                  onClick={onCancel}
-                  className="flex-1 py-3 bg-white/5 hover:bg-white/10 text-text-secondary hover:text-text-primary text-xs font-black rounded-xl border border-white/8 cursor-pointer transition-all active:scale-[0.98] outline-none"
-                >
-                  {cancelLabel}
-                </button>
+              <div className="flex gap-3 mt-2 flex-row-reverse">
                 {/* Primary: Confirm */}
                 <button
                   id="confirm-action-btn"
@@ -109,6 +116,14 @@ export default function ConfirmModal({
                   } text-white text-xs font-black rounded-xl cursor-pointer transition-all active:scale-[0.98] outline-none shadow-lg`}
                 >
                   {confirmLabel}
+                </button>
+                {/* Secondary: Cancel */}
+                <button
+                  id="confirm-cancel-btn"
+                  onClick={onCancel}
+                  className="flex-1 py-3 bg-white/5 hover:bg-white/10 text-text-secondary hover:text-text-primary text-xs font-black rounded-xl border border-white/8 cursor-pointer transition-all active:scale-[0.98] outline-none"
+                >
+                  {cancelLabel}
                 </button>
               </div>
             </div>

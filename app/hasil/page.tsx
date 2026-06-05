@@ -219,7 +219,7 @@ export default function Hasil() {
               </div>
 
               {/* Card 4: Category Mastery (Horizontal Bar Chart) */}
-              <div className="glass border border-white/8 p-5 flex flex-col gap-3 sm:col-span-2 min-h-[280px]">
+              <div className="glass border border-white/8 p-5 flex flex-col gap-3 sm:col-span-2 min-h-[200px]">
                 <span className="text-[10px] font-black uppercase tracking-wider text-text-secondary w-full text-left border-b border-white/5 pb-1.5">Penguasaan Kategori</span>
                 <CategoryBars stats={stats} />
               </div>

@@ -24,8 +24,15 @@ const COLORS = [
 
 export default function Confetti() {
   const [particles, setParticles] = useState<Particle[]>([]);
+  const [shouldRender, setShouldRender] = useState(true);
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (mediaQuery.matches) {
+      setShouldRender(false);
+      return;
+    }
+
     const list: Particle[] = [];
     for (let i = 0; i < 70; i++) {
       const size = Math.random() * 8 + 6; // 6px to 14px
@@ -45,6 +52,8 @@ export default function Confetti() {
     }
     setParticles(list);
   }, []);
+
+  if (!shouldRender) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden select-none">

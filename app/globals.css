@@ -11,6 +11,11 @@
   --color-tbi-accent: var(--tbi-accent);
   --color-success: var(--success);
   --color-error: var(--error);
+  --color-danger: var(--error);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-switch-on: var(--success);
+  --color-switch-off: var(--switch-off);
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
 }
@@ -45,8 +50,11 @@
     --tbi-accent: var(--color-cyan-500);
     --success: var(--color-emerald-500);
     --error: var(--color-red-500);
+    --warning: oklch(0.80 0.16 85);
+    --info: oklch(0.70 0.15 210);
+    --switch-off: oklch(0.55 0.01 285);
     --text-primary: var(--color-gray-100);
-    --text-secondary: oklch(0.65 0.01 285);
+    --text-secondary: oklch(0.67 0.01 285);
 
     /* Theme Layout Mappings */
     --bg-nav: oklch(from var(--color-gray-950) l c h / 0.8);
@@ -86,6 +94,9 @@
     --tbi-accent: var(--color-cyan-500);
     --success: var(--color-emerald-500);
     --error: var(--color-red-500);
+    --warning: oklch(0.80 0.16 85);
+    --info: oklch(0.70 0.15 210);
+    --switch-off: oklch(0.55 0.01 285);
     --text-primary: var(--color-gray-100);
     --text-secondary: oklch(0.45 0.01 285);
 
