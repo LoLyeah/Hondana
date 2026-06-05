@@ -1,5 +1,6 @@
 import { Question, TPACategory, Difficulty } from '../lib/types';
 import { figuralPatterns } from './figural-patterns';
+import { additionalTPAQuestions3 } from './tpa-questions-add3';
 
 const TPA_PASSAGES = {
   p1: 'Indonesia merupakan produsen nikel terbesar di dunia. Pada tahun 2023, produksi nikel olahan Indonesia mencapai 1,8 juta metrik ton, atau sekitar 50% dari total pasokan dunia. Peningkatan ini didorong oleh masifnya investasi fasilitas pengolahan (smelter) nikel semenjak larangan ekspor bijih nikel mentah diberlakukan pada tahun 2020. Meskipun meningkatkan devisa negara secara signifikan, industri pengolahan nikel ini menuai tantangan lingkungan berupa pembuangan limbah tambang dan emisi karbon tinggi dari smelter bertenaga batubara captive.',
@@ -760,7 +761,7 @@ export function getTPAQuestions(): Question[] {
     });
   });
 
-  const allQuestions = [...questions, ...additionalTPAQuestions, ...additionalTPAQuestions2];
+  const allQuestions = [...questions, ...additionalTPAQuestions, ...additionalTPAQuestions2, ...additionalTPAQuestions3];
 
   if (typeof window !== 'undefined') {
     try {
