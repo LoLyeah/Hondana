@@ -109,10 +109,18 @@ export async function generateQuestions(
   
   let prompt = '';
   if (testType === 'TPA') {
-    prompt = `Buatlah ${count} buah soal TPA kategori "${category}" dengan tingkat kesulitan "${difficulty}".
+    const diffText = difficulty === 'seimbang'
+      ? 'variasi tingkat kesulitan seimbang: 40% mudah, 20% sedang, dan 40% sulit (isi field "difficulty" masing-masing soal secara tepat dengan "mudah", "sedang", atau "sulit")'
+      : `tingkat kesulitan "${difficulty}" (isi field "difficulty" masing-masing soal dengan "${difficulty}")`;
+
+    prompt = `Buatlah ${count} buah soal TPA kategori "${category}" dengan ${diffText}.
     Pastikan format JSON valid dan persis sesuai petunjuk sistem.`;
   } else {
-    prompt = `Create ${count} high-quality TBI (Tes Bahasa Inggris) questions for the category "${category}" with a difficulty level of "${difficulty}".
+    const diffText = difficulty === 'seimbang'
+      ? 'varied difficulty levels: 40% easy ("mudah"), 20% medium ("sedang"), and 40% hard ("sulit") (set the "difficulty" field of each question to "mudah", "sedang", or "sulit" accordingly)'
+      : `a difficulty level of "${difficulty}" (set the "difficulty" field of each question to "${difficulty}")`;
+
+    prompt = `Create ${count} high-quality TBI (Tes Bahasa Inggris) questions for the category "${category}" with ${diffText}.
     
     IMPORTANT REQUIREMENTS:
     1. The questions, passages (if any), and options MUST be written entirely in English.
@@ -266,20 +274,26 @@ export async function generateQuestions(
     }
 
     // Map and sanitize the generated questions
-    const mappedQuestions = data.questions.map((q: any, idx: number) => ({
-      id: q.id || `ai-${testType.toLowerCase()}-${category}-${difficulty}-${Date.now()}-${idx}`,
-      testType: testType,
-      category: q.category || category,
-      difficulty: difficulty,
-      question: q.question,
-      options: q.options || [],
-      correctAnswer: typeof q.correctAnswer === 'number' ? q.correctAnswer : 0,
-      explanation: q.explanation || 'Jawaban benar.',
-      timeLimit: q.timeLimit || (testType === 'TPA' ? 60 : 30),
-      figural: q.figural,
-      listening: q.listening,
-      passage: q.passage
-    }));
+    const mappedQuestions = data.questions.map((q: any, idx: number) => {
+      const qDiff = (q.difficulty === 'mudah' || q.difficulty === 'sedang' || q.difficulty === 'sulit')
+        ? q.difficulty
+        : (difficulty === 'seimbang' ? 'sedang' : difficulty);
+      
+      return {
+        id: q.id || `ai-${testType.toLowerCase()}-${category}-${qDiff}-${Date.now()}-${idx}`,
+        testType: testType,
+        category: q.category || category,
+        difficulty: qDiff,
+        question: q.question,
+        options: q.options || [],
+        correctAnswer: typeof q.correctAnswer === 'number' ? q.correctAnswer : 0,
+        explanation: q.explanation || 'Jawaban benar.',
+        timeLimit: q.timeLimit || (testType === 'TPA' ? 60 : 30),
+        figural: q.figural,
+        listening: q.listening,
+        passage: q.passage
+      };
+    });
 
     // Cache the result
     responseCache.set(cacheKey, {
