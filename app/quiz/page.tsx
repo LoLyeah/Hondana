@@ -134,11 +134,15 @@ export default function Quiz() {
       clearTimeout(advanceTimeoutRef.current);
     }
 
-    // Go directly to next question after a brief delay so they don't have to click next manually
-    advanceTimeoutRef.current = setTimeout(() => {
-      handleNext();
-      advanceTimeoutRef.current = null;
-    }, 800);
+    // Go directly to next question after a brief delay so they don't have to click next manually.
+    // If it's the last question, do not auto-advance or end the session automatically so the user can review.
+    const isLast = session.currentIndex + 1 >= session.questions.length;
+    if (!isLast) {
+      advanceTimeoutRef.current = setTimeout(() => {
+        handleNext();
+        advanceTimeoutRef.current = null;
+      }, 800);
+    }
   }, [session, currentQuestion, submitAnswer, settings.soundEnabled, handleNext]);
 
   const handleQuit = useCallback(() => {
