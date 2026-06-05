@@ -582,7 +582,11 @@ export function getTPAQuestions(): Question[] {
           timeLimit = 60;
           const patternKeys = [
             'series1', 'series2', 'series3', 'series4', 'series5',
-            'analogy1', 'analogy2', 'analogy3', 'analogy4', 'analogy5'
+            'series6', 'series7', 'series8', 'series9', 'series10',
+            'series11', 'series12', 'series13', 'series14', 'series15',
+            'analogy1', 'analogy2', 'analogy3', 'analogy4', 'analogy5',
+            'analogy6', 'analogy7', 'analogy8', 'analogy9', 'analogy10',
+            'analogy11', 'analogy12', 'analogy13', 'analogy14', 'analogy15'
           ];
           const patternIndex = globalIdx % patternKeys.length;
           const patternKey = patternKeys[patternIndex];
@@ -594,33 +598,134 @@ export function getTPAQuestions(): Question[] {
             options: [...basePattern.opts]
           };
           
+          const patternDetails: Record<string, { ans: number; exp: string }> = {
+            series1: {
+              ans: 0,
+              exp: 'Garis berputar 90 derajat searah jarum jam (CW), sedangkan titik kuning bertambah 1 di setiap suku. Suku berikutnya harus menunjuk ke kiri (270 deg) dan memiliki 4 titik.'
+            },
+            series2: {
+              ans: 1,
+              exp: 'Sisi bangun datar di dalam persegi bertambah 1 di setiap suku (Segitiga -> Segiempat -> Segilima -> Segienam). Suku berikutnya adalah segienam.'
+            },
+            series3: {
+              ans: 1,
+              exp: 'Segitiga berputar 90 derajat searah jarum jam (CW) di setiap suku. Suku berikutnya harus menunjuk ke kiri (270 deg).'
+            },
+            series4: {
+              ans: 0,
+              exp: 'Jumlah kotak kecil yang diarsir bertambah 1 di setiap langkah searah jarum jam (1 -> 2 -> 3 -> 4). Suku berikutnya harus memiliki semua 4 kotak diarsir.'
+            },
+            series5: {
+              ans: 0,
+              exp: 'Jumlah lingkaran konsentris bertambah 1 di setiap langkah (1 -> 2 -> 3 -> 4). Suku berikutnya harus memiliki 4 lingkaran konsentris.'
+            },
+            series6: {
+              ans: 0,
+              exp: 'Titik berputar searah jarum jam (CW) dari sudut ke sudut pada persegi (kiri atas -> kanan atas -> kanan bawah -> kiri bawah). Suku berikutnya berada di sudut kiri bawah.'
+            },
+            series7: {
+              ans: 1,
+              exp: 'Garis-garis jari (spoke) bertambah satu per satu searah jarum jam (atas -> kanan -> bawah -> kiri). Suku berikutnya harus memiliki 4 jari (atas, kanan, bawah, kiri).'
+            },
+            series8: {
+              ans: 1,
+              exp: 'Arsiran (shading) berputar searah jarum jam (CW) dari kuadran ke kuadran (kanan atas -> kanan bawah -> kiri bawah -> kiri atas). Suku berikutnya harus memiliki arsiran di kuadran kiri atas.'
+            },
+            series9: {
+              ans: 0,
+              exp: 'Bentuk elips berputar 45 derajat searah jarum jam (CW) di setiap langkah (0 -> 45 -> 90 -> 135 derajat). Suku berikutnya berputar 135 derajat.'
+            },
+            series10: {
+              ans: 1,
+              exp: 'Jumlah garis horizontal sejajar di dalam lingkaran bertambah 1 di setiap langkah (1 -> 2 -> 3 -> 4). Suku berikutnya memiliki 4 garis horizontal.'
+            },
+            series11: {
+              ans: 0,
+              exp: 'Jumlah segitiga konsentris bertambah 1 di setiap langkah (1 -> 2 -> 3 -> 4). Suku berikutnya memiliki 4 segitiga konsentris.'
+            },
+            series12: {
+              ans: 1,
+              exp: 'Panah tunggal berputar 90 derajat searah jarum jam (CW) di setiap langkah (atas -> kanan -> bawah -> kiri). Suku berikutnya harus menunjuk ke kiri.'
+            },
+            series13: {
+              ans: 0,
+              exp: 'Jumlah sisi bangun datar berkurang 1 di setiap langkah (Segienam [6] -> Segilima [5] -> Segiempat [4] -> Segitiga [3]). Suku berikutnya adalah segitiga.'
+            },
+            series14: {
+              ans: 1,
+              exp: 'Jumlah lingkaran kecil (titik) di dalam persegi bertambah 1 di setiap langkah (1 -> 2 -> 3 -> 4). Suku berikutnya memiliki 4 titik.'
+            },
+            series15: {
+              ans: 0,
+              exp: 'Titik berputar searah jarum jam (CW) dari titik sudut (vertex) ke titik sudut segienam (atas -> kanan atas -> kanan bawah -> bawah). Suku berikutnya harus berada di sudut bawah.'
+            },
+            analogy1: {
+              ans: 1,
+              exp: 'Hubungan gambar pertama dan kedua adalah bentuk luar dan dalam saling bertukar posisi. Maka, lingkaran di luar dan segitiga di dalam berubah menjadi segitiga di luar dan lingkaran di dalam.'
+            },
+            analogy2: {
+              ans: 1,
+              exp: 'Bentuk pertama diisi penuh (solid) dan bentuk kedua kosong (outline). Dengan hubungan yang sama, persegi padat berubah menjadi persegi kosong.'
+            },
+            analogy3: {
+              ans: 1,
+              exp: 'Gambar kedua merupakan hasil pencerminan secara vertikal (dibalik ke bawah) dari gambar pertama. Maka setengah lingkaran menghadap ke atas dibalik menjadi menghadap ke bawah.'
+            },
+            analogy4: {
+              ans: 1,
+              exp: 'Jumlah sisi bangun datar bertambah 1 (Segitiga [3] -> Persegi [4]). Dengan pola yang sama, Segilima [5] berubah menjadi Segienam [6].'
+            },
+            analogy5: {
+              ans: 1,
+              exp: 'Gambar kedua membagi bentuk gambar pertama menjadi dua kali lipat lebih banyak bagian (2 bagian menjadi 4 bagian). Maka lingkaran dengan 2 bagian terbagi menjadi 4 bagian.'
+            },
+            analogy6: {
+              ans: 1,
+              exp: 'Hubungan gambar pertama dan kedua adalah rotasi 90 derajat searah jarum jam (CW). Dengan hubungan yang sama, bentuk L diputar 90 derajat.'
+            },
+            analogy7: {
+              ans: 0,
+              exp: 'Hubungan gambar pertama dan kedua adalah pertukaran posisi luar-dalam bangun bersarang (nested). Maka, lingkaran di luar dan persegi di dalam bertukar menjadi persegi di luar dan lingkaran di dalam.'
+            },
+            analogy8: {
+              ans: 1,
+              exp: 'Garis tepi bangun datar berubah dari garis utuh (solid) menjadi garis putus-putus (dashed). Dengan pola yang sama, segitiga solid berubah menjadi segitiga dengan garis putus-putus.'
+            },
+            analogy9: {
+              ans: 0,
+              exp: 'Jumlah elemen di dalam bangun datar bertambah dari 1 menjadi 3. Dengan pola yang sama, persegi dengan 1 titik kecil di dalam berubah menjadi persegi dengan 3 titik kecil.'
+            },
+            analogy10: {
+              ans: 1,
+              exp: 'Posisi elemen kecil berubah secara simetris / pencerminan. Lingkaran kecil di sebelah kanan persegi berpindah ke sebelah kiri. Dengan pola yang sama, lingkaran kecil di atas segitiga berpindah ke bagian bawah.'
+            },
+            analogy11: {
+              ans: 1,
+              exp: 'Satu bangun besar berubah menjadi dua bangun berukuran sedang yang berdampingan. Dengan pola yang sama, satu lingkaran besar berubah menjadi dua lingkaran sedang.'
+            },
+            analogy12: {
+              ans: 0,
+              exp: 'Panah tunggal searah berubah menjadi panah dua arah (bolak-balik). Dengan pola yang sama, panah tunggal vertikal berubah menjadi panah dua arah vertikal.'
+            },
+            analogy13: {
+              ans: 0,
+              exp: 'Bangun datar diberikan garis pemisah (bisecting line) secara vertikal tepat di tengah. Dengan pola yang sama, segitiga kosong ditambahi garis vertikal pembelah dari puncak ke alas.'
+            },
+            analogy14: {
+              ans: 1,
+              exp: 'Bangun datar yang terisi warna solid berubah menjadi outline putih saja. Dengan pola yang sama, segitiga terisi warna berubah menjadi outline segitiga kosong.'
+            },
+            analogy15: {
+              ans: 1,
+              exp: 'Garis tepi solid dan dashed saling bertukar posisi. Lingkaran solid (luar) & persegi dashed (dalam) berubah menjadi lingkaran dashed & persegi solid. Dengan pola yang sama, persegi solid & segitiga dashed berubah menjadi persegi dashed & segitiga solid.'
+            }
+          };
+
+          const detail = patternDetails[patternKey];
           questionText = `Perhatikan deret pola/diagram di bawah ini. Pilih gambar selanjutnya yang logis untuk melengkapi deret gambar tersebut (Tipe ${globalIdx + 1}).`;
           options = ['A', 'B', 'C', 'D', 'E'];
-          correctAnswer = (patternKey === 'series1' || patternKey === 'series4' || patternKey === 'series5') ? 0 : 1;
-          
-          let explanationText = '';
-          if (patternKey === 'series1') {
-            explanationText = 'Garis berputar 90 derajat searah jarum jam (CW), sedangkan titik kuning bertambah 1 di setiap suku. Suku berikutnya harus menunjuk ke kiri (270 deg) dan memiliki 4 titik.';
-          } else if (patternKey === 'series2') {
-            explanationText = 'Sisi bangun datar di dalam persegi bertambah 1 di setiap suku (Segitiga -> Segiempat -> Segilima -> Segienam). Suku berikutnya adalah segienam.';
-          } else if (patternKey === 'series3') {
-            explanationText = 'Segitiga berputar 90 derajat searah jarum jam (CW) di setiap suku. Suku berikutnya harus menunjuk ke kiri (270 deg).';
-          } else if (patternKey === 'series4') {
-            explanationText = 'Jumlah kotak kecil yang diarsir bertambah 1 di setiap langkah searah jarum jam (1 -> 2 -> 3 -> 4). Suku berikutnya harus memiliki semua 4 kotak diarsir.';
-          } else if (patternKey === 'series5') {
-            explanationText = 'Jumlah lingkaran konsentris bertambah 1 di setiap langkah (1 -> 2 -> 3 -> 4). Suku berikutnya harus memiliki 4 lingkaran konsentris.';
-          } else if (patternKey === 'analogy1') {
-            explanationText = 'Hubungan gambar pertama dan kedua adalah bentuk luar dan dalam saling bertukar posisi. Maka, lingkaran di luar dan segitiga di dalam berubah menjadi segitiga di luar dan lingkaran di dalam.';
-          } else if (patternKey === 'analogy2') {
-            explanationText = 'Bentuk pertama diisi penuh (solid) dan bentuk kedua kosong (outline). Dengan hubungan yang sama, persegi padat berubah menjadi persegi kosong.';
-          } else if (patternKey === 'analogy3') {
-            explanationText = 'Gambar kedua merupakan hasil pencerminan secara vertikal (dibalik ke bawah) dari gambar pertama. Maka setengah lingkaran menghadap ke atas dibalik menjadi menghadap ke bawah.';
-          } else if (patternKey === 'analogy4') {
-            explanationText = 'Jumlah sisi bangun datar bertambah 1 (Segitiga [3] -> Persegi [4]). Dengan pola yang sama, Segilima [5] berubah menjadi Segienam [6].';
-          } else if (patternKey === 'analogy5') {
-            explanationText = 'Gambar kedua membagi bentuk gambar pertama menjadi dua kali lipat lebih banyak bagian (2 bagian menjadi 4 bagian). Maka lingkaran dengan 2 bagian terbagi menjadi 4 bagian.';
-          }
-          explanation = explanationText;
+          correctAnswer = detail.ans;
+          explanation = detail.exp;
         }
 
         // Mix option index to avoid standard index 0 bias for generated options
