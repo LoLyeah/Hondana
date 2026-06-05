@@ -45,12 +45,31 @@ export default memo(function StatsCard({
     }
     
     if (typeof value === 'string' && value.endsWith('s')) {
-      const num = parseInt(value.slice(0, -1), 10);
-      if (!isNaN(num)) {
+      // Check if it has the "Xm Ys" format
+      const match = value.match(/^(\d+)m\s+(\d+)s$/);
+      if (match) {
+        const m = parseInt(match[1], 10);
+        const s = parseInt(match[2], 10);
         return (
           <>
-            <AnimatedCounter value={num} />
-            <span>s</span>
+            <AnimatedCounter value={m} />
+            <span className="ml-0.5 text-2xl font-bold text-text-secondary">m</span>
+            <span className="ml-2">
+              <AnimatedCounter value={s} />
+            </span>
+            <span className="ml-0.5 text-2xl font-bold text-text-secondary">s</span>
+          </>
+        );
+      }
+
+      // Check if it's a simple "Ys" format
+      const matchSeconds = value.match(/^(\d+)s$/);
+      if (matchSeconds) {
+        const s = parseInt(matchSeconds[1], 10);
+        return (
+          <>
+            <AnimatedCounter value={s} />
+            <span className="ml-0.5 text-2xl font-bold text-text-secondary">s</span>
           </>
         );
       }
