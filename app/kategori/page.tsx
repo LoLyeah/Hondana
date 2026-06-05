@@ -7,6 +7,7 @@ import Header from '../../components/Header';
 import BottomNav from '../../components/BottomNav';
 import CategoryCard from '../../components/CategoryCard';
 import QuestionExhaustionModal from '../../components/QuestionExhaustionModal';
+import ToggleSwitch from '../../components/ToggleSwitch';
 import { useSession, useStats, useSettings } from '../../context/QuizContext';
 import { TestType } from '../../lib/types';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -231,20 +232,11 @@ function KategoriContent() {
                   Soal dihasilkan secara dinamis dan cerdas menggunakan AI
                 </span>
               </div>
-              <button
+              <ToggleSwitch
+                isOn={useAI}
                 onClick={toggleUseAI}
-                className={`relative inline-flex h-[31px] w-[51px] shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out outline-none min-h-0 min-w-0 [min-block-size:0] [min-inline-size:0] ${
-                  useAI ? 'bg-[#34C759]' : 'bg-[#E9E9EA] dark:bg-[#39393D]'
-                }`}
-                style={{ minBlockSize: 0, minInlineSize: 0 }}
-                aria-label="Toggle AI Mode"
-              >
-                <span
-                  className={`absolute top-[2px] left-[2px] block h-[27px] w-[27px] transform rounded-full bg-white shadow-[0_3px_8px_rgba(0,0,0,0.15),0_3px_1px_rgba(0,0,0,0.06)] transition-transform duration-200 ease-in-out ${
-                    useAI ? 'translate-x-[20px]' : 'translate-x-0'
-                  }`}
-                />
-              </button>
+                ariaLabel="Toggle AI Mode"
+              />
             </div>
 
             <div className="w-full h-px bg-[var(--border-badge)]" />
@@ -257,20 +249,11 @@ function KategoriContent() {
                   Aktifkan batasan waktu ujian per sesi (TPA: 60 menit, TBI: 50 menit)
                 </span>
               </div>
-              <button
+              <ToggleSwitch
+                isOn={settings.timerEnabled}
                 onClick={toggleTimer}
-                className={`relative inline-flex h-[31px] w-[51px] shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out outline-none min-h-0 min-w-0 [min-block-size:0] [min-inline-size:0] ${
-                  settings.timerEnabled ? 'bg-[#34C759]' : 'bg-[#E9E9EA] dark:bg-[#39393D]'
-                }`}
-                style={{ minBlockSize: 0, minInlineSize: 0 }}
-                aria-label="Toggle Timer"
-              >
-                <span
-                  className={`absolute top-[2px] left-[2px] block h-[27px] w-[27px] transform rounded-full bg-white shadow-[0_3px_8px_rgba(0,0,0,0.15),0_3px_1px_rgba(0,0,0,0.06)] transition-transform duration-200 ease-in-out ${
-                    settings.timerEnabled ? 'translate-x-[20px]' : 'translate-x-0'
-                  }`}
-                />
-              </button>
+                ariaLabel="Toggle Timer"
+              />
             </div>
 
             <div className="w-full h-px bg-[var(--border-badge)]" />
@@ -283,20 +266,11 @@ function KategoriContent() {
                   Putar audio singkat ketika menjawab benar atau salah
                 </span>
               </div>
-              <button
+              <ToggleSwitch
+                isOn={settings.soundEnabled}
                 onClick={toggleSound}
-                className={`relative inline-flex h-[31px] w-[51px] shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out outline-none min-h-0 min-w-0 [min-block-size:0] [min-inline-size:0] ${
-                  settings.soundEnabled ? 'bg-[#34C759]' : 'bg-[#E9E9EA] dark:bg-[#39393D]'
-                }`}
-                style={{ minBlockSize: 0, minInlineSize: 0 }}
-                aria-label="Toggle Sound Effects"
-              >
-                <span
-                  className={`absolute top-[2px] left-[2px] block h-[27px] w-[27px] transform rounded-full bg-white shadow-[0_3px_8px_rgba(0,0,0,0.15),0_3px_1px_rgba(0,0,0,0.06)] transition-transform duration-200 ease-in-out ${
-                    settings.soundEnabled ? 'translate-x-[20px]' : 'translate-x-0'
-                  }`}
-                />
-              </button>
+                ariaLabel="Toggle Sound Effects"
+              />
             </div>
           </div>
         </div>

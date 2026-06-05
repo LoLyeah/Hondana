@@ -34,8 +34,37 @@ export default memo(function TimerRing({ timeLeft, timeLimit }: TimerRingProps) 
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Find key milestones (in seconds)
+  const halfTime = Math.floor(timeLimit * 0.5);
+  const quarterTime = Math.floor(timeLimit * 0.25);
+  
+  // Decide whether to announce
+  let announcement = '';
+  if (timeLeft === halfTime) {
+    announcement = `Sisa waktu kuis setengah: ${Math.floor(timeLeft / 60)} menit`;
+  } else if (timeLeft === quarterTime) {
+    announcement = `Sisa waktu kuis seperempat: ${Math.floor(timeLeft / 60)} menit`;
+  } else if (timeLeft === 300 && timeLimit > 300) {
+    announcement = 'Sisa waktu kuis 5 menit';
+  } else if (timeLeft === 60) {
+    announcement = 'Sisa waktu kuis 1 menit';
+  } else if (timeLeft === 30) {
+    announcement = 'Sisa waktu kuis 30 detik';
+  } else if (timeLeft === 10) {
+    announcement = 'Sisa waktu kuis 10 detik';
+  }
+
   return (
-    <div className="relative flex items-center justify-center w-12 h-12">
+    <div
+      className="relative flex items-center justify-center w-12 h-12"
+      role="timer"
+      aria-label={`Sisa waktu: ${formatTime(timeLeft)}`}
+    >
+      {announcement && (
+        <span className="sr-only" role="status" aria-live="assertive">
+          {announcement}
+        </span>
+      )}
       <svg className="w-full h-full transform -rotate-90">
         {/* Background Ring */}
         <circle

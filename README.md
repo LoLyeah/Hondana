@@ -66,20 +66,16 @@ The interactive quiz player (`/quiz`) provides:
 
 ---
 
-### 4. 📊 Results & Session History (`/hasil`)
+### 4. 📊 Results & Bento Grid Analytics Dashboard (`/hasil`)
 
-After completing a session, the results page shows:
-- **Score card** — correct count, accuracy %, total time, and average time per question.
-- **Sub-category breakdown** — a `ResultBar` for every category present in the session, showing individual accuracy.
-- From there you can proceed to **Pembahasan** (answer review) or return to the **History Dashboard**.
-
-The History Dashboard (shown when no active session is loaded) displays:
-- Global stats: total sessions completed, total questions answered, overall accuracy.
-- A scrollable **session history log** (newest first), each card showing: test type, mode, category, date/time, score, accuracy %, and duration.
-- **Review** button — loads the saved session into Pembahasan for a full answer walkthrough.
-- **Delete** button — permanently removes a saved session log.
-
-All session data is persisted in `localStorage` under `hondana_session_history`.
+The completed session history is transformed into a rich analytics cockpit:
+- **Score Card** — displays correct answers, accuracy percentage, total duration, and average speed per question.
+- **Interactive Bento Grid Dashboard** (when no active session is loaded):
+  - **Accuracy Donut Chart** (`AccuracyDonut`) — renders an animated distribution of correct vs incorrect answers.
+  - **Category Mastery Chart** (`CategoryBars`) — showcases horizontal progress bars of accuracy percentage per sub-category.
+  - **Accuracy Trend Line Chart** (`AccuracyTrend`) — displays a smooth sparkline area chart showing performance progression over the last 10 test sessions (scales dynamically to fit the card layout).
+  - **Study Insights** (`StudyInsights`) — a card containing rotating, actionable AI recommendation tips based on your lowest-performing sub-categories.
+- **Scrollable Session History Log** — list of previous attempts with quick review and deletion triggers.
 
 ---
 
@@ -113,7 +109,17 @@ If AI generation fails or no API key is configured, the app silently falls back 
 
 ---
 
-### 7. ⚙️ Settings (`/pengaturan`)
+### 7. 🏆 Achievement Badges & Delight
+
+Hondana features a gamified learning journey to encourage consistent preparation:
+- **10+ Unlockable Badges** (`lib/badges.ts`) — awarded for milestones like perfect scores, completing sessions in each module, speed records, or building a study history.
+- **Collapsible Pencapaian Modal** (`BadgesModal`) — displays locked and unlocked achievements in a scrollable bento layout. Accessible from the main dashboard.
+- **Toast Notifications** (`BadgeUnlockToast`) — alerts users immediately upon unlocking a badge with a lightweight, browser-safe CSS particle celebration burst (`Confetti`).
+- **Tactile Feedback & Haptics** — utilizes distinct vibration frequencies (`navigator.vibrate`) for correct answers (20ms), errors ([50, 30, 50]ms), and session completion ([30, 30, 30, 30, 80]ms) to enhance engagement on mobile.
+
+---
+
+### 8. ⚙️ Settings (`/pengaturan`)
 
 - **Highlighted PWA Installation** — A prominent installation card has been moved to the very top of the Settings screen with a `REKOMENDASI` badge, guiding users step-by-step to install the app on mobile (Safari iOS Share menu) or desktop/Android (direct install prompt button).
 - AI provider, model, and API key configuration.
@@ -121,12 +127,12 @@ If AI generation fails or no API key is configured, the app silently falls back 
 - **AI Question Pre-generation Cache** (described below).
 - **Stats overview** — sessions completed, questions answered, overall accuracy.
 - **Reset Progress** — clears local accuracy stats and session history.
-- **Troubleshooting App Reset** — a dedicated emergency action under Settings that clears all local application keys (`statistik`, `riwayat`, `sesi aktif`, `cache soal AI`, and `pengaturan`) and forces a clean app reload. Useful for resolving data corruption or redirection loop states.
-- Dark/Light **theme switching** — syncs to the document root (`data-theme` attribute and CSS class) via a `useEffect` in `QuizContext`.
+- **Troubleshooting App Reset** — a dedicated emergency action under Settings that clears all local localStorage keys and forces a clean app reload.
+- Dark/Light **theme switching** — syncs to the document root with smooth clip-path transitions (`document.startViewTransition`).
 
 ---
 
-### 8. ⌨️ Keyboard Shortcuts
+### 9. ⌨️ Keyboard Shortcuts
 
 Speed up navigation and answers during tests with built-in hotkey support on the `/quiz` and `/pembahasan` pages:
 - **Select Answer**: `A`, `B`, `C`, `D`, `E` or `1`, `2`, `3`, `4`, `5`.
@@ -140,21 +146,16 @@ Speed up navigation and answers during tests with built-in hotkey support on the
 
 ---
 
-### 9. 📱 Progressive Web App (PWA)
+### 10. 📱 Progressive Web App (PWA)
 
 Hondana can be installed as a standalone PWA application on mobile, tablet, and desktop:
 - **Home Screen Installation** — installs with native desktop/mobile application behavior, including a custom app icon and standalone window styling.
-- **High-Performance Service Worker (`sw.js`)** — registers service worker version `hondana-v2` with an optimized hybrid caching policy:
-  - **Network-First** for primary HTML page navigation (ensures online users always run the latest build assets).
-  - **Cache-First** for uniquely-hashed Next.js static chunks (`_next/static/*`), guaranteeing instantaneous asset loads.
-  - **Stale-While-Revalidate** for local assets (icons, manifests, configurations) to load offline immediately while updating silently in the background.
-  - **Network-Only** for API routes (`/api/*`).
-- **Live SW Update Reload Trigger** — monitors Service Worker updates in the background. When a new code bundle is deployed, it automatically updates and triggers a page refresh to apply the changes, with a safeguard to **not** reload if the user is currently answering a quiz (`/quiz`) to avoid progress loss.
-- **Install Promo Prompt** — displays a premium, custom install dialog banner (`usePWAInstall`) when loading the app to encourage home screen installation.
+- **High-Performance Service Worker (`sw.js`)** — registers service worker version `hondana-v2` with network-first navigation, stale-while-revalidate for assets, and cache-first for Next.js static chunks.
+- **Live SW Update Reload Trigger** — monitors Service Worker updates and triggers updates seamlessly without interrupting an active quiz session.
 
 ---
 
-### 10. ⚡ Smart Cache & Question Exhaustion Protection
+### 11. ⚡ Smart Cache & Question Exhaustion Protection
 
 To support study sessions in low-connectivity or high-latency environments:
 - **Cache Soal AI**: Pre-generate AI questions in bulk for selected categories under *Settings → Cache Soal AI* when online. These are saved to browser local storage (`hondana_pregen_cache`) and consumed automatically as a fallback.
@@ -166,6 +167,14 @@ To support study sessions in low-connectivity or high-latency environments:
 
 ---
 
+### 12. ♿ Accessibility Focus & Trap Controls (WCAG 2.2)
+
+- **Focus Trap Management (`useFocusTrap`)** — a custom hook that locks keyboard focus within open overlays (e.g. `ConfirmModal`, `BadgesModal`, `QuestionExhaustionModal`) and marks main body siblings as `inert`/`aria-hidden` to comply with screen reader accessibility standards.
+- **Live Timer Updates** — live screen reader notifications (`aria-live="assertive"`) announce remaining time milestones during quiz sessions.
+- **Overlay Portals** — all critical dialog boxes and overlay menus are rendered directly under the HTML body utilizing React Portals (`createPortal`) to prevent stacking context or layout clipping issues caused by parent CSS transforms.
+
+---
+
 ## 🛠️ Tech Stack
 
 | Layer | Technology |
@@ -173,6 +182,7 @@ To support study sessions in low-connectivity or high-latency environments:
 | Framework | Next.js 16.2 (App Router) |
 | UI | React 19 |
 | Styling | Tailwind CSS 4.0 + vanilla CSS custom properties |
+| Chart Visualization | Recharts (`recharts`) |
 | Animations | Framer Motion |
 | AI | Groq SDK (`groq-sdk`), OpenAI-compatible fetch, Gemini REST |
 | State & Cache | React Context + `useLocalStorage` persistence (with schema merge defenses and active session corruption guards) |
@@ -193,44 +203,56 @@ hondana/
 │   ├── hasil/                  # Results page + session history dashboard
 │   ├── kategori/               # Module & category selection
 │   ├── pembahasan/             # Answer review with explanations
-│   ├── pengaturan/             # Settings (AI config, highlighted PWA installer, data troubleshooting)
+│   ├── pengaturan/             # Settings (AI config, PWA installer, data troubleshooting)
 │   ├── quiz/                   # Interactive quiz player with active session persistence and corruption auto-reset
 │   ├── globals.css             # Design system tokens, premium animations, tailwind directives
 │   ├── layout.tsx              # Root layout, theme config, suppressHydrationWarning
 │   └── page.tsx                # Home dashboard with PWA promotion
 ├── components/
-│   ├── CategoryCard.tsx        # Per-subcategory card with historical accuracy
+│   ├── charts/                 # Recharts components (AccuracyDonut, CategoryBars, AccuracyTrend)
+│   ├── settings/               # Settings sections (AiConfig, Cache, QuizSettings, AccountSection)
+│   ├── BadgeCard.tsx           # Achievement card component
+│   ├── BadgesModal.tsx         # Portalled scrollable achievement overlay modal
+│   ├── BadgeUnlockToast.tsx    # Slide-in toast notification for badge unlocks
+│   ├── Confetti.tsx            # CSS particle burst celebration effect
+│   ├── ConfirmModal.tsx        # Portalled confirmation overlay dialog
+│   ├── EmptyState.tsx          # Clean SVG empty illustration box
 │   ├── FiguralDisplay.tsx      # SVG renderer for diagram/figural TPA questions
 │   ├── Header.tsx              # Application header with logo icon integration
-│   ├── LoadingSkeleton.tsx     # Premium shimmering glass loading skeletons [NEW]
-│   ├── LoadingSpinner.tsx      # Premium gradient rotating SVG spinners [NEW]
+│   ├── LoadingSkeleton.tsx     # Shimmering glass loading skeletons
+│   ├── LoadingSpinner.tsx      # Gradient rotating SVG spinners
 │   ├── PassageCard.tsx         # Reading passage container
 │   ├── ProgressBar.tsx         # Session progress indicator
-│   ├── QuestionExhaustionModal.tsx # Warns when offline questions run low [NEW]
-│   ├── QuizOption.tsx          # Answer option button (with correct/wrong/shortcut key states)
+│   ├── QuestionExhaustionModal.tsx # Warns when offline questions run low
+│   ├── QuizOption.tsx          # Answer option button
 │   ├── ResultBar.tsx           # Per-category accuracy bar in results
 │   ├── StatsCard.tsx           # Summary stat card
+│   ├── StudyInsights.tsx       # AI study recommendations panel
 │   ├── TimerRing.tsx           # SVG countdown ring
-│   └── ...                     # BottomNav (logo integration), Dialog, etc.
+│   ├── ToggleSwitch.tsx        # Symmetrical spring physics toggle switch
+│   └── BottomNav.tsx           # Navigation bar
 ├── context/
 │   └── QuizContext.tsx         # Global state: active session validation, history, pregen cache, settings
 ├── data/
-│   ├── tpa-questions.ts        # Offline TPA question bank (12 subcategories, 50 new Unair questions)
+│   ├── tpa-questions.ts        # Offline TPA question bank (12 subcategories)
 │   ├── tbi-questions.ts        # Offline TBI question bank (structure + reading)
-│   └── figural-patterns.ts    # SVG pattern data for figural questions
+│   └── figural-patterns.ts     # SVG pattern data for figural questions
 ├── hooks/
-│   ├── useKeyboardShortcuts.ts # Reusable keyboard shortcut hook [NEW]
-│   ├── useLocalStorage.ts      # Reactive localStorage sync hook with schema merging capabilities
-│   ├── usePWAInstall.ts        # Native PWA installation and Service Worker update tracking [NEW]
+│   ├── useFocusTrap.ts         # Accessibility trap hook for screen readers and keyboard focus
+│   ├── useKeyboardShortcuts.ts # Reusable keyboard shortcut hook
+│   ├── useLocalStorage.ts      # Reactive localStorage sync hook with schema merging
+│   ├── usePWAInstall.ts        # Native PWA installation and Service Worker update tracking
 │   └── useTimer.ts             # Countdown timer hook
 ├── lib/
+│   ├── audio.ts                # Audio settings and haptic device feedback
+│   ├── badges.ts               # Badge rules, check logic, unlocked criteria
 │   ├── groq.ts                 # AI provider client and prompt templates
 │   └── types.ts                # Shared TypeScript types
 ├── public/
-│   ├── manifest.json           # Web App Manifest for PWA properties [NEW]
-│   ├── sw.js                   # Service Worker v2 script with advanced caching strategy [NEW]
-│   ├── icon-192.png            # 192px app launcher icon [NEW]
-│   └── icon-512.png            # 512px app launcher icon [NEW]
+│   ├── manifest.json           # Web App Manifest for PWA properties
+│   ├── sw.js                   # Service Worker v2 script with advanced caching strategy
+│   ├── icon-192.png            # 192px app launcher icon
+│   └── icon-512.png            # 512px app launcher icon
 └── ...
 ```
 

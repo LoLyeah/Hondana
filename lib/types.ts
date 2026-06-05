@@ -100,6 +100,7 @@ export interface SessionResult {
   accuracy: number;            // correct / total * 100
   totalTime: number;
   avgTimePerQuestion: number;
+  newlyUnlockedBadges?: string[];
 }
 
 export interface UserStats {
@@ -108,6 +109,7 @@ export interface UserStats {
   sessionsCompleted: number;
   tpaStats: Record<TPACategory, { correct: number; total: number }>;
   tbiStats: Record<TBICategory, { correct: number; total: number }>;
+  unlockedBadges?: string[];
 }
 
 export interface AppSettings {

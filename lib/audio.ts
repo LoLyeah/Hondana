@@ -14,9 +14,20 @@ class SoundEffects {
     }
   }
 
+  private vibrate(pattern: number | number[]) {
+    if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+      try {
+        navigator.vibrate(pattern);
+      } catch (e) {
+        // Silently swallow vibration errors (e.g. from missing user gesture interaction)
+      }
+    }
+  }
+
   playClick() {
     try {
       this.init();
+      this.vibrate(10);
       if (!this.ctx) return;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
@@ -40,6 +51,7 @@ class SoundEffects {
   playToggle(on: boolean) {
     try {
       this.init();
+      this.vibrate(15);
       if (!this.ctx) return;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
@@ -67,6 +79,7 @@ class SoundEffects {
   playSuccess() {
     try {
       this.init();
+      this.vibrate([30, 30, 30, 30, 80]);
       if (!this.ctx) return;
       const now = this.ctx.currentTime;
       
@@ -101,6 +114,7 @@ class SoundEffects {
   playCorrect() {
     try {
       this.init();
+      this.vibrate(20);
       if (!this.ctx) return;
       const now = this.ctx.currentTime;
       
@@ -133,6 +147,7 @@ class SoundEffects {
   playIncorrect() {
     try {
       this.init();
+      this.vibrate([50, 30, 50]);
       if (!this.ctx) return;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();

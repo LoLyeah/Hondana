@@ -55,6 +55,12 @@
     --border-badge: oklch(1 0 0 / 0.08);
     --bg-grid-color: oklch(1 0 0 / 0.02);
 
+    /* Fluid Typography clamp values */
+    --font-size-h1: clamp(1.5rem, 4vw, 2.25rem);
+    --font-size-h2: clamp(1.25rem, 3vw, 1.75rem);
+    --font-size-body: clamp(0.875rem, 2vw, 1rem);
+    --font-size-caption: clamp(0.75rem, 1.5vw, 0.875rem);
+
     /* Animation interpolation support fallback */
     --in-oklab: ;
     --in-oklch: ;
@@ -110,9 +116,32 @@
     background-attachment: fixed;
     color: var(--text-primary);
     font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+    font-size: var(--font-size-body);
     min-block-size: 100dvh;
     -webkit-font-smoothing: antialiased;
     text-wrap: pretty;
+    position: relative;
+  }
+
+  /* Repeating SVG noise texture overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  h1 {
+    font-size: var(--font-size-h1);
+  }
+
+  h2 {
+    font-size: var(--font-size-h2);
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -378,3 +407,16 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* View Transitions API */
+@view-transition {
+  navigation: auto;
+}
+
+/* Custom View Transition styles for Theme Toggle circular reveal */
+.theme-transition::view-transition-old(root),
+.theme-transition::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+

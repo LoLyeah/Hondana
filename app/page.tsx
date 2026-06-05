@@ -123,21 +123,35 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col gap-4">
-            <TestTypeCard
-              type="TPA"
-              title="TPA (Tes Potensi Akademik)"
-              description="Evaluasi kemampuan verbal, matematika analitis, deret angka logis, dan penalaran figural berpola."
-              subcategories={['Verbal', 'Numerik', 'Logika', 'Figural']}
-              onClick={() => handleSelectModule('TPA')}
-            />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ type: "spring", stiffness: 180, damping: 20 }}
+            >
+              <TestTypeCard
+                type="TPA"
+                title="TPA (Tes Potensi Akademik)"
+                description="Evaluasi kemampuan verbal, matematika analitis, deret angka logis, dan penalaran figural berpola."
+                subcategories={['Verbal', 'Numerik', 'Logika', 'Figural']}
+                onClick={() => handleSelectModule('TPA')}
+              />
+            </motion.div>
 
-            <TestTypeCard
-              type="TBI"
-              title="TBI (Tes Bahasa Inggris)"
-              description="Ujian kecakapan bahasa Inggris setara format TOEFL ITP dengan simulasi Structure dan Reading."
-              subcategories={['Structure', 'Reading']}
-              onClick={() => handleSelectModule('TBI')}
-            />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ type: "spring", stiffness: 180, damping: 20, delay: 0.1 }}
+            >
+              <TestTypeCard
+                type="TBI"
+                title="TBI (Tes Bahasa Inggris)"
+                description="Ujian kecakapan bahasa Inggris setara format TOEFL ITP dengan simulasi Structure dan Reading."
+                subcategories={['Structure', 'Reading']}
+                onClick={() => handleSelectModule('TBI')}
+              />
+            </motion.div>
           </div>
         </div>
       </motion.main>

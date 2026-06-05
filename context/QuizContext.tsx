@@ -15,6 +15,7 @@ import {
   SavedSession
 } from '../lib/types';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { checkBadgeUnlocks } from '../lib/badges';
 
 interface SessionContextValue {
   session: QuizSession | null;
@@ -80,7 +81,8 @@ const initialStats: UserStats = {
     'structure-error': { correct: 0, total: 0 },
     'reading-comprehension': { correct: 0, total: 0 },
     'reading-vocabulary': { correct: 0, total: 0 }
-  }
+  },
+  unlockedBadges: []
 };
 
 const initialSettings: AppSettings = {
@@ -620,14 +622,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     const totalTime = Math.floor((Date.now() - currentSession.startTime) / 1000);
     const avgTimePerQuestion = total > 0 ? totalTime / total : 0;
     
-    if (!currentSession.isComplete) {
-      setStats((prev) => {
-        return {
-          ...prev,
-          sessionsCompleted: (prev?.sessionsCompleted || 0) + 1
-        };
-      });
+    let newlyUnlockedBadgesList: string[] = [];
 
+    if (!currentSession.isComplete) {
       const newSavedSession: SavedSession = {
         id: `session-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
         timestamp: Date.now(),
@@ -644,6 +641,18 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         duration: totalTime,
         accuracy: accuracy
       };
+
+      setStats((prev) => {
+        const nextStats = {
+          ...prev,
+          sessionsCompleted: (prev?.sessionsCompleted || 0) + 1
+        };
+        const currentUnlocked = prev?.unlockedBadges || [];
+        const unlocks = checkBadgeUnlocks(nextStats, newSavedSession, currentUnlocked);
+        newlyUnlockedBadgesList = unlocks;
+        nextStats.unlockedBadges = [...currentUnlocked, ...unlocks];
+        return nextStats;
+      });
 
       // Keep only the last 20 sessions in history
       setHistory((prev) => [newSavedSession, ...prev].slice(0, 20));
@@ -663,7 +672,8 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       score,
       accuracy,
       totalTime,
-      avgTimePerQuestion
+      avgTimePerQuestion,
+      newlyUnlockedBadges: newlyUnlockedBadgesList
     };
   }, []);
 

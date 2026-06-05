@@ -1,7 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 interface QuestionExhaustionModalProps {
   isOpen: boolean;
@@ -22,7 +24,18 @@ export default function QuestionExhaustionModal({
   onContinueAnyway,
   onCancel
 }: QuestionExhaustionModalProps) {
-  return (
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useFocusTrap(modalRef, isOpen, onCancel);
+
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
@@ -34,11 +47,13 @@ export default function QuestionExhaustionModal({
           onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
         >
           <motion.div
+            ref={modalRef}
+            tabIndex={-1}
             initial={{ y: 40, opacity: 0, scale: 0.97 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 40, opacity: 0, scale: 0.97 }}
             transition={{ type: 'spring', damping: 28, stiffness: 360 }}
-            className="glass border border-amber-500/20 w-full max-w-sm flex flex-col gap-0 shadow-2xl overflow-hidden"
+            className="glass border border-amber-500/20 w-full max-w-sm flex flex-col gap-0 shadow-2xl overflow-hidden outline-none"
           >
             {/* Header stripe */}
             <div className="h-1 w-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-400" />
@@ -112,6 +127,7 @@ export default function QuestionExhaustionModal({
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

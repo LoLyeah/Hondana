@@ -15,7 +15,15 @@ export default memo(function ProgressBar({ currentIndex, total, answers }: Progr
   const isSmallQuiz = total <= 15;
 
   return (
-    <div className="w-full flex flex-col gap-2 px-1">
+    <div
+      className="w-full flex flex-col gap-2 px-1"
+      role="progressbar"
+      aria-valuenow={currentIndex + 1}
+      aria-valuemin={1}
+      aria-valuemax={total}
+      aria-label="Progress kuis"
+      aria-valuetext={`Soal ${currentIndex + 1} dari ${total}`}
+    >
       <div className="flex items-center justify-between text-xs font-bold text-text-secondary">
         <span>SOAL {currentIndex + 1} DARI {total}</span>
         <span>{Math.round(percentage)}% SELESAI</span>

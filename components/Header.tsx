@@ -27,8 +27,61 @@ export default function Header({ title, showBack = false, onBack, noSidebar = fa
     }
   };
 
-  const toggleTheme = () => {
-    updateSettings({ theme: settings.theme === 'light' ? 'dark' : 'light' });
+  const toggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const nextTheme = settings.theme === 'light' ? 'dark' : 'light';
+    
+    // Check if view transitions are supported and not prefers-reduced-motion
+    const isSupported = typeof document !== 'undefined' && 'startViewTransition' in document;
+    const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    if (!isSupported || prefersReducedMotion) {
+      updateSettings({ theme: nextTheme });
+      return;
+    }
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+    
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    document.documentElement.classList.add('theme-transition');
+
+    const transition = (document as any).startViewTransition(() => {
+      // Force React to render the state change synchronously for View Transitions to capture it
+      const { flushSync } = require('react-dom');
+      flushSync(() => {
+        updateSettings({ theme: nextTheme });
+      });
+    });
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`
+      ];
+      
+      const isDark = nextTheme === 'dark';
+      document.documentElement.animate(
+        {
+          clipPath: isDark ? clipPath : [...clipPath].reverse(),
+        },
+        {
+          duration: 400,
+          easing: 'ease-out',
+          pseudoElement: isDark
+            ? '::view-transition-new(root)'
+            : '::view-transition-old(root)',
+        }
+      );
+    });
+
+    transition.finished.then(() => {
+      document.documentElement.classList.remove('theme-transition');
+    });
   };
 
   return (

@@ -10,6 +10,7 @@ import FiguralDisplay from '../../components/FiguralDisplay';
 import TranscriptCard from '../../components/TranscriptCard';
 import PassageCard from '../../components/PassageCard';
 import { useSession, useSettings } from '../../context/QuizContext';
+import ConfirmModal from '../../components/ConfirmModal';
 import { useTimer } from '../../hooks/useTimer';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { useFullscreen } from '../../hooks/useFullscreen';
@@ -36,6 +37,9 @@ export default function Quiz() {
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { isFullscreen, toggleFullscreen } = useFullscreen();
+  const [isQuitModalOpen, setIsQuitModalOpen] = useState(false);
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [isTimeUpModalOpen, setIsTimeUpModalOpen] = useState(false);
 
   // Reference to hold transition timeout ID to prevent duplicate fires (e.g. from rapid double-clicks)
   const advanceTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
@@ -63,10 +67,9 @@ export default function Quiz() {
       clearTimeout(advanceTimeoutRef.current);
       advanceTimeoutRef.current = null;
     }
-    alert('Waktu ujian Anda telah habis! Sesi kuis akan diselesaikan secara otomatis.');
     endQuiz();
-    router.push('/hasil');
-  }, [endQuiz, router]);
+    setIsTimeUpModalOpen(true);
+  }, [endQuiz]);
 
   // Timer Hook integration (session-level stable countdown)
   const { timeLeft } = useTimer({
@@ -139,21 +142,27 @@ export default function Quiz() {
   }, [session, currentQuestion, submitAnswer, settings.soundEnabled, handleNext]);
 
   const handleQuit = useCallback(() => {
-    if (window.confirm('Apakah Anda yakin ingin mengakhiri sesi kuis ini? Progress latihan ini tidak akan disimpan.')) {
-      quitQuiz();
-      router.push('/');
-    }
+    setIsQuitModalOpen(true);
+  }, []);
+
+  const handleQuitConfirm = useCallback(() => {
+    setIsQuitModalOpen(false);
+    quitQuiz();
+    router.push('/');
   }, [quitQuiz, router]);
 
   const handleCompleteQuiz = useCallback(() => {
-    if (window.confirm('Apakah Anda yakin ingin menyelesaikan sesi kuis ini dan melihat hasil?')) {
-      if (advanceTimeoutRef.current) {
-        clearTimeout(advanceTimeoutRef.current);
-        advanceTimeoutRef.current = null;
-      }
-      endQuiz();
-      router.push('/hasil');
+    setIsCompleteModalOpen(true);
+  }, []);
+
+  const handleCompleteConfirm = useCallback(() => {
+    setIsCompleteModalOpen(false);
+    if (advanceTimeoutRef.current) {
+      clearTimeout(advanceTimeoutRef.current);
+      advanceTimeoutRef.current = null;
     }
+    endQuiz();
+    router.push('/hasil');
   }, [endQuiz, router]);
 
   // Active when drawer is CLOSED
@@ -654,6 +663,43 @@ export default function Quiz() {
           </>
         )}
       </AnimatePresence>
+
+      <ConfirmModal
+        isOpen={isQuitModalOpen}
+        title="Keluar Sesi Kuis"
+        message="Apakah Anda yakin ingin mengakhiri sesi kuis ini? Progress latihan ini tidak akan disimpan."
+        confirmLabel="Keluar"
+        cancelLabel="Batal"
+        variant="danger"
+        onConfirm={handleQuitConfirm}
+        onCancel={() => setIsQuitModalOpen(false)}
+      />
+
+      <ConfirmModal
+        isOpen={isCompleteModalOpen}
+        title="Selesaikan Kuis"
+        message="Apakah Anda yakin ingin menyelesaikan sesi kuis ini dan melihat hasil?"
+        confirmLabel="Selesai & Lihat Hasil"
+        cancelLabel="Kembali"
+        onConfirm={handleCompleteConfirm}
+        onCancel={() => setIsCompleteModalOpen(false)}
+      />
+
+      <ConfirmModal
+        isOpen={isTimeUpModalOpen}
+        title="Waktu Ujian Habis"
+        message="Waktu ujian Anda telah habis! Sesi kuis telah diselesaikan secara otomatis."
+        confirmLabel="Lihat Hasil"
+        cancelLabel="Tutup"
+        onConfirm={() => {
+          setIsTimeUpModalOpen(false);
+          router.push('/hasil');
+        }}
+        onCancel={() => {
+          setIsTimeUpModalOpen(false);
+          router.push('/hasil');
+        }}
+      />
     </div>
   );
 }

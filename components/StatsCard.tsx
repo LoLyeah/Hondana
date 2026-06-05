@@ -1,6 +1,7 @@
 'use client';
 
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
+import AnimatedCounter from './AnimatedCounter';
 
 interface StatsCardProps {
   title: string;
@@ -26,7 +27,37 @@ export default memo(function StatsCard({
     ? 'border-cyan-500/20 shadow-[0_4px_24px_rgba(6,182,212,0.03)]' 
     : 'border-white/8';
 
-  const accentColor = isTPA ? 'text-amber-500' : isTBI ? 'text-cyan-500' : 'text-accent';
+  const displayValue = useMemo(() => {
+    if (typeof value === 'number') {
+      return <AnimatedCounter value={value} />;
+    }
+    
+    if (typeof value === 'string' && value.endsWith('%')) {
+      const num = parseInt(value.slice(0, -1), 10);
+      if (!isNaN(num)) {
+        return (
+          <>
+            <AnimatedCounter value={num} />
+            <span>%</span>
+          </>
+        );
+      }
+    }
+    
+    if (typeof value === 'string' && value.endsWith('s')) {
+      const num = parseInt(value.slice(0, -1), 10);
+      if (!isNaN(num)) {
+        return (
+          <>
+            <AnimatedCounter value={num} />
+            <span>s</span>
+          </>
+        );
+      }
+    }
+    
+    return value;
+  }, [value]);
 
   return (
     <div className={`glass p-5 flex flex-col gap-2 relative ${borderHighlight}`}>
@@ -41,7 +72,7 @@ export default memo(function StatsCard({
       {/* Numeric value with optional spring animation trigger */}
       <div className="flex items-baseline gap-1.5 mt-1">
         <span className="text-3xl font-black tracking-tight leading-none text-text-primary">
-          {value}
+          {displayValue}
         </span>
         {isTPA && <span className="text-xs font-bold text-amber-500/80">TPA</span>}
         {isTBI && <span className="text-xs font-bold text-cyan-500/80">TBI</span>}

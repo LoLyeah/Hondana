@@ -1,6 +1,7 @@
 'use client';
 
 import React, { memo } from 'react';
+import { motion } from 'framer-motion';
 
 interface QuizOptionProps {
   text: string;
@@ -45,9 +46,29 @@ export default memo(function QuizOption({
       className={`w-full flex items-center gap-4 p-4 text-left border rounded-2xl cursor-pointer active:scale-[0.99] transition-all duration-200 outline-none ${cardStyle} disabled:cursor-not-allowed`}
     >
       {/* Option Key Badge */}
-      <span className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 transition-all ${badgeStyle}`}>
-        {optionLetter}
-      </span>
+      <motion.span
+        layout
+        animate={{
+          scale: isSelected ? 1.1 : 1,
+          rotate: isCorrect !== null ? 360 : 0
+        }}
+        transition={{ type: 'spring' as const, stiffness: 350, damping: 20 }}
+        className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 transition-all ${badgeStyle}`}
+      >
+        {isCorrect === true ? (
+          <motion.span key="correct" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.1 }}>
+            ✓
+          </motion.span>
+        ) : isSelected && isCorrect === false ? (
+          <motion.span key="wrong" initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.1 }}>
+            ✕
+          </motion.span>
+        ) : (
+          <motion.span key="letter" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            {optionLetter}
+          </motion.span>
+        )}
+      </motion.span>
 
       {/* Content */}
       <div className="flex-1 text-sm font-semibold leading-relaxed">
