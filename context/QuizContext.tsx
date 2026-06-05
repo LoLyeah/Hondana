@@ -109,6 +109,27 @@ function shuffleArray<T>(array: T[]): T[] {
   return arr;
 }
 
+// Helper to save generated AI questions to the offline bank in localStorage
+function saveQuestionsToOfflineBank(testType: TestType, newQs: Question[]) {
+  if (typeof window === 'undefined' || newQs.length === 0) return;
+  try {
+    const key = testType === 'TPA' ? 'hondana_custom_offline_tpa' : 'hondana_custom_offline_tbi';
+    const existingStr = localStorage.getItem(key);
+    const existing: Question[] = existingStr ? JSON.parse(existingStr) : [];
+    
+    const merged = [...existing];
+    newQs.forEach((q) => {
+      if (!merged.some((existingQ) => existingQ.id === q.id)) {
+        merged.push(q);
+      }
+    });
+    
+    localStorage.setItem(key, JSON.stringify(merged));
+  } catch (e) {
+    console.error('Failed to save questions to custom offline bank:', e);
+  }
+}
+
 export function QuizProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useLocalStorage<QuizSession | null>('hondana_active_session', null);
   
@@ -211,6 +232,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       ...prev,
       [cacheKey]: [...(prev[cacheKey] || []), ...newQuestions]
     }));
+    if (newQuestions.length > 0) {
+      saveQuestionsToOfflineBank(testType, newQuestions);
+    }
   }, []);
 
   const clearPreGenerated = useCallback((key?: string) => {
@@ -246,117 +270,168 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     if (category !== 'all') {
       const cacheKey = `${testType}:${category}`;
       const cached = preGeneratedCacheRef.current[cacheKey] || [];
-      if (cached.length >= count) {
-        const taken = cached.slice(0, count);
-        const remaining = cached.slice(count);
+      
+      let cachedTaken: Question[] = [];
+      if (cached.length > 0) {
+        const takeCount = Math.min(count, cached.length);
+        cachedTaken = cached.slice(0, takeCount);
+        const remaining = cached.slice(takeCount);
         setPreGeneratedCache((prev) => ({ ...prev, [cacheKey]: remaining }));
-        return shuffleArray(taken);
+        
+        if (cachedTaken.length === count) {
+          return shuffleArray(cachedTaken);
+        }
       }
+
+      const neededCount = count - cachedTaken.length;
+      let offlinePool: Question[] = [];
+      if (testType === 'TPA') {
+        const { getTPAQuestions } = await import('../data/tpa-questions');
+        offlinePool = getTPAQuestions().filter((q) => q.category === category);
+      } else {
+        const { getTBIQuestions } = await import('../data/tbi-questions');
+        offlinePool = getTBIQuestions().filter((q) => q.category === category);
+      }
+
+      const takenIds = cachedTaken.map(q => q.id);
+      const filteredOfflinePool = offlinePool.filter(q => !takenIds.includes(q.id));
+
+      const targetMudah = Math.floor(neededCount * 0.4);
+      const targetSedang = Math.floor(neededCount * 0.2);
+      const targetSulit = neededCount - targetMudah - targetSedang;
+
+      const mudah = filteredOfflinePool.filter(q => q.difficulty === 'mudah');
+      const sedang = filteredOfflinePool.filter(q => q.difficulty === 'sedang');
+      const sulit = filteredOfflinePool.filter(q => q.difficulty === 'sulit');
+
+      let chosen = [
+        ...getCategorized(mudah, targetMudah),
+        ...getCategorized(sedang, targetSedang),
+        ...getCategorized(sulit, targetSulit)
+      ];
+
+      if (chosen.length < neededCount) {
+        const remaining = filteredOfflinePool.filter(q => !chosen.some(x => x.id === q.id));
+        chosen = [...chosen, ...shuffleArray(remaining).slice(0, neededCount - chosen.length)];
+      }
+
+      return shuffleArray([...cachedTaken, ...chosen]);
     }
 
     if (testType === 'TPA') {
       const { getTPAQuestions } = await import('../data/tpa-questions');
       const allTpa = getTPAQuestions();
       
-      if (category === 'all') {
-        const categories: TPACategory[] = [
-          'verbal-sinonim', 'verbal-antonim', 'verbal-analogi', 'verbal-bacaan',
-          'numerik-deret', 'numerik-aritmatika', 'numerik-perbandingan', 'numerik-cerita',
-          'logika-penalaran', 'logika-silogisme', 'logika-analitis', 'logika-diagram'
-        ];
-        let chosen: Question[] = [];
-        categories.forEach((cat) => {
-          const matching = allTpa.filter((q) => q.category === cat);
+      const categories: TPACategory[] = [
+        'verbal-sinonim', 'verbal-antonim', 'verbal-analogi', 'verbal-bacaan',
+        'numerik-deret', 'numerik-aritmatika', 'numerik-perbandingan', 'numerik-cerita',
+        'logika-penalaran', 'logika-silogisme', 'logika-analitis', 'logika-diagram'
+      ];
+      let chosen: Question[] = [];
+      const cacheUpdates: Record<string, Question[]> = {};
+
+      categories.forEach((cat) => {
+        const cacheKey = `${testType}:${cat}`;
+        const cached = cacheUpdates[cacheKey] !== undefined ? cacheUpdates[cacheKey] : (preGeneratedCacheRef.current[cacheKey] || []);
+        
+        let catCachedTaken: Question[] = [];
+        if (cached.length > 0) {
+          const takeCount = Math.min(5, cached.length);
+          catCachedTaken = cached.slice(0, takeCount);
+          cacheUpdates[cacheKey] = cached.slice(takeCount);
+        }
+
+        const needed = 5 - catCachedTaken.length;
+        let catChosen = [...catCachedTaken];
+
+        if (needed > 0) {
+          const takenIds = catCachedTaken.map(q => q.id);
+          const matching = allTpa.filter((q) => q.category === cat && !takenIds.includes(q.id));
           const mudah = matching.filter(q => q.difficulty === 'mudah');
           const sedang = matching.filter(q => q.difficulty === 'sedang');
           const sulit = matching.filter(q => q.difficulty === 'sulit');
           
-          let catChosen = [
-            ...getCategorized(mudah, 2),
-            ...getCategorized(sedang, 1),
-            ...getCategorized(sulit, 2)
+          let extraChosen = [
+            ...getCategorized(mudah, Math.min(needed, 2)),
+            ...getCategorized(sedang, Math.min(needed - Math.min(needed, 2), 1))
           ];
+          const remainingNeeded = needed - extraChosen.length;
+          if (remainingNeeded > 0) {
+            extraChosen = [...extraChosen, ...getCategorized(sulit, remainingNeeded)];
+          }
           
+          catChosen = [...catChosen, ...extraChosen];
+
           if (catChosen.length < 5) {
             const remaining = matching.filter(q => !catChosen.some(x => x.id === q.id));
             catChosen = [...catChosen, ...shuffleArray(remaining).slice(0, 5 - catChosen.length)];
           }
-          chosen = [...chosen, ...catChosen];
-        });
-        return shuffleArray(chosen);
-      } else {
-        const matching = allTpa.filter((q) => q.category === category);
-        const mudah = matching.filter(q => q.difficulty === 'mudah');
-        const sedang = matching.filter(q => q.difficulty === 'sedang');
-        const sulit = matching.filter(q => q.difficulty === 'sulit');
-
-        const targetMudah = Math.floor(count * 0.4);
-        const targetSedang = Math.floor(count * 0.2);
-        const targetSulit = count - targetMudah - targetSedang;
-
-        let chosen = [
-          ...getCategorized(mudah, targetMudah),
-          ...getCategorized(sedang, targetSedang),
-          ...getCategorized(sulit, targetSulit)
-        ];
-
-        if (chosen.length < count) {
-          const remaining = matching.filter(q => !chosen.some(x => x.id === q.id));
-          chosen = [...chosen, ...shuffleArray(remaining).slice(0, count - chosen.length)];
         }
-        return shuffleArray(chosen);
+        chosen = [...chosen, ...catChosen];
+      });
+
+      if (Object.keys(cacheUpdates).length > 0) {
+        setPreGeneratedCache((prev) => ({ ...prev, ...cacheUpdates }));
       }
+
+      return shuffleArray(chosen);
     } else {
       const { getTBIQuestions } = await import('../data/tbi-questions');
       const allTbi = getTBIQuestions();
       
-      if (category === 'all') {
-        const spec: { sub: TBICategory; qty: number; targetMudah: number; targetSedang: number; targetSulit: number }[] = [
-          { sub: 'structure-completion', qty: 40, targetMudah: 16, targetSedang: 8, targetSulit: 16 },
-          { sub: 'reading-comprehension', qty: 10, targetMudah: 4, targetSedang: 2, targetSulit: 4 }
-        ];
-        let chosen: Question[] = [];
-        spec.forEach(({ sub, qty, targetMudah, targetSedang, targetSulit }) => {
-          const matching = allTbi.filter((q) => q.category === sub);
+      const spec: { sub: TBICategory; qty: number; targetMudah: number; targetSedang: number; targetSulit: number }[] = [
+        { sub: 'structure-completion', qty: 40, targetMudah: 16, targetSedang: 8, targetSulit: 16 },
+        { sub: 'reading-comprehension', qty: 10, targetMudah: 4, targetSedang: 2, targetSulit: 4 }
+      ];
+      let chosen: Question[] = [];
+      const cacheUpdates: Record<string, Question[]> = {};
+
+      spec.forEach(({ sub, qty, targetMudah, targetSedang, targetSulit }) => {
+        const cacheKey = `${testType}:${sub}`;
+        const cached = cacheUpdates[cacheKey] !== undefined ? cacheUpdates[cacheKey] : (preGeneratedCacheRef.current[cacheKey] || []);
+        
+        let subCachedTaken: Question[] = [];
+        if (cached.length > 0) {
+          const takeCount = Math.min(qty, cached.length);
+          subCachedTaken = cached.slice(0, takeCount);
+          cacheUpdates[cacheKey] = cached.slice(takeCount);
+        }
+
+        const needed = qty - subCachedTaken.length;
+        let subChosen = [...subCachedTaken];
+
+        if (needed > 0) {
+          const takenIds = subCachedTaken.map(q => q.id);
+          const matching = allTbi.filter((q) => q.category === sub && !takenIds.includes(q.id));
           const mudah = matching.filter(q => q.difficulty === 'mudah');
           const sedang = matching.filter(q => q.difficulty === 'sedang');
           const sulit = matching.filter(q => q.difficulty === 'sulit');
+          
+          const ratio = needed / qty;
+          const curTargetMudah = Math.round(targetMudah * ratio);
+          const curTargetSedang = Math.round(targetSedang * ratio);
+          const curTargetSulit = needed - curTargetMudah - curTargetSedang;
 
-          let subChosen = [
-            ...getCategorized(mudah, targetMudah),
-            ...getCategorized(sedang, targetSedang),
-            ...getCategorized(sulit, targetSulit)
+          let extraChosen = [
+            ...getCategorized(mudah, curTargetMudah),
+            ...getCategorized(sedang, curTargetSedang),
+            ...getCategorized(sulit, curTargetSulit)
           ];
+          subChosen = [...subChosen, ...extraChosen];
 
           if (subChosen.length < qty) {
             const remaining = matching.filter(q => !subChosen.some(x => x.id === q.id));
             subChosen = [...subChosen, ...shuffleArray(remaining).slice(0, qty - subChosen.length)];
           }
-          chosen = [...chosen, ...subChosen];
-        });
-        return shuffleArray(chosen);
-      } else {
-        const matching = allTbi.filter((q) => q.category === category);
-        const mudah = matching.filter(q => q.difficulty === 'mudah');
-        const sedang = matching.filter(q => q.difficulty === 'sedang');
-        const sulit = matching.filter(q => q.difficulty === 'sulit');
-
-        const targetMudah = Math.floor(count * 0.4);
-        const targetSedang = Math.floor(count * 0.2);
-        const targetSulit = count - targetMudah - targetSedang;
-
-        let chosen = [
-          ...getCategorized(mudah, targetMudah),
-          ...getCategorized(sedang, targetSedang),
-          ...getCategorized(sulit, targetSulit)
-        ];
-
-        if (chosen.length < count) {
-          const remaining = matching.filter(q => !chosen.some(x => x.id === q.id));
-          chosen = [...chosen, ...shuffleArray(remaining).slice(0, count - chosen.length)];
         }
-        return shuffleArray(chosen);
+        chosen = [...chosen, ...subChosen];
+      });
+
+      if (Object.keys(cacheUpdates).length > 0) {
+        setPreGeneratedCache((prev) => ({ ...prev, ...cacheUpdates }));
       }
+
+      return shuffleArray(chosen);
     }
   }, []);
 
@@ -385,6 +460,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         if (res.ok) {
           const data = await res.json();
           questions = data.questions;
+          if (questions.length > 0) {
+            saveQuestionsToOfflineBank(testType, questions);
+          }
         } else {
           throw new Error('AI Generation failed, falling back to local bank');
         }
@@ -453,6 +531,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         if (res.ok) {
           const data = await res.json();
           questions = data.questions;
+          if (questions.length > 0) {
+            saveQuestionsToOfflineBank(testType, questions);
+          }
         } else {
           throw new Error('AI Generation failed, falling back to local bank');
         }

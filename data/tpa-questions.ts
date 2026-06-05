@@ -760,7 +760,27 @@ export function getTPAQuestions(): Question[] {
     });
   });
 
-  return [...questions, ...additionalTPAQuestions, ...additionalTPAQuestions2];
+  const allQuestions = [...questions, ...additionalTPAQuestions, ...additionalTPAQuestions2];
+
+  if (typeof window !== 'undefined') {
+    try {
+      const customStr = localStorage.getItem('hondana_custom_offline_tpa');
+      if (customStr) {
+        const customQs = JSON.parse(customStr);
+        if (Array.isArray(customQs)) {
+          customQs.forEach((q) => {
+            if (!allQuestions.some((existing) => existing.id === q.id)) {
+              allQuestions.push(q);
+            }
+          });
+        }
+      }
+    } catch (e) {
+      console.error('Failed to parse custom TPA offline questions:', e);
+    }
+  }
+
+  return allQuestions;
 }
 
 const additionalTPAQuestions: Question[] = [

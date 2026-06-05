@@ -2752,5 +2752,25 @@ const baseQuestions: Question[] = [
   }];
 
 export function getTBIQuestions(): Question[] {
-  return baseQuestions;
+  const allQuestions = [...baseQuestions];
+
+  if (typeof window !== 'undefined') {
+    try {
+      const customStr = localStorage.getItem('hondana_custom_offline_tbi');
+      if (customStr) {
+        const customQs = JSON.parse(customStr);
+        if (Array.isArray(customQs)) {
+          customQs.forEach((q) => {
+            if (!allQuestions.some((existing) => existing.id === q.id)) {
+              allQuestions.push(q);
+            }
+          });
+        }
+      }
+    } catch (e) {
+      console.error('Failed to parse custom TBI offline questions:', e);
+    }
+  }
+
+  return allQuestions;
 }

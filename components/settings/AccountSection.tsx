@@ -13,6 +13,8 @@ export default function AccountSection() {
   const [isResetSuccessOpen, setIsResetSuccessOpen] = useState(false);
   const [isResetSeenOpen, setIsResetSeenOpen] = useState(false);
   const [isResetSeenSuccessOpen, setIsResetSeenSuccessOpen] = useState(false);
+  const [isResetCustomOpen, setIsResetCustomOpen] = useState(false);
+  const [isResetCustomSuccessOpen, setIsResetCustomSuccessOpen] = useState(false);
 
   const handleResetConfirm = () => {
     setIsResetProgressOpen(false);
@@ -35,9 +37,22 @@ export default function AccountSection() {
       localStorage.removeItem('hondana_session_history');
       localStorage.removeItem('hondana_pregen_cache');
       localStorage.removeItem('hondana_seen_question_ids');
+      localStorage.removeItem('hondana_custom_offline_tpa');
+      localStorage.removeItem('hondana_custom_offline_tbi');
       
       // Force complete page reload to reinitialize all React states cleanly
       window.location.href = '/';
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleResetCustomConfirm = () => {
+    setIsResetCustomOpen(false);
+    try {
+      localStorage.removeItem('hondana_custom_offline_tpa');
+      localStorage.removeItem('hondana_custom_offline_tbi');
+      setIsResetCustomSuccessOpen(true);
     } catch (e) {
       console.error(e);
     }
@@ -119,6 +134,24 @@ export default function AccountSection() {
 
         <div className="w-full h-px bg-[var(--border-badge)]" />
 
+        {/* Reset Custom AI Questions Button */}
+        <div className="flex flex-col gap-3 mt-1">
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-bold text-error">Hapus Bank Soal Kustom (AI)</span>
+            <span className="text-[10px] font-bold text-text-secondary leading-normal">
+              Tindakan ini akan menghapus semua soal yang dihasilkan oleh AI dari daftar bank soal offline kustom Anda. Soal-soal bawaan aplikasi tidak akan terpengaruh.
+            </span>
+          </div>
+          <button
+            onClick={() => setIsResetCustomOpen(true)}
+            className="w-full py-3 border border-error/20 bg-error/5 hover:bg-error/10 text-error text-xs font-black rounded-2xl cursor-pointer transition-all active:scale-[0.98] outline-none"
+          >
+            Reset Bank Soal Kustom (AI)
+          </button>
+        </div>
+
+        <div className="w-full h-px bg-[var(--border-badge)]" />
+
         {/* Troubleshooting Full App Reset Button */}
         <div className="flex flex-col gap-3 mt-1">
           <div className="flex flex-col gap-1">
@@ -185,6 +218,26 @@ export default function AccountSection() {
         confirmLabel="Tutup"
         onConfirm={() => setIsResetSeenSuccessOpen(false)}
         onCancel={() => setIsResetSeenSuccessOpen(false)}
+      />
+
+      <ConfirmModal
+        isOpen={isResetCustomOpen}
+        title="Reset Bank Soal Kustom"
+        message="Apakah Anda yakin ingin menghapus seluruh soal kustom hasil generate AI dari bank soal offline? Tindakan ini akan mengosongkan bank soal tambahan Anda dan tidak dapat dibatalkan."
+        confirmLabel="Hapus Soal Kustom"
+        cancelLabel="Batal"
+        variant="danger"
+        onConfirm={handleResetCustomConfirm}
+        onCancel={() => setIsResetCustomOpen(false)}
+      />
+
+      <ConfirmModal
+        isOpen={isResetCustomOpen ? false : isResetCustomSuccessOpen}
+        title="Bank Soal Kustom Direset"
+        message="Seluruh soal kustom hasil generate AI telah berhasil dihapus dari bank soal offline."
+        confirmLabel="Tutup"
+        onConfirm={() => setIsResetCustomSuccessOpen(false)}
+        onCancel={() => setIsResetCustomSuccessOpen(false)}
       />
     </motion.section>
   );

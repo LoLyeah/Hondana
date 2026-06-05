@@ -1,0 +1,265 @@
+diff --git a/app/hasil/page.tsx b/app/hasil/page.tsx
+index 520be15..99d0985 100644
+--- a/app/hasil/page.tsx
++++ b/app/hasil/page.tsx
+@@ -12,6 +12,15 @@ import { sfx } from '../../lib/audio';
+ import { SessionResult, SavedSession } from '../../lib/types';
+ import LoadingSpinner from '../../components/LoadingSpinner';
+ import LoadingSkeleton from '../../components/LoadingSkeleton';
++import ConfirmModal from '../../components/ConfirmModal';
++import { badges } from '../../lib/badges';
++import BadgeCard from '../../components/BadgeCard';
++import BadgeUnlockToast from '../../components/BadgeUnlockToast';
++import AccuracyDonut from '../../components/charts/AccuracyDonut';
++import CategoryBars from '../../components/charts/CategoryBars';
++import AccuracyTrend from '../../components/charts/AccuracyTrend';
++import StudyInsights from '../../components/StudyInsights';
++import EmptyState from '../../components/EmptyState';
+ 
+ const containerVariants = {
+   hidden: { opacity: 0, y: 15 },
+@@ -38,6 +47,9 @@ export default function Hasil() {
+   const { settings } = useSettings();
+   const [result, setResult] = useState<SessionResult | null>(null);
+   const [mounted, setMounted] = useState(false);
++  const [deleteSessionId, setDeleteSessionId] = useState<string | null>(null);
++  const [showBadges, setShowBadges] = useState(false);
++  const [activeToasts, setActiveToasts] = useState<string[]>([]);
+ 
+   useEffect(() => {
+     setMounted(true);
+@@ -82,6 +94,13 @@ export default function Hasil() {
+     }
+   }, [mounted, session, endQuiz]);
+ 
++  // Trigger toasts on newly unlocked badges
++  useEffect(() => {
++    if (result?.newlyUnlockedBadges && result.newlyUnlockedBadges.length > 0) {
++      setActiveToasts(result.newlyUnlockedBadges);
++    }
++  }, [result]);
++
+   if (!mounted) {
+     return (
+       <>
+@@ -154,45 +173,107 @@ export default function Hasil() {
+           animate="show"
+           className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6 pb-20 animate-fade-in"
+         >
+-          {/* Dashboard Summary Cards */}
+-          <motion.section variants={itemVariants} className="flex flex-col gap-3">
++          {/* Bento Grid Stats Dashboard */}
++          <motion.section variants={itemVariants} className="flex flex-col gap-4">
+             <div className="flex items-center gap-2 border-b border-white/5 pb-2">
+               <span className="text-xl">🏆</span>
+               <h3 className="text-xs font-black uppercase tracking-wider text-text-primary leading-none">
+-                RINGKASAN BELAJAR ANDA
++                DASHBOARD ANALISIS BELAJAR
+               </h3>
+             </div>
+             
+-            <div className="grid grid-cols-1 min-[480px]:grid-cols-3 gap-3 w-full">
+-              <StatsCard
+-                title="Sesi Selesai"
+-                value={history.length}
+-                icon="📊"
+-                desc="Total paket selesai"
+-              />
+-              <StatsCard
+-                title="Soal Dijawab"
+-                value={stats?.totalAnswered ?? 0}
+-                icon="📝"
+-                desc="Total soal dikerjakan"
+-              />
+-              <StatsCard
+-                title="Akurasi Belajar"
+-                value={`${overallAccuracy}%`}
+-                icon="🎯"
+-                desc="Rasio jawaban benar"
+-              />
++            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
++              {/* Card 1: Donut chart (Overall accuracy) */}
++              <div className="glass border border-white/8 p-5 flex flex-col items-center justify-between sm:col-span-1 min-h-[220px]">
++                <span className="text-[10px] font-black uppercase tracking-wider text-text-secondary w-full text-left border-b border-white/5 pb-1.5 mb-2">Akurasi Keseluruhan</span>
++                <AccuracyDonut accuracy={overallAccuracy} />
++              </div>
++
++              {/* Card 2: Numeric summaries */}
++              <div className="grid grid-cols-2 gap-3 sm:col-span-1 md:col-span-1">
++                <div className="glass border border-white/8 p-4 flex flex-col justify-between text-left">
++                  <span className="text-[9px] font-black uppercase tracking-wider text-text-secondary border-b border-white/5 pb-1">Sesi Selesai</span>
++                  <div className="mt-3 flex flex-col gap-0.5">
++                    <span className="text-3xl font-black text-text-primary">{history.length}</span>
++                    <span className="text-[9px] font-semibold text-text-secondary">Paket selesai</span>
++                  </div>
++                </div>
++                <div className="glass border border-white/8 p-4 flex flex-col justify-between text-left">
++                  <span className="text-[9px] font-black uppercase tracking-wider text-text-secondary border-b border-white/5 pb-1">Soal Dijawab</span>
++                  <div className="mt-3 flex flex-col gap-0.5">
++                    <span className="text-3xl font-black text-text-primary">{stats?.totalAnswered ?? 0}</span>
++                    <span className="text-[9px] font-semibold text-text-secondary">Total soal</span>
++                  </div>
++                </div>
++              </div>
++
++              {/* Card 3: Study Insights */}
++              <div className="sm:col-span-2 md:col-span-1">
++                <StudyInsights stats={stats} />
++              </div>
++
++              {/* Card 4: Category Mastery (Horizontal Bar Chart) */}
++              <div className="glass border border-white/8 p-5 flex flex-col gap-3 sm:col-span-2 md:col-span-2 min-h-[280px]">
++                <span className="text-[10px] font-black uppercase tracking-wider text-text-secondary w-full text-left border-b border-white/5 pb-1.5">Penguasaan Kategori</span>
++                <CategoryBars stats={stats} />
++              </div>
++
++              {/* Card 5: Accuracy Trend sparkline */}
++              <div className="glass border border-white/8 p-5 flex flex-col gap-3 sm:col-span-1 md:col-span-1 min-h-[220px]">
++                <span className="text-[10px] font-black uppercase tracking-wider text-text-secondary w-full text-left border-b border-white/5 pb-1.5">Tren Akurasi (10 Sesi)</span>
++                <AccuracyTrend history={history} />
++              </div>
+             </div>
+             
+-            <button
+-              onClick={() => router.push('/hasil/detail')}
+-              className="mt-2 w-full py-3 bg-white/4 hover:bg-white/8 border border-white/8 hover:border-white/15 text-text-primary text-xs font-black rounded-xl cursor-pointer transition-all active:scale-[0.98] flex items-center justify-center gap-2 outline-none group"
+-            >
+-              <span>📊 Analisis Detail & Grafik</span>
+-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5 text-text-secondary transition-transform group-hover:translate-x-0.5">
+-                <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+-              </svg>
+-            </button>
++            <div className="grid grid-cols-2 gap-2.5 mt-2">
++              <button
++                onClick={() => router.push('/hasil/detail')}
++                className="py-3 bg-white/4 hover:bg-white/8 border border-white/8 hover:border-white/15 text-text-primary text-xs font-black rounded-xl cursor-pointer transition-all active:scale-[0.98] flex items-center justify-center gap-2 outline-none group"
++              >
++                <span>📊 Analisis Detail</span>
++                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5 text-text-secondary transition-transform group-hover:translate-x-0.5">
++                  <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
++                </svg>
++              </button>
++              
++              <button
++                onClick={() => setShowBadges(!showBadges)}
++                className={`py-3 border text-xs font-black rounded-xl cursor-pointer transition-all active:scale-[0.98] flex items-center justify-center gap-2 outline-none ${
++                  showBadges 
++                    ? 'bg-amber-500/10 border-amber-500/30 text-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.15)]'
++                    : 'bg-white/4 hover:bg-white/8 border-white/8 hover:border-white/15 text-text-primary hover:text-text-primary'
++                }`}
++              >
++                <span>🏆 Pencapaian</span>
++              </button>
++            </div>
++
++            <AnimatePresence>
++              {showBadges && (
++                <motion.div
++                  initial={{ height: 0, opacity: 0 }}
++                  animate={{ height: 'auto', opacity: 1 }}
++                  exit={{ height: 0, opacity: 0 }}
++                  transition={{ duration: 0.25, ease: 'easeInOut' }}
++                  className="overflow-hidden flex flex-col gap-4 animate-fade-in"
++                >
++                  <div className="flex items-center justify-between mt-2 pb-1.5 border-b border-white/5">
++                    <span className="text-[10px] font-black uppercase tracking-wider text-text-secondary">
++                      Daftar Pencapaian ({(stats?.unlockedBadges || []).length} / {badges.length})
++                    </span>
++                  </div>
++                  <div className="grid grid-cols-2 min-[480px]:grid-cols-4 gap-3">
++                    {badges.map((badge) => (
++                      <BadgeCard
++                        key={badge.id}
++                        badge={badge}
++                        isUnlocked={(stats?.unlockedBadges || []).includes(badge.id)}
++                      />
++                    ))}
++                  </div>
++                </motion.div>
++              )}
++            </AnimatePresence>
+           </motion.section>
+ 
+           {/* Practice History List */}
+@@ -210,21 +291,13 @@ export default function Hasil() {
+             </div>
+ 
+             {history.length === 0 ? (
+-              <div className="glass border border-white/8 p-8 rounded-2xl flex flex-col items-center justify-center text-center gap-4 py-12">
+-                <span className="text-4xl text-text-secondary">📁</span>
+-                <div className="flex flex-col gap-1">
+-                  <h4 className="text-sm font-bold text-text-primary">Belum Ada Riwayat Ujian</h4>
+-                  <p className="text-xs font-semibold text-text-secondary leading-relaxed max-w-[280px]">
+-                    Selesaikan salah satu modul TPA atau TBI terlebih dahulu untuk melihat riwayat hasil belajar di sini.
+-                  </p>
+-                </div>
+-                <button
+-                  onClick={() => router.push('/')}
+-                  className="px-6 py-2.5 bg-accent hover:bg-accent-hover text-white text-xs font-bold rounded-xl active:scale-95 transition-all outline-none"
+-                >
+-                  Latih Sekarang
+-                </button>
+-              </div>
++              <EmptyState
++                icon="📁"
++                title="Belum Ada Riwayat Ujian"
++                description="Selesaikan salah satu modul TPA atau TBI terlebih dahulu untuk melihat riwayat hasil belajar di sini."
++                actionLabel="Latih Sekarang"
++                onAction={() => router.push('/')}
++              />
+             ) : (
+               <div className="flex flex-col gap-3.5 optim-scroll">
+                 <AnimatePresence>
+@@ -272,9 +345,7 @@ export default function Hasil() {
+                           {/* Delete Session Icon */}
+                           <button
+                             onClick={() => {
+-                              if (window.confirm('Hapus riwayat latihan ini secara permanen?')) {
+-                                deleteSavedSession(item.id);
+-                              }
++                              setDeleteSessionId(item.id);
+                             }}
+                             className="p-1.5 rounded-lg border border-white/5 bg-white/2 hover:bg-error/15 hover:text-error hover:border-error/25 active:scale-95 transition-all text-text-secondary cursor-pointer"
+                             title="Hapus Riwayat"
+@@ -491,6 +562,41 @@ export default function Hasil() {
+       </motion.main>
+ 
+       <BottomNav />
++
++      <ConfirmModal
++        isOpen={deleteSessionId !== null}
++        title="Hapus Riwayat Latihan"
++        message="Apakah Anda yakin ingin menghapus riwayat latihan ini secara permanen?"
++        confirmLabel="Hapus"
++        cancelLabel="Batal"
++        variant="danger"
++        onConfirm={() => {
++          if (deleteSessionId) {
++            deleteSavedSession(deleteSessionId);
++            setDeleteSessionId(null);
++          }
++        }}
++        onCancel={() => setDeleteSessionId(null)}
++      />
++
++      {/* Toast notifications container */}
++      <div className="fixed top-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none">
++        <AnimatePresence>
++          {activeToasts.map((badgeId) => {
++            const badge = badges.find(b => b.id === badgeId);
++            if (!badge) return null;
++            return (
++              <BadgeUnlockToast
++                key={badgeId}
++                badge={badge}
++                onClose={() => {
++                  setActiveToasts(prev => prev.filter(id => id !== badgeId));
++                }}
++              />
++            );
++          })}
++        </AnimatePresence>
++      </div>
+     </>
+   );
+ }
