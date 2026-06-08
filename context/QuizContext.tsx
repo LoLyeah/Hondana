@@ -443,6 +443,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       let questions: Question[] = [];
       if (useAI) {
         const currentSettings = settingsRef.current;
+        const aiCount = Math.round(count * 0.3); // 30% of target count (18 for TPA, 15 for TBI)
         const res = await fetch('/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -450,7 +451,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
             testType,
             category: 'all',
             difficulty: 'seimbang',
-            count,
+            count: aiCount,
             aiProvider: currentSettings.aiProvider,
             customApiKey: currentSettings.customApiKey,
             aiModel: currentSettings.aiModel
@@ -459,9 +460,18 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         
         if (res.ok) {
           const data = await res.json();
-          questions = data.questions;
-          if (questions.length > 0) {
-            saveQuestionsToOfflineBank(testType, questions);
+          const aiQuestions: Question[] = data.questions || [];
+          if (aiQuestions.length > 0) {
+            saveQuestionsToOfflineBank(testType, aiQuestions);
+          }
+          
+          const neededCount = count - aiQuestions.length;
+          if (neededCount > 0) {
+            const offlinePool = await fetchOfflineQuestions(testType, 'all', count);
+            const offlineQuestions = offlinePool.slice(0, neededCount);
+            questions = shuffleArray([...aiQuestions, ...offlineQuestions]);
+          } else {
+            questions = shuffleArray(aiQuestions.slice(0, count));
           }
         } else {
           throw new Error('AI Generation failed, falling back to local bank');
@@ -515,6 +525,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       let questions: Question[] = [];
       if (useAI) {
         const currentSettings = settingsRef.current;
+        const aiCount = Math.round(count * 0.3); // 30% of target count
         const res = await fetch('/api/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -522,7 +533,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
             testType,
             category,
             difficulty: 'seimbang',
-            count,
+            count: aiCount,
             aiProvider: currentSettings.aiProvider,
             customApiKey: currentSettings.customApiKey,
             aiModel: currentSettings.aiModel
@@ -530,9 +541,17 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         });
         if (res.ok) {
           const data = await res.json();
-          questions = data.questions;
-          if (questions.length > 0) {
-            saveQuestionsToOfflineBank(testType, questions);
+          const aiQuestions: Question[] = data.questions || [];
+          if (aiQuestions.length > 0) {
+            saveQuestionsToOfflineBank(testType, aiQuestions);
+          }
+          
+          const neededCount = count - aiQuestions.length;
+          if (neededCount > 0) {
+            const offlineQuestions = await fetchOfflineQuestions(testType, category, neededCount);
+            questions = shuffleArray([...aiQuestions, ...offlineQuestions]);
+          } else {
+            questions = shuffleArray(aiQuestions.slice(0, count));
           }
         } else {
           throw new Error('AI Generation failed, falling back to local bank');
