@@ -106,7 +106,7 @@ export default function Hasil() {
     return (
       <>
         <Header title="Hasil Ujian" />
-        <main className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6 min-h-[60vh] opacity-60">
+        <ContentWrapper hasSidebar className="flex-1 flex flex-col gap-6 min-h-[60vh] opacity-60">
           {/* Main header block mimic */}
           <div className="glass border border-white/5 p-6 flex flex-col gap-4 animate-pulse">
             <div className="h-4 w-32 bg-white/10 rounded-md" />
@@ -118,7 +118,7 @@ export default function Hasil() {
 
           {/* Details list mimic */}
           <LoadingSkeleton type="list" count={3} className="mt-2" />
-        </main>
+        </ContentWrapper>
         <BottomNav />
       </>
     );

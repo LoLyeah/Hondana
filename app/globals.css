@@ -18,6 +18,12 @@
   --color-switch-off: var(--switch-off);
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
+
+  --spacing-sidebar: 17.5rem;          /* 280px */
+  --spacing-content-max: 80rem;        /* 1280px */
+  --spacing-content-narrow-max: 48rem; /* 768px */
+  --spacing-content-padding-inline: 1rem;
+  --spacing-content-gap: 1.5rem;
 }
 
 @layer base, tokens, components, utilities;
@@ -63,12 +69,7 @@
     --border-badge: oklch(1 0 0 / 0.08);
     --bg-grid-color: oklch(1 0 0 / 0.02);
 
-    /* Layout Tokens */
-    --sidebar-width: 17.5rem;          /* 280px */
-    --content-max-width: 80rem;        /* 1280px */
-    --content-narrow-max-width: 48rem; /* 768px */
-    --content-padding-inline: 1rem;
-    --content-gap: 1.5rem;
+
 
     /* Fluid Typography clamp values - using container relative cqi units with vw fallback */
     --font-size-h1: clamp(1.5rem, 4cqi, 2.25rem);
@@ -409,15 +410,7 @@
     padding-block-end: env(safe-area-inset-bottom);
   }
 
-  .has-sidebar-offset {
-    padding-left: 0;
-  }
 
-  @media (min-width: 768px) {
-    .has-sidebar-offset {
-      padding-left: var(--sidebar-width);
-    }
-  }
 
   .content-container {
     container-type: inline-size;
