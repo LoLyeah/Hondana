@@ -37,7 +37,7 @@ export default memo(function CategoryCard({
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left glass p-4 flex items-center justify-between gap-4 cursor-pointer hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 ${hoverBorder}`}
+      className={`w-full text-left glass p-4 flex items-center justify-between gap-4 cursor-pointer hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 category-card-stack ${hoverBorder}`}
     >
       <div className="flex flex-col gap-1 min-w-0">
         <span className="text-[10px] font-black uppercase tracking-wider text-text-secondary">

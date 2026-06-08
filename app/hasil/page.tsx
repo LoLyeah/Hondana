@@ -21,6 +21,7 @@ import CategoryBars from '../../components/charts/CategoryBars';
 import AccuracyTrend from '../../components/charts/AccuracyTrend';
 import StudyInsights from '../../components/StudyInsights';
 import EmptyState from '../../components/EmptyState';
+import ContentWrapper from '../../components/ContentWrapper';
 
 const containerVariants = {
   hidden: { opacity: 0, y: 15 },
@@ -167,12 +168,13 @@ export default function Hasil() {
       <>
         <Header title="Statistik & Riwayat" />
 
-        <motion.main
-          variants={containerVariants}
-          initial="hidden"
-          animate="show"
-          className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6 pb-20 animate-fade-in"
-        >
+        <ContentWrapper hasSidebar noPadding>
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            className="flex-1 flex flex-col gap-6 px-4 py-6 animate-fade-in"
+          >
           {/* Bento Grid Stats Dashboard */}
           <motion.section variants={itemVariants} className="flex flex-col gap-4">
             <div className="flex items-center gap-2 border-b border-white/5 pb-2">
@@ -182,15 +184,15 @@ export default function Hasil() {
               </h3>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+            <div className="grid-bento-adaptive">
               {/* Card 1: Donut chart (Overall accuracy) */}
-              <div className="glass border border-white/8 p-5 flex flex-col items-center justify-between sm:col-span-1 min-h-[220px]">
+              <div className="glass border border-white/8 p-5 flex flex-col items-center justify-between min-h-[220px]">
                 <span className="text-[10px] font-black uppercase tracking-wider text-text-secondary w-full text-left border-b border-white/5 pb-1.5 mb-2">Akurasi Keseluruhan</span>
                 <AccuracyDonut accuracy={overallAccuracy} />
               </div>
 
               {/* Card 2: Numeric summaries */}
-              <div className="grid grid-cols-2 gap-3 sm:col-span-1">
+              <div className="grid grid-cols-2 gap-3">
                 <div className="glass border border-white/8 p-4 flex flex-col justify-between text-left">
                   <span className="text-[9px] font-black uppercase tracking-wider text-text-secondary border-b border-white/5 pb-1">Sesi Selesai</span>
                   <div className="mt-3 flex flex-col gap-0.5">
@@ -208,18 +210,18 @@ export default function Hasil() {
               </div>
 
               {/* Card 3: Study Insights */}
-              <div className="sm:col-span-1 h-full">
+              <div className="h-full">
                 <StudyInsights stats={stats} />
               </div>
 
               {/* Card 5: Accuracy Trend sparkline */}
-              <div className="glass border border-white/8 p-5 flex flex-col gap-3 sm:col-span-1 min-h-[220px] h-full">
+              <div className="glass border border-white/8 p-5 flex flex-col gap-3 min-h-[220px] h-full">
                 <span className="text-[10px] font-black uppercase tracking-wider text-text-secondary w-full text-left border-b border-white/5 pb-1.5">Tren Akurasi (10 Sesi)</span>
                 <AccuracyTrend history={history} />
               </div>
 
               {/* Card 4: Category Mastery (Horizontal Bar Chart) */}
-              <div className="glass border border-white/8 p-5 flex flex-col gap-3 sm:col-span-2 min-h-[200px]">
+              <div className="glass border border-white/8 p-5 flex flex-col gap-3 grid-bento-span-2 min-h-[200px]">
                 <span className="text-[10px] font-black uppercase tracking-wider text-text-secondary w-full text-left border-b border-white/5 pb-1.5">Penguasaan Kategori</span>
                 <CategoryBars stats={stats} />
               </div>
@@ -374,9 +376,10 @@ export default function Hasil() {
               </div>
             )}
           </motion.section>
-        </motion.main>
+        </motion.div>
+      </ContentWrapper>
 
-        <BottomNav />
+      <BottomNav />
 
         <ConfirmModal
           isOpen={deleteSessionId !== null}
@@ -453,12 +456,13 @@ export default function Hasil() {
     <>
       <Header title="Hasil Ujian" />
 
-      <motion.main
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-        className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6"
-      >
+      <ContentWrapper hasSidebar noPadding>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="flex-1 flex flex-col gap-6 px-4 py-6"
+        >
         {/* Back to history button */}
         <motion.div variants={itemVariants}>
           <button
@@ -569,9 +573,10 @@ export default function Hasil() {
             Kembali ke Riwayat
           </button>
         </motion.section>
-      </motion.main>
+      </motion.div>
+    </ContentWrapper>
 
-      <BottomNav />
+    <BottomNav />
 
       <ConfirmModal
         isOpen={deleteSessionId !== null}

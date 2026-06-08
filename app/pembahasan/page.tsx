@@ -12,6 +12,7 @@ import PassageCard from '../../components/PassageCard';
 import { useSession, useSettings } from '../../context/QuizContext';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { sfx } from '../../lib/audio';
+import ContentWrapper from '../../components/ContentWrapper';
 
 export default function Pembahasan() {
   const router = useRouter();
@@ -123,7 +124,7 @@ export default function Pembahasan() {
   const userChosen = session ? session.answers[reviewIndex] : null;
 
   return (
-    <div id="pembahasan-page" className="w-full max-w-[720px] mx-auto flex flex-col flex-1 relative">
+    <ContentWrapper narrow hasSidebar={false} noPadding className="flex flex-col flex-1 relative" id="pembahasan-page">
       <Header
         title={`Review ${session.testType}`}
         showBack
@@ -141,7 +142,7 @@ export default function Pembahasan() {
         }
       />
 
-      <main className="flex-1 flex flex-col gap-5 px-4 py-5 pb-16">
+      <div className="flex-1 flex flex-col gap-5 px-4 py-5 pb-16">
         {/* Progress indicator */}
         <ProgressBar
           currentIndex={reviewIndex}
@@ -232,11 +233,11 @@ export default function Pembahasan() {
           </p>
         </div>
 
-      </main>
+      </div>
 
       {/* Review Navigation Controller (Sticky Bottom Control Bar) */}
       <footer
-        className="sticky bottom-0 left-0 right-0 z-30 bg-gray-950/80 backdrop-blur-md border-t border-white/5 px-2.5 min-[480px]:px-4 flex items-center justify-between gap-2.5 w-full max-w-[720px] mx-auto shrink-0"
+        className="sticky bottom-0 left-0 right-0 z-30 bg-gray-950/80 backdrop-blur-md border-t border-white/5 px-2.5 min-[480px]:px-4 flex items-center justify-between gap-2.5 w-full max-w-[var(--content-narrow-max-width)] mx-auto shrink-0"
         style={{ paddingTop: '12px', paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))' }}
       >
         {/* Prev Button */}
@@ -303,7 +304,7 @@ export default function Pembahasan() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 220 }}
-              className="fixed bottom-0 left-0 right-0 z-50 bg-gray-950/95 border-t border-white/8 backdrop-blur-xl rounded-t-[32px] p-6 max-w-[720px] mx-auto w-full max-h-[70vh] overflow-y-auto flex flex-col gap-5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]"
+              className="fixed bottom-0 left-0 right-0 z-50 bg-gray-950/95 border-t border-white/8 backdrop-blur-xl rounded-t-[32px] p-6 max-w-[var(--content-narrow-max-width)] mx-auto w-full max-h-[70vh] overflow-y-auto flex flex-col gap-5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]"
               style={{ paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}
             >
               {/* Header */}
@@ -410,7 +411,7 @@ export default function Pembahasan() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 220 }}
-              className="fixed bottom-0 left-0 right-0 z-50 bg-gray-950/95 border-t border-white/8 backdrop-blur-xl rounded-t-[32px] p-6 max-w-[720px] mx-auto w-full max-h-[70vh] overflow-y-auto flex flex-col gap-5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] text-left"
+              className="fixed bottom-0 left-0 right-0 z-50 bg-gray-950/95 border-t border-white/8 backdrop-blur-xl rounded-t-[32px] p-6 max-w-[var(--content-narrow-max-width)] mx-auto w-full max-h-[70vh] overflow-y-auto flex flex-col gap-5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] text-left"
               style={{ paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}
             >
               {/* Header */}
@@ -497,6 +498,6 @@ export default function Pembahasan() {
           </>
         )}
       </AnimatePresence>
-    </div>
+    </ContentWrapper>
   );
 }

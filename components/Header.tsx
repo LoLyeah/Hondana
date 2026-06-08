@@ -86,7 +86,7 @@ export default function Header({ title, showBack = false, onBack, noSidebar = fa
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full glass border-b border-white/8 backdrop-blur-md px-4 ${noSidebar ? '' : 'md:pl-60'} flex items-center justify-between`}
+      className={`sticky top-0 z-40 w-full glass border-b border-white/8 backdrop-blur-md px-4 ${noSidebar ? '' : 'has-sidebar-offset'} flex items-center justify-between`}
       style={{ paddingTop: 'calc(12px + env(safe-area-inset-top, 0px))', paddingBottom: '12px' }}
     >
       <div className="flex items-center gap-3">

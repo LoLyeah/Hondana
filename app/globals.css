@@ -63,11 +63,18 @@
     --border-badge: oklch(1 0 0 / 0.08);
     --bg-grid-color: oklch(1 0 0 / 0.02);
 
-    /* Fluid Typography clamp values */
-    --font-size-h1: clamp(1.5rem, 4vw, 2.25rem);
-    --font-size-h2: clamp(1.25rem, 3vw, 1.75rem);
-    --font-size-body: clamp(0.875rem, 2vw, 1rem);
-    --font-size-caption: clamp(0.75rem, 1.5vw, 0.875rem);
+    /* Layout Tokens */
+    --sidebar-width: 17.5rem;          /* 280px */
+    --content-max-width: 80rem;        /* 1280px */
+    --content-narrow-max-width: 48rem; /* 768px */
+    --content-padding-inline: 1rem;
+    --content-gap: 1.5rem;
+
+    /* Fluid Typography clamp values - using container relative cqi units with vw fallback */
+    --font-size-h1: clamp(1.5rem, 4cqi, 2.25rem);
+    --font-size-h2: clamp(1.25rem, 3cqi, 1.75rem);
+    --font-size-body: clamp(0.875rem, 2cqi, 1rem);
+    --font-size-caption: clamp(0.75rem, 1.5cqi, 0.875rem);
 
     /* Animation interpolation support fallback */
     --in-oklab: ;
@@ -402,10 +409,67 @@
     padding-block-end: env(safe-area-inset-bottom);
   }
 
-  /* Remove bottom padding on root layout container when quiz or pembahasan is active */
-  body:has(#quiz-page) div.pb-24,
-  body:has(#pembahasan-page) div.pb-24 {
-    padding-bottom: 0 !important;
+  .has-sidebar-offset {
+    padding-left: 0;
+  }
+
+  @media (min-width: 768px) {
+    .has-sidebar-offset {
+      padding-left: var(--sidebar-width);
+    }
+  }
+
+  .content-container {
+    container-type: inline-size;
+    container-name: content;
+  }
+
+  /* Container Query Adaptive Grids */
+  .grid-stats-adaptive {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  @container content (min-width: 500px) {
+    .grid-stats-adaptive {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .grid-bento-adaptive {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  @container content (min-width: 640px) {
+    .grid-bento-adaptive {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .grid-bento-span-2 {
+      grid-column: span 2 / span 2;
+    }
+  }
+
+  .grid-categories-adaptive {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+  @container content (min-width: 550px) {
+    .grid-categories-adaptive {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @container content (max-width: 320px) {
+    .category-card-stack {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 0.75rem !important;
+    }
   }
 }
 

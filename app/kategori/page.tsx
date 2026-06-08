@@ -13,6 +13,7 @@ import { TestType } from '../../lib/types';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
 import { sfx } from '../../lib/audio';
+import ContentWrapper from '../../components/ContentWrapper';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -281,12 +282,13 @@ function KategoriContent() {
     <>
       <Header title={`Modul ${type}`} showBack onBack={() => router.push('/')} />
 
-      <motion.main
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: "easeOut" }}
-        className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6"
-      >
+      <ContentWrapper hasSidebar noPadding>
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          className="flex-1 flex flex-col gap-6 px-4 py-6"
+        >
         {/* Loading Indicator Overlay */}
         {loading && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex flex-col items-center justify-center">
@@ -416,7 +418,7 @@ function KategoriContent() {
                 <h4 className="text-xs font-black uppercase tracking-widest text-accent border-l-2 border-accent pl-2 leading-none">
                   {groupName}
                 </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid-categories-adaptive">
                   {activeCategories
                     .filter((c) => c.group === groupName)
                     .map((cat) => {
@@ -447,7 +449,8 @@ function KategoriContent() {
             ))}
           </div>
         </div>
-      </motion.main>
+        </motion.div>
+      </ContentWrapper>
 
       <BottomNav />
 

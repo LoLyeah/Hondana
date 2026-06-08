@@ -8,6 +8,7 @@ import BottomNav from '../../../components/BottomNav';
 import { useQuiz } from '../../../context/QuizContext';
 import { TPACategory, TBICategory, TestType } from '../../../lib/types';
 import LoadingSpinner from '../../../components/LoadingSpinner';
+import ContentWrapper from '../../../components/ContentWrapper';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -47,11 +48,11 @@ export default function StatistikDetail() {
     return (
       <>
         <Header title="Analisis Statistik" showBack onBack={() => router.push('/hasil')} />
-        <main className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6 min-h-[60vh] opacity-60">
+        <ContentWrapper hasSidebar className="flex-1 flex flex-col gap-6 min-h-[60vh] opacity-60">
           <div className="h-10 w-48 bg-white/10 rounded-md animate-pulse" />
           <div className="h-40 bg-white/5 rounded-2xl animate-pulse" />
           <div className="h-64 bg-white/5 rounded-2xl animate-pulse" />
-        </main>
+        </ContentWrapper>
         <BottomNav />
       </>
     );
@@ -126,12 +127,13 @@ export default function StatistikDetail() {
     <>
       <Header title="Analisis Statistik" showBack onBack={() => router.push('/hasil')} />
 
-      <motion.main
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-        className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6 pb-24 animate-fade-in"
-      >
+      <ContentWrapper hasSidebar noPadding>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="flex-1 flex flex-col gap-6 px-4 py-6 animate-fade-in"
+        >
         {/* Loading Indicator Overlay */}
         {loading && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex flex-col items-center justify-center">
@@ -457,7 +459,7 @@ export default function StatistikDetail() {
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid-categories-adaptive">
             {attemptedCategories.map((cat) => {
               const ringColor = activeTab === 'TPA' ? 'stroke-amber-500' : 'stroke-cyan-500';
               const ringBg = activeTab === 'TPA' ? 'bg-amber-500/10' : 'bg-cyan-500/10';
@@ -530,9 +532,10 @@ export default function StatistikDetail() {
             })}
           </div>
         </motion.section>
-      </motion.main>
+      </motion.div>
+    </ContentWrapper>
 
-      <BottomNav />
+    <BottomNav />
     </>
   );
 }

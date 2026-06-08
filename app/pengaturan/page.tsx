@@ -13,6 +13,7 @@ import AiConfigSection from '../../components/settings/AiConfigSection';
 import CacheSection from '../../components/settings/CacheSection';
 import QuizSettingsSection from '../../components/settings/QuizSettingsSection';
 import AccountSection from '../../components/settings/AccountSection';
+import ContentWrapper from '../../components/ContentWrapper';
 
 const containerVariants = {
   hidden: { opacity: 0, y: 15 },
@@ -46,9 +47,9 @@ export default function Pengaturan() {
     return (
       <>
         <Header title="Pengaturan" />
-        <main className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6 min-h-[60vh] opacity-60">
+        <ContentWrapper hasSidebar className="flex-1 flex flex-col gap-6 min-h-[60vh] opacity-60">
           <LoadingSkeleton type="settings" />
-        </main>
+        </ContentWrapper>
         <BottomNav />
       </>
     );
@@ -58,24 +59,26 @@ export default function Pengaturan() {
     <>
       <Header title="Pengaturan" />
 
-      <motion.main
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-        className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6 pb-20"
-      >
-        <PwaInstallSection />
-        <AiConfigSection />
-        <CacheSection />
-        <QuizSettingsSection />
-        <AccountSection />
+      <ContentWrapper hasSidebar noPadding>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+          className="flex-1 flex flex-col gap-6 px-4 py-6"
+        >
+          <PwaInstallSection />
+          <AiConfigSection />
+          <CacheSection />
+          <QuizSettingsSection />
+          <AccountSection />
 
-        {/* About App Info */}
-        <motion.section variants={itemVariants} className="flex flex-col items-center gap-1 mt-4 text-center select-none">
-          <span className="text-xs font-black tracking-widest text-text-secondary/50">HONDANA V{versionData.version}</span>
-          <span className="text-[10px] font-bold text-text-secondary/30">DEVELOPED BY {versionData.developedBy}</span>
-        </motion.section>
-      </motion.main>
+          {/* About App Info */}
+          <motion.section variants={itemVariants} className="flex flex-col items-center gap-1 mt-4 text-center select-none">
+            <span className="text-xs font-black tracking-widest text-text-secondary/50">HONDANA V{versionData.version}</span>
+            <span className="text-[10px] font-bold text-text-secondary/30">DEVELOPED BY {versionData.developedBy}</span>
+          </motion.section>
+        </motion.div>
+      </ContentWrapper>
 
       <BottomNav />
     </>

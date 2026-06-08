@@ -9,6 +9,7 @@ import StatsCard from '../components/StatsCard';
 import TestTypeCard from '../components/TestTypeCard';
 import { useStats } from '../context/QuizContext';
 import LoadingSkeleton from '../components/LoadingSkeleton';
+import ContentWrapper from '../components/ContentWrapper';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -50,7 +51,7 @@ export default function Home() {
     return (
       <>
         <Header title="Hondana" />
-        <main className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6 min-h-[60vh] opacity-60">
+        <ContentWrapper hasSidebar className="flex-1 flex flex-col gap-6 min-h-[60vh] opacity-60">
           {/* Welcome Section mimic */}
           <div className="flex flex-col gap-1.5 animate-pulse">
             <div className="h-3 w-32 bg-white/10 rounded-md" />
@@ -62,7 +63,7 @@ export default function Home() {
           
           <div className="h-3 w-28 bg-white/10 rounded-md mt-4 animate-pulse" />
           <LoadingSkeleton type="categories" count={2} className="mt-1" />
-        </main>
+        </ContentWrapper>
         <BottomNav />
       </>
     );
@@ -72,89 +73,91 @@ export default function Home() {
     <>
       <Header title="Hondana" />
 
-      <motion.main
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: "easeOut" }}
-        className="flex-1 flex flex-col gap-6 px-4 md:pl-60 py-6"
-      >
-        {/* Welcome Section */}
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🎯</span>
-            <span className="text-[10px] font-black uppercase tracking-widest text-accent">PREMIUM PREPARATION</span>
-          </div>
-          <h2 className="text-2xl font-black tracking-tight leading-tight">
-            Siap Hadapi Ujian Kerja?
-          </h2>
-          <p className="text-sm font-semibold text-text-secondary leading-relaxed">
-            Latih kemampuan berpikir taktis TPA dan keahlian bahasa TBI sesuai standar resmi ujian seleksi.
-          </p>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 min-[480px]:grid-cols-3 gap-3 w-full">
-          <StatsCard
-            title="Sesi Selesai"
-            value={stats?.sessionsCompleted ?? 0}
-            icon="📊"
-            desc="Total sesi diselesaikan"
-          />
-          <StatsCard
-            title="Total Soal"
-            value={stats?.totalAnswered ?? 0}
-            icon="📝"
-            desc="Soal yang telah dijawab"
-          />
-          <StatsCard
-            title="Akurasi Belajar"
-            value={stats?.totalAnswered ? `${Math.round(((stats.totalCorrect || 0) / stats.totalAnswered) * 100)}%` : '0%'}
-            icon="🎯"
-            desc="Rasio jawaban benar"
-          />
-        </div>
-
-        {/* Modules Grid */}
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black uppercase tracking-wider text-text-secondary">
-              Pilih Modul Ujian
-            </h3>
+      <ContentWrapper hasSidebar noPadding>
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          className="flex-1 flex flex-col gap-6 px-4 py-6"
+        >
+          {/* Welcome Section */}
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🎯</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-accent">PREMIUM PREPARATION</span>
+            </div>
+            <h2 className="text-2xl font-black tracking-tight leading-tight">
+              Siap Hadapi Ujian Kerja?
+            </h2>
+            <p className="text-sm font-semibold text-text-secondary leading-relaxed">
+              Latih kemampuan berpikir taktis TPA dan keahlian bahasa TBI sesuai standar resmi ujian seleksi.
+            </p>
           </div>
 
+          {/* Stats Grid */}
+          <div className="grid-stats-adaptive">
+            <StatsCard
+              title="Sesi Selesai"
+              value={stats?.sessionsCompleted ?? 0}
+              icon="📊"
+              desc="Total sesi diselesaikan"
+            />
+            <StatsCard
+              title="Total Soal"
+              value={stats?.totalAnswered ?? 0}
+              icon="📝"
+              desc="Soal yang telah dijawab"
+            />
+            <StatsCard
+              title="Akurasi Belajar"
+              value={stats?.totalAnswered ? `${Math.round(((stats.totalCorrect || 0) / stats.totalAnswered) * 100)}%` : '0%'}
+              icon="🎯"
+              desc="Rasio jawaban benar"
+            />
+          </div>
+
+          {/* Modules Grid */}
           <div className="flex flex-col gap-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ type: "spring", stiffness: 180, damping: 20 }}
-            >
-              <TestTypeCard
-                type="TPA"
-                title="TPA (Tes Potensi Akademik)"
-                description="Evaluasi kemampuan verbal, matematika analitis, deret angka logis, dan penalaran figural berpola."
-                subcategories={['Verbal', 'Numerik', 'Logika', 'Figural']}
-                onClick={() => handleSelectModule('TPA')}
-              />
-            </motion.div>
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-black uppercase tracking-wider text-text-secondary">
+                Pilih Modul Ujian
+              </h3>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ type: "spring", stiffness: 180, damping: 20, delay: 0.1 }}
-            >
-              <TestTypeCard
-                type="TBI"
-                title="TBI (Tes Bahasa Inggris)"
-                description="Ujian kecakapan bahasa Inggris setara format TOEFL ITP dengan simulasi Structure dan Reading."
-                subcategories={['Structure', 'Reading']}
-                onClick={() => handleSelectModule('TBI')}
-              />
-            </motion.div>
+            <div className="flex flex-col gap-4">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ type: "spring", stiffness: 180, damping: 20 }}
+              >
+                <TestTypeCard
+                  type="TPA"
+                  title="TPA (Tes Potensi Akademik)"
+                  description="Evaluasi kemampuan verbal, matematika analitis, deret angka logis, dan penalaran figural berpola."
+                  subcategories={['Verbal', 'Numerik', 'Logika', 'Figural']}
+                  onClick={() => handleSelectModule('TPA')}
+                />
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ type: "spring", stiffness: 180, damping: 20, delay: 0.1 }}
+              >
+                <TestTypeCard
+                  type="TBI"
+                  title="TBI (Tes Bahasa Inggris)"
+                  description="Ujian kecakapan bahasa Inggris setara format TOEFL ITP dengan simulasi Structure dan Reading."
+                  subcategories={['Structure', 'Reading']}
+                  onClick={() => handleSelectModule('TBI')}
+                />
+              </motion.div>
+            </div>
           </div>
-        </div>
-      </motion.main>
+        </motion.div>
+      </ContentWrapper>
 
       <BottomNav />
     </>

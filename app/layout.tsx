@@ -57,7 +57,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <QuizProvider>
-          <div className="w-full max-w-[720px] md:max-w-[960px] mx-auto min-h-dvh flex flex-col relative pb-24 md:pb-12">
+          <div className="w-full min-h-dvh flex flex-col relative">
             {children}
           </div>
         </QuizProvider>

@@ -64,7 +64,7 @@ export default function BottomNav() {
       </nav>
  
       {/* Desktop Sidebar Navigation */}
-      <aside className="hidden md:flex md:flex-col md:fixed md:left-[max(0px,calc((100vw-960px)/2))] md:top-0 md:bottom-0 md:w-56 bg-[var(--bg-nav)] border-r border-[var(--border-nav)] backdrop-blur-lg py-8 px-4 z-40 justify-between transition-colors duration-300">
+      <aside className="hidden md:flex md:flex-col md:fixed md:left-0 md:top-0 md:bottom-0 md:w-[var(--sidebar-width)] bg-[var(--bg-nav)] border-r border-[var(--border-nav)] backdrop-blur-lg py-8 px-4 z-40 justify-between transition-colors duration-300">
         <div className="flex flex-col gap-8">
           {/* Logo / Brand Header */}
           <div className="flex items-center gap-3 px-2">
