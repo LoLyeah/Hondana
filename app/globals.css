@@ -151,7 +151,7 @@
     height: 100vh;
     opacity: 0.025;
     pointer-events: none;
-    z-index: 9999;
+    z-index: 1;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   }
 
@@ -459,10 +459,15 @@
 
   @container content (max-width: 320px) {
     .category-card-stack {
-      flex-direction: column !important;
-      align-items: flex-start !important;
-      gap: 0.75rem !important;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
     }
+  }
+
+  .min-logical-zero {
+    min-block-size: 0;
+    min-inline-size: 0;
   }
 }
 
@@ -486,5 +491,18 @@
 .theme-transition::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    .glass, .glass-elevated {
+      animation: scroll-reveal auto linear backwards;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+    @keyframes scroll-reveal {
+      from { opacity: 0; scale: 0.95; translate: 0 1rem; }
+    }
+  }
 }
 

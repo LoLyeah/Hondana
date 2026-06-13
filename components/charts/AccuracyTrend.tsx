@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from 'recharts';
 import { SavedSession } from '../../lib/types';
 
@@ -8,7 +8,27 @@ interface AccuracyTrendProps {
   history: SavedSession[];
 }
 
-export default function AccuracyTrend({ history }: AccuracyTrendProps) {
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: any[];
+}
+
+const CustomTooltip = memo(({ active, payload }: CustomTooltipProps) => {
+  if (active && payload && payload.length) {
+    const dataPoint = payload[0].payload;
+    return (
+      <div className="glass border border-white/8 p-2 text-[10px] font-black uppercase tracking-wider text-text-primary shadow-xl">
+        <div className="text-[9px] text-text-secondary mb-0.5">{dataPoint.date}</div>
+        Akurasi: {dataPoint.accuracy}%
+      </div>
+    );
+  }
+  return null;
+});
+
+CustomTooltip.displayName = 'CustomTooltip';
+
+export default memo(function AccuracyTrend({ history }: AccuracyTrendProps) {
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -68,20 +88,7 @@ export default function AccuracyTrend({ history }: AccuracyTrendProps) {
             tick={{ fill: 'oklch(0.65 0.01 55)', fontSize: 8, fontWeight: 700 }}
             axisLine={false}
           />
-          <Tooltip
-            content={({ active, payload }) => {
-              if (active && payload && payload.length) {
-                const dataPoint = payload[0].payload;
-                return (
-                  <div className="glass border border-white/8 p-2 text-[10px] font-black uppercase tracking-wider text-text-primary shadow-xl">
-                    <div className="text-[9px] text-text-secondary mb-0.5">{dataPoint.date}</div>
-                    Akurasi: {dataPoint.accuracy}%
-                  </div>
-                );
-              }
-              return null;
-            }}
-          />
+          <Tooltip content={<CustomTooltip />} />
           <Area
             type="monotone"
             dataKey="accuracy"
@@ -96,4 +103,4 @@ export default function AccuracyTrend({ history }: AccuracyTrendProps) {
       </ResponsiveContainer>
     </div>
   );
-}
+});

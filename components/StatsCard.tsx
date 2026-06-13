@@ -22,9 +22,9 @@ export default memo(function StatsCard({
   const isTBI = accent === 'tbi';
   
   const borderHighlight = isTPA 
-    ? 'border-amber-500/20 shadow-[0_4px_24px_rgba(245,158,11,0.03)]' 
+    ? 'border-amber-500/20 shadow-[0_4px_24px_oklch(from_var(--tpa-accent)_l_c_h_/_0.03)]' 
     : isTBI 
-    ? 'border-cyan-500/20 shadow-[0_4px_24px_rgba(6,182,212,0.03)]' 
+    ? 'border-cyan-500/20 shadow-[0_4px_24px_oklch(from_var(--tbi-accent)_l_c_h_/_0.03)]' 
     : 'border-white/8';
 
   const displayValue = useMemo(() => {

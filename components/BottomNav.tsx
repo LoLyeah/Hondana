@@ -36,24 +36,42 @@ export default function BottomNav() {
       )
     }
   ];
+
+  const activeIndex = Math.max(0, navItems.findIndex((item) => {
+    if (item.href === '/') return pathname === '/';
+    return pathname.startsWith(item.href);
+  }));
  
   return (
     <>
       {/* Mobile Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[var(--bg-nav)] border-t border-[var(--border-nav)] backdrop-blur-lg safe-bottom md:hidden transition-colors duration-300">
-        <div className="max-w-[720px] mx-auto flex items-center justify-around py-2 px-4">
+        <div className="max-w-[720px] mx-auto grid grid-cols-3 py-2 px-4 relative">
+          {/* Sliding Pill Indicator */}
+          <div
+            className="absolute top-2 bottom-2 left-4 right-4 grid grid-cols-3 pointer-events-none z-0"
+            style={{ '--active-index': activeIndex } as React.CSSProperties}
+          >
+            <div
+              className="h-full w-full bg-accent/8 border border-accent/15 rounded-2xl transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
+              style={{
+                transform: `translateX(calc(var(--active-index) * 100%))`
+              }}
+            />
+          </div>
+
           {navItems.map((item) => {
-            const isActive = pathname === item.href;
+            const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
  
             return (
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex flex-col items-center gap-1 py-1 px-3 rounded-2xl active:scale-95 transition-all text-xs font-semibold ${
+                className={`relative z-10 flex flex-col items-center gap-1 py-1 px-3 rounded-2xl active:scale-95 transition-all text-xs font-semibold ${
                   isActive ? 'text-accent' : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
-                <div className={`p-1.5 rounded-xl transition-all ${isActive ? 'bg-accent/10' : 'bg-transparent'}`}>
+                <div className="p-1.5 rounded-xl transition-all">
                   {item.icon(isActive)}
                 </div>
                 <span>{item.label}</span>

@@ -68,6 +68,10 @@ export default function ConfirmModal({
           <motion.div
             ref={modalRef}
             tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirm-modal-title"
+            aria-describedby="confirm-modal-description"
             initial={{ y: 40, opacity: 0, scale: 0.97 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 40, opacity: 0, scale: 0.97 }}
@@ -94,10 +98,10 @@ export default function ConfirmModal({
                   {isDanger ? '⚠️' : '❓'}
                 </div>
                 <div className="flex flex-col gap-1">
-                  <h2 className="text-base font-black tracking-tight leading-tight">
+                  <h2 id="confirm-modal-title" className="text-base font-black tracking-tight leading-tight">
                     {title}
                   </h2>
-                  <p className="text-[11px] font-semibold text-text-secondary leading-relaxed max-w-[260px] mx-auto">
+                  <p id="confirm-modal-description" className="text-[11px] font-semibold text-text-secondary leading-relaxed max-w-[260px] mx-auto">
                     {message}
                   </p>
                 </div>

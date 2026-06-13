@@ -41,6 +41,9 @@ export default function BadgesModal({ isOpen, onClose, stats }: BadgesModalProps
           <motion.div
             ref={modalRef}
             tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="badges-modal-title"
             initial={{ y: 30, opacity: 0, scale: 0.98 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 30, opacity: 0, scale: 0.98 }}
@@ -55,7 +58,7 @@ export default function BadgesModal({ isOpen, onClose, stats }: BadgesModalProps
               <div className="flex flex-col gap-1 text-left">
                 <div className="flex items-center gap-2">
                   <span className="text-xl">🏆</span>
-                  <h2 className="text-base font-black tracking-tight leading-none">Daftar Pencapaian</h2>
+                  <h2 id="badges-modal-title" className="text-base font-black tracking-tight leading-none">Daftar Pencapaian</h2>
                 </div>
                 <span className="text-[10px] font-black uppercase tracking-wider text-text-secondary">
                   Terbuka: {unlockedCount} dari {badges.length} Modul
@@ -63,7 +66,7 @@ export default function BadgesModal({ isOpen, onClose, stats }: BadgesModalProps
               </div>
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-lg border border-white/5 bg-white/2 hover:bg-white/10 active:scale-95 transition-all flex items-center justify-center text-text-secondary hover:text-text-primary cursor-pointer outline-none"
+                className="w-11 h-11 rounded-lg border border-white/5 bg-white/2 hover:bg-white/10 active:scale-95 transition-all flex items-center justify-center text-text-secondary hover:text-text-primary cursor-pointer outline-none"
                 aria-label="Tutup pencapaian"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">

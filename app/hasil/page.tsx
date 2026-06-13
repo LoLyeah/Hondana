@@ -16,9 +16,11 @@ import ConfirmModal from '../../components/ConfirmModal';
 import BadgesModal from '../../components/BadgesModal';
 import BadgeUnlockToast from '../../components/BadgeUnlockToast';
 import { badges } from '../../lib/badges';
-import AccuracyDonut from '../../components/charts/AccuracyDonut';
-import CategoryBars from '../../components/charts/CategoryBars';
-import AccuracyTrend from '../../components/charts/AccuracyTrend';
+import dynamic from 'next/dynamic';
+
+const AccuracyDonut = dynamic(() => import('../../components/charts/AccuracyDonut'), { ssr: false });
+const CategoryBars = dynamic(() => import('../../components/charts/CategoryBars'), { ssr: false });
+const AccuracyTrend = dynamic(() => import('../../components/charts/AccuracyTrend'), { ssr: false });
 import StudyInsights from '../../components/StudyInsights';
 import EmptyState from '../../components/EmptyState';
 import ContentWrapper from '../../components/ContentWrapper';

@@ -29,13 +29,13 @@ export default memo(function QuizOption({
   let badgeStyle = 'bg-white/10 text-text-secondary';
 
   if (isSelected && isCorrect === null) {
-    cardStyle = 'border-accent/40 bg-accent/15 text-accent shadow-[0_0_15px_rgba(95,99,242,0.15)]';
+    cardStyle = 'border-accent/40 bg-accent/15 text-accent shadow-[0_0_15px_oklch(from_var(--accent)_l_c_h_/_0.15)]';
     badgeStyle = 'bg-accent text-white';
   } else if (isCorrect === true) {
-    cardStyle = 'border-success/40 bg-success/15 text-success shadow-[0_0_15px_rgba(112,185,160,0.15)] animate-correct';
+    cardStyle = 'border-success/40 bg-success/15 text-success shadow-[0_0_15px_oklch(from_var(--success)_l_c_h_/_0.15)] animate-correct';
     badgeStyle = 'bg-success text-white';
   } else if (isSelected && isCorrect === false) {
-    cardStyle = 'border-error/40 bg-error/15 text-error shadow-[0_0_15px_rgba(255,87,87,0.15)] animate-wrong animate-shake';
+    cardStyle = 'border-error/40 bg-error/15 text-error shadow-[0_0_15px_oklch(from_var(--error)_l_c_h_/_0.15)] animate-wrong animate-shake';
     badgeStyle = 'bg-error text-white';
   }
 
@@ -43,6 +43,8 @@ export default memo(function QuizOption({
     <button
       onClick={onClick}
       disabled={disabled}
+      role="radio"
+      aria-checked={isSelected}
       className={`w-full flex items-center gap-4 p-4 text-left border rounded-2xl cursor-pointer active:scale-[0.99] transition-all duration-200 outline-none ${cardStyle} disabled:cursor-not-allowed`}
     >
       {/* Option Key Badge */}

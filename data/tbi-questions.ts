@@ -2751,8 +2751,13 @@ const baseQuestions: Question[] = [
     timeLimit: 90
   }];
 
+let _cachedTBI: Question[] | null = null;
+
 export function getTBIQuestions(): Question[] {
-  const allQuestions = [...baseQuestions];
+  if (!_cachedTBI) {
+    _cachedTBI = [...baseQuestions];
+  }
+  const allQuestions = [..._cachedTBI];
 
   if (typeof window !== 'undefined') {
     try {

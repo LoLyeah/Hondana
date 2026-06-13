@@ -256,8 +256,9 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     count: number
   ): Promise<Question[]> => {
     const getCategorized = (pool: Question[], targetCount: number) => {
-      const unseen = pool.filter(q => !seenQuestionIdsRef.current.includes(q.id));
-      const seen = pool.filter(q => seenQuestionIdsRef.current.includes(q.id));
+      const seenSet = new Set(seenQuestionIdsRef.current);
+      const unseen = pool.filter(q => !seenSet.has(q.id));
+      const seen = pool.filter(q => seenSet.has(q.id));
       
       let chosen = shuffleArray(unseen).slice(0, targetCount);
       if (chosen.length < targetCount) {
@@ -412,7 +413,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
           const curTargetSedang = Math.round(targetSedang * ratio);
           const curTargetSulit = needed - curTargetMudah - curTargetSedang;
 
-          let extraChosen = [
+          const extraChosen = [
             ...getCategorized(mudah, curTargetMudah),
             ...getCategorized(sedang, curTargetSedang),
             ...getCategorized(sulit, curTargetSulit)
@@ -777,12 +778,21 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       // Keep only the last 20 sessions in history
       setHistory((prev) => [newSavedSession, ...prev].slice(0, 20));
 
-      // Add questions to seen pool
+      // Add questions to seen pool (cap at 500 to prevent localstorage growth)
       setSeenQuestionIds((prev) => {
         const addedIds = currentSession.questions.map((q) => q.id);
         const uniqueNewIds = addedIds.filter((id) => !prev.includes(id));
-        if (uniqueNewIds.length === 0) return prev;
-        return [...prev, ...uniqueNewIds];
+        if (uniqueNewIds.length === 0) {
+          if (prev.length > 500) {
+            return prev.slice(prev.length - 500);
+          }
+          return prev;
+        }
+        const combined = [...prev, ...uniqueNewIds];
+        if (combined.length > 500) {
+          return combined.slice(combined.length - 500);
+        }
+        return combined;
       });
     }
 

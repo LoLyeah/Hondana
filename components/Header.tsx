@@ -94,8 +94,7 @@ export default function Header({ title, showBack = false, onBack, noSidebar = fa
           {showBack && (
             <button
               onClick={handleBack}
-              className="p-2 -ml-2 rounded-xl hover:bg-white/5 active:scale-95 transition-all text-text-primary flex items-center justify-center cursor-pointer min-h-0 min-w-0"
-              style={{ minBlockSize: 0, minInlineSize: 0 }}
+              className="p-2 -ml-2 rounded-xl hover:bg-white/5 active:scale-95 transition-all text-text-primary flex items-center justify-center cursor-pointer min-h-0 min-w-0 min-logical-zero"
               aria-label="Kembali"
             >
               <svg
@@ -111,7 +110,7 @@ export default function Header({ title, showBack = false, onBack, noSidebar = fa
             </button>
           )}
           {title === 'Hondana' && (
-            <img src="/icon-192.png" alt="Hondana Logo" className="w-6 h-6 rounded-md object-contain md:hidden shrink-0" />
+            <img src="/icon-192.png" alt="Hondana Logo" width={24} height={24} className="w-6 h-6 rounded-md object-contain md:hidden shrink-0" />
           )}
           <h1 className="text-lg font-black bg-gradient-to-r from-[var(--text-primary)] to-[var(--text-secondary)] bg-clip-text text-transparent">
             {title}
@@ -122,8 +121,7 @@ export default function Header({ title, showBack = false, onBack, noSidebar = fa
           {rightElement}
           <button
             onClick={toggleFullscreen}
-            className="p-2 rounded-xl bg-white/4 border border-white/8 hover:bg-white/8 active:scale-95 transition-all text-text-primary flex items-center justify-center cursor-pointer outline-none min-h-0 min-w-0"
-            style={{ minBlockSize: 0, minInlineSize: 0 }}
+            className="p-2 rounded-xl bg-white/4 border border-white/8 hover:bg-white/8 active:scale-95 transition-all text-text-primary flex items-center justify-center cursor-pointer outline-none min-h-0 min-w-0 min-logical-zero"
             aria-label="Toggle Fullscreen"
             title="Toggle Fullscreen"
           >
@@ -139,8 +137,7 @@ export default function Header({ title, showBack = false, onBack, noSidebar = fa
           </button>
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-xl bg-white/4 border border-white/8 hover:bg-white/8 active:scale-95 transition-all text-text-primary flex items-center justify-center cursor-pointer outline-none min-h-0 min-w-0"
-            style={{ minBlockSize: 0, minInlineSize: 0 }}
+            className="p-2 rounded-xl bg-white/4 border border-white/8 hover:bg-white/8 active:scale-95 transition-all text-text-primary flex items-center justify-center cursor-pointer outline-none min-h-0 min-w-0 min-logical-zero"
             aria-label="Toggle Theme"
           >
             <span className="text-sm select-none leading-none">

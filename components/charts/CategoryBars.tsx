@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Cell, Tooltip } from 'recharts';
 import { UserStats } from '../../lib/types';
 
@@ -8,7 +8,25 @@ interface CategoryBarsProps {
   stats: UserStats;
 }
 
-export default function CategoryBars({ stats }: CategoryBarsProps) {
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: any[];
+}
+
+const CustomTooltip = memo(({ active, payload }: CustomTooltipProps) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="glass border border-white/8 p-2 text-[10px] font-black uppercase tracking-wider text-text-primary shadow-xl">
+        {payload[0].name}: {payload[0].value}%
+      </div>
+    );
+  }
+  return null;
+});
+
+CustomTooltip.displayName = 'CustomTooltip';
+
+export default memo(function CategoryBars({ stats }: CategoryBarsProps) {
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -65,18 +83,7 @@ export default function CategoryBars({ stats }: CategoryBarsProps) {
             tick={{ fill: 'var(--text-primary)', fontSize: 11, fontWeight: 900 }}
             width={60}
           />
-          <Tooltip
-            content={({ active, payload }) => {
-              if (active && payload && payload.length) {
-                return (
-                  <div className="glass border border-white/8 p-2 text-[10px] font-black uppercase tracking-wider text-text-primary shadow-xl">
-                    {payload[0].name}: {payload[0].value}%
-                  </div>
-                );
-              }
-              return null;
-            }}
-          />
+          <Tooltip content={<CustomTooltip />} />
           <Bar
             dataKey="accuracy"
             radius={[0, 6, 6, 0] as any}
@@ -91,4 +98,4 @@ export default function CategoryBars({ stats }: CategoryBarsProps) {
       </ResponsiveContainer>
     </div>
   );
-}
+});

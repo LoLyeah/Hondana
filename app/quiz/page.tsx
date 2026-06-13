@@ -11,6 +11,8 @@ import TranscriptCard from '../../components/TranscriptCard';
 import PassageCard from '../../components/PassageCard';
 import { useSession, useSettings } from '../../context/QuizContext';
 import ConfirmModal from '../../components/ConfirmModal';
+import QuizDrawer from '../../components/QuizDrawer';
+import ShortcutsOverlay from '../../components/ShortcutsOverlay';
 import { useTimer } from '../../hooks/useTimer';
 import { useKeyboardShortcuts } from '../../hooks/useKeyboardShortcuts';
 import { useFullscreen } from '../../hooks/useFullscreen';
@@ -366,7 +368,7 @@ export default function Quiz() {
 
       {/* Quiz Navigation Controller (Bottom Control Bar) */}
       <footer
-        className="sticky bottom-0 left-0 right-0 z-30 bg-gray-950/80 backdrop-blur-md border-t border-white/5 px-2.5 min-[480px]:px-4 flex items-center justify-between gap-2.5 w-full max-w-[var(--content-narrow-max-width)] mx-auto shrink-0"
+        className="sticky bottom-0 left-0 right-0 z-30 bg-[var(--bg-nav)] backdrop-blur-md border-t border-white/5 px-2.5 min-[480px]:px-4 flex items-center justify-between gap-2.5 w-full max-w-[var(--content-narrow-max-width)] mx-auto shrink-0"
         style={{ paddingTop: '12px', paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))' }}
       >
         {/* Prev Button */}
@@ -409,13 +411,11 @@ export default function Quiz() {
           </span>
         </button>
 
-
-
         {/* Next Button or Selesaikan Sesi Button */}
         {session.currentIndex + 1 < session.questions.length ? (
           <button
             onClick={() => jumpToQuestion(session.currentIndex + 1)}
-            className="px-2.5 py-2.5 min-[480px]:px-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 text-text-primary flex items-center justify-center gap-1 shrink-0 min-h-0 min-w-0"
+            className="px-2.5 py-2.5 min-[480px]:px-4 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 text-text-primary shrink-0 min-h-0 min-w-0"
             style={{ minBlockSize: 0, minInlineSize: 0 }}
           >
             <span className="hidden min-[480px]:inline">Selanjutnya</span>
@@ -426,7 +426,7 @@ export default function Quiz() {
         ) : (
           <button
             onClick={handleCompleteQuiz}
-            className="px-2.5 py-2.5 min-[480px]:px-4 bg-success hover:bg-success-hover text-white rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-md shadow-success/15 flex items-center justify-center gap-1 shrink-0 min-h-0 min-w-0"
+            className="px-2.5 py-2.5 min-[480px]:px-4 bg-success hover:bg-success-hover text-white rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shadow-md shadow-success/15 shrink-0 min-h-0 min-w-0"
             style={{ minBlockSize: 0, minInlineSize: 0 }}
           >
             <span className="hidden min-[480px]:inline">🏁 Selesaikan Sesi</span>
@@ -435,250 +435,23 @@ export default function Quiz() {
         )}
       </footer>
 
-      {/* Collapsible Question Grid Drawer */}
-      <AnimatePresence>
-        {showGrid && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowGrid(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 cursor-pointer"
-            />
+      <QuizDrawer
+        isOpen={showGrid}
+        onClose={() => setShowGrid(false)}
+        questions={session.questions}
+        currentIndex={session.currentIndex}
+        answers={session.answers}
+        flagged={session.flagged}
+        onSelectQuestion={jumpToQuestion}
+        mode="quiz"
+        onCompleteQuiz={handleCompleteQuiz}
+      />
 
-            {/* Slide-up Drawer Container */}
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 220 }}
-              className="fixed bottom-0 left-0 right-0 z-50 bg-gray-950/95 border-t border-white/8 backdrop-blur-xl rounded-t-[32px] p-6 max-w-[var(--content-narrow-max-width)] mx-auto w-full max-h-[70vh] overflow-y-auto flex flex-col gap-5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]"
-              style={{ paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between pb-3 border-b border-white/5">
-                <div className="flex flex-col text-left">
-                  <h3 className="text-sm font-black uppercase tracking-wider text-text-primary">
-                    Daftar Soal Sesi
-                  </h3>
-                  <span className="text-[10px] font-bold text-text-secondary">
-                    Pilih nomor soal untuk langsung menuju ke soal tersebut.
-                  </span>
-                </div>
-                <button
-                  onClick={() => setShowGrid(false)}
-                  className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-text-secondary flex items-center justify-center cursor-pointer outline-none min-h-0 min-w-0"
-                  style={{ minBlockSize: 0, minInlineSize: 0 }}
-                  aria-label="Tutup Daftar Soal"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Grid of numbers */}
-              <div className="grid grid-cols-5 sm:grid-cols-8 gap-2.5 my-2">
-                {session.questions.map((_, idx) => {
-                  const isCurrent = idx === session.currentIndex;
-                  const isQuestionAnswered = session.answers[idx] !== null;
-                  const isQuestionFlagged = session.flagged?.[idx];
-
-                  let style = 'bg-white/5 border-white/5 text-text-secondary hover:bg-white/10 hover:text-text-primary';
-                  if (isCurrent) {
-                    style = 'bg-accent text-white border-accent shadow-[0_0_15px_rgba(95,99,242,0.3)] scale-105';
-                  } else if (isQuestionFlagged) {
-                    style = 'bg-amber-500/10 text-amber-500 border-amber-500/30 shadow-[0_0_10px_rgba(245,158,11,0.1)]';
-                  } else if (isQuestionAnswered) {
-                    style = 'bg-accent/15 text-accent border-accent/25';
-                  }
-
-                  return (
-                    <button
-                      key={idx}
-                      onClick={() => {
-                        jumpToQuestion(idx);
-                        setShowGrid(false);
-                      }}
-                      className={`w-full aspect-square rounded-xl flex flex-col items-center justify-center font-black text-xs border transition-all duration-200 active:scale-90 cursor-pointer ${style}`}
-                    >
-                      <span>{idx + 1}</span>
-                      {isQuestionFlagged && <span className="text-[8px] mt-0.5">🚩</span>}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Legend info */}
-              <div className="flex items-center flex-wrap gap-4 text-[10px] font-bold text-text-secondary bg-white/3 p-3.5 rounded-2xl border border-white/5 mt-2">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded bg-accent" />
-                  <span>Aktif</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded bg-accent/15 border border-accent/25" />
-                  <span>Sudah Dijawab</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded bg-amber-500/15 border border-amber-500/30" />
-                  <span>Ragu-Ragu (Flag)</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="w-3 h-3 rounded bg-white/5 border border-white/5" />
-                  <span>Belum Dijawab</span>
-                </div>
-              </div>
-
-              {/* Complete Sesi Button in Drawer */}
-              <button
-                onClick={handleCompleteQuiz}
-                className="w-full py-3.5 bg-success hover:bg-success-hover text-white text-xs font-black rounded-2xl cursor-pointer transition-all active:scale-[0.98] outline-none flex items-center justify-center gap-1.5 mt-1.5 shadow-md shadow-success/15"
-              >
-                <span>🏁 Selesaikan Sesi Kuis</span>
-              </button>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Keyboard Shortcuts Legend Drawer */}
-      <AnimatePresence>
-        {showShortcuts && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowShortcuts(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 cursor-pointer"
-            />
-
-            {/* Slide-up Drawer Container */}
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 220 }}
-              className="fixed bottom-0 left-0 right-0 z-50 bg-gray-950/95 border-t border-white/8 backdrop-blur-xl rounded-t-[32px] p-6 max-w-[var(--content-narrow-max-width)] mx-auto w-full max-h-[70vh] overflow-y-auto flex flex-col gap-5 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] text-left"
-              style={{ paddingBottom: 'calc(24px + env(safe-area-inset-bottom, 0px))' }}
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between pb-3 border-b border-white/5">
-                <div className="flex flex-col text-left">
-                  <h3 className="text-sm font-black uppercase tracking-wider text-text-primary flex items-center gap-2">
-                    <span>⌨️</span> Shortcut Keyboard
-                  </h3>
-                  <span className="text-[10px] font-bold text-text-secondary">
-                    Gunakan shortcut berikut untuk navigasi kuis lebih cepat.
-                  </span>
-                </div>
-                <button
-                  onClick={() => setShowShortcuts(false)}
-                  className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 active:scale-95 transition-all text-text-secondary flex items-center justify-center cursor-pointer outline-none min-h-0 min-w-0"
-                  style={{ minBlockSize: 0, minInlineSize: 0 }}
-                  aria-label="Tutup Shortcut"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Shortcuts Table/Grid */}
-              <div className="flex flex-col gap-3 my-2">
-                <div className="grid grid-cols-12 gap-2 pb-2.5 border-b border-white/5 text-[10px] font-black uppercase tracking-wider text-text-secondary">
-                  <div className="col-span-5">Fungsi / Aksi</div>
-                  <div className="col-span-7 text-right">Tombol Keyboard</div>
-                </div>
-
-                <div className="flex flex-col gap-4 py-2">
-                  <div className="grid grid-cols-12 items-center gap-2">
-                    <div className="col-span-5 flex flex-col">
-                      <span className="text-xs font-bold text-text-primary">Pilih Pilihan A - E</span>
-                      <span className="text-[10px] text-text-secondary">Pilih jawaban pilihan ganda (no-op jika sudah dijawab)</span>
-                    </div>
-                    <div className="col-span-7 flex justify-end items-center gap-1.5 flex-wrap">
-                      {['A', 'B', 'C', 'D', 'E'].map((key) => (
-                        <kbd key={key} className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-accent shadow-sm">
-                          {key}
-                        </kbd>
-                      ))}
-                      <span className="text-text-secondary text-[10px] mx-0.5">atau</span>
-                      {['1', '2', '3', '4', '5'].map((key) => (
-                        <kbd key={key} className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary shadow-sm">
-                          {key}
-                        </kbd>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-12 items-center gap-2">
-                    <div className="col-span-8 flex flex-col">
-                      <span className="text-xs font-bold text-text-primary">Soal Selanjutnya</span>
-                      <span className="text-[10px] text-text-secondary">Pindah ke pertanyaan berikutnya</span>
-                    </div>
-                    <div className="col-span-4 flex justify-end gap-1">
-                      <kbd className="px-2 py-1 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary">L</kbd>
-                      <span className="text-text-secondary text-xs">atau</span>
-                      <kbd className="px-2 py-1 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary">→</kbd>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-12 items-center gap-2">
-                    <div className="col-span-8 flex flex-col">
-                      <span className="text-xs font-bold text-text-primary">Soal Sebelumnya</span>
-                      <span className="text-[10px] text-text-secondary">Pindah ke pertanyaan sebelumnya</span>
-                    </div>
-                    <div className="col-span-4 flex justify-end gap-1">
-                      <kbd className="px-2 py-1 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary">J</kbd>
-                      <span className="text-text-secondary text-xs">atau</span>
-                      <kbd className="px-2 py-1 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary">←</kbd>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-12 items-center gap-2">
-                    <div className="col-span-9 flex flex-col">
-                      <span className="text-xs font-bold text-text-primary">Tandai Ragu-Ragu</span>
-                      <span className="text-[10px] text-text-secondary">Beri bendera ragu-ragu pada soal aktif</span>
-                    </div>
-                    <div className="col-span-3 flex justify-end">
-                      <kbd className="px-2 py-1 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary">F</kbd>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-12 items-center gap-2">
-                    <div className="col-span-9 flex flex-col">
-                      <span className="text-xs font-bold text-text-primary">Buka/Tutup Daftar Soal</span>
-                      <span className="text-[10px] text-text-secondary">Toggle grid daftar soal halaman</span>
-                    </div>
-                    <div className="col-span-3 flex justify-end">
-                      <kbd className="px-2 py-1 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary">G</kbd>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-12 items-center gap-2">
-                    <div className="col-span-9 flex flex-col">
-                      <span className="text-xs font-bold text-text-primary">Tutup Menu / Drawer</span>
-                      <span className="text-[10px] text-text-secondary">Menutup popover shortcut atau daftar soal</span>
-                    </div>
-                    <div className="col-span-3 flex justify-end">
-                      <kbd className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-md font-mono text-[10px] font-bold text-text-primary">Esc</kbd>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Close Info */}
-              <div className="text-[10px] font-bold text-text-secondary bg-white/3 p-3.5 rounded-2xl border border-white/5 mt-2 text-center">
-                Tekan <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded font-mono text-[9px] text-text-primary">Esc</kbd> atau <kbd className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded font-mono text-[9px] text-text-primary">?</kbd> untuk menutup petunjuk ini.
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      <ShortcutsOverlay
+        isOpen={showShortcuts}
+        onClose={() => setShowShortcuts(false)}
+        mode="quiz"
+      />
 
       <ConfirmModal
         isOpen={isQuitModalOpen}

@@ -53,6 +53,10 @@ export default function QuestionExhaustionModal({
           <motion.div
             ref={modalRef}
             tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="exhaustion-modal-title"
+            aria-describedby="exhaustion-modal-description"
             initial={{ y: 40, opacity: 0, scale: 0.97 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 40, opacity: 0, scale: 0.97 }}
@@ -69,10 +73,10 @@ export default function QuestionExhaustionModal({
                   📭
                 </div>
                 <div className="flex flex-col gap-1">
-                  <h2 className="text-base font-black tracking-tight leading-tight">
+                  <h2 id="exhaustion-modal-title" className="text-base font-black tracking-tight leading-tight">
                     {isSimulasi ? 'Soal Offline Terbatas' : 'Soal Offline Habis'}
                   </h2>
-                  <p className="text-[11px] font-semibold text-text-secondary leading-relaxed max-w-[240px]">
+                  <p id="exhaustion-modal-description" className="text-[11px] font-semibold text-text-secondary leading-relaxed max-w-[240px]">
                     {isSimulasi ? (
                       <>
                         Kamu telah menjawab sebagian besar soal offline. Simulasi ini akan menyajikan beberapa soal yang <span className="font-black text-amber-400">sudah pernah kamu kerjakan sebelumnya</span>.

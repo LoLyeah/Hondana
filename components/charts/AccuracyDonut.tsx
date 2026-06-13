@@ -1,13 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { memo } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 interface AccuracyDonutProps {
   accuracy: number;
 }
 
-export default function AccuracyDonut({ accuracy }: AccuracyDonutProps) {
+export default memo(function AccuracyDonut({ accuracy }: AccuracyDonutProps) {
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
@@ -65,4 +65,4 @@ export default function AccuracyDonut({ accuracy }: AccuracyDonutProps) {
       </div>
     </div>
   );
-}
+});

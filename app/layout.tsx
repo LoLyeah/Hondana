@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { QuizProvider } from "../context/QuizContext";
+import ThemeScript from "../components/ThemeScript";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,7 +18,6 @@ export const viewport: Viewport = {
   themeColor: '#5f63f2',
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
   viewportFit: 'cover',
 };
 
@@ -52,8 +52,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
+      <head>
+        <ThemeScript />
+      </head>
       <body
-        className="min-h-full bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-300 flex flex-col antialiased selection:bg-accent/20"
+        className="min-h-full bg-bg-primary text-text-primary transition-colors duration-300 flex flex-col antialiased selection:bg-accent/20"
         suppressHydrationWarning
       >
         <QuizProvider>

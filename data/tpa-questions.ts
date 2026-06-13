@@ -451,7 +451,7 @@ function generateDeret(type: 'tambah' | 'kali' | 'fibonacci', start: number, dif
   };
 }
 
-export function getTPAQuestions(): Question[] {
+function getTPAQuestionsInternal(): Question[] {
   const questions: Question[] = [];
 
   const categories: TPACategory[] = [
@@ -762,6 +762,17 @@ export function getTPAQuestions(): Question[] {
   });
 
   const allQuestions = [...questions, ...additionalTPAQuestions, ...additionalTPAQuestions2, ...additionalTPAQuestions3];
+  return allQuestions;
+}
+
+let _cachedTPA: Question[] | null = null;
+
+export function getTPAQuestions(): Question[] {
+  if (!_cachedTPA) {
+    _cachedTPA = getTPAQuestionsInternal();
+  }
+
+  const allQuestions = [..._cachedTPA];
 
   if (typeof window !== 'undefined') {
     try {
